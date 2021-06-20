@@ -1,6 +1,6 @@
 # Evochat
 
-This project was developed by React.js, TypeScript, Tailwind CSS, Styled Components, Chat Engine and Firebase.
+This project was developed by React.js, TypeScript, Tailwind CSS, Styled Components and Firebase.
 
 ## Available Scripts
 
