@@ -14,7 +14,7 @@ const NavItems: FC = () => {
       <Menu right styles={styles}>
         <ListContainer>
           <NavItem menu>
-            <a href="#aboutus">About</a>
+            <a href="#about">About</a>
           </NavItem>
           <NavItem menu>
             <a href="#services">Services</a>
@@ -29,7 +29,7 @@ const NavItems: FC = () => {
   return (
     <ListContainer>
       <NavItem>
-        <a href="#aboutus">About</a>
+        <a href="#about">About</a>
       </NavItem>
       <NavItem>
         <a href="#services">Services</a>
