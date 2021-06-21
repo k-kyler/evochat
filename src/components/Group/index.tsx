@@ -2,31 +2,33 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { SCREENS } from "../../screens";
-import ChatImage from "../../assets/chat.svg";
 
-const AboutUs: FC = () => {
+interface IGroupProps {
+  id: string;
+  image: string;
+  title: string;
+  content: string;
+}
+
+const Group: FC<IGroupProps> = ({ id, image, title, content }) => {
   return (
-    <AboutUsContainer id="aboutus">
-      <ChatContainer>
-        <img src={ChatImage} />
-      </ChatContainer>
+    <GroupContainer id={`${id}`}>
+      <ImageContainer>
+        <img src={image} />
+      </ImageContainer>
 
       <DescriptionContainer>
-        <DescriptionTitle>About</DescriptionTitle>
+        <DescriptionTitle>{title}</DescriptionTitle>
 
-        <DescriptionContent>
-          Evochat is an open-source project created by kkyler (Quang Khai) that
-          provides a realtime social chat network using features of Firebase And
-          React.js
-        </DescriptionContent>
+        <DescriptionContent>{content}</DescriptionContent>
       </DescriptionContainer>
-    </AboutUsContainer>
+    </GroupContainer>
   );
 };
 
-export default AboutUs;
+export default Group;
 
-const AboutUsContainer = styled.div`
+const GroupContainer = styled.div`
   ${tw`
     flex
     flex-wrap
@@ -38,7 +40,7 @@ const AboutUsContainer = styled.div`
   `}
 `;
 
-const ChatContainer = styled.div`
+const ImageContainer = styled.div`
   ${tw`
     w-auto
     flex
@@ -48,7 +50,7 @@ const ChatContainer = styled.div`
     md:mb-0
   `}
 
-  height: 5rem;
+  height: 4rem;
 
   img {
     width: auto;
@@ -60,12 +62,11 @@ const ChatContainer = styled.div`
   }
 
   @media (min-width: ${SCREENS.lg}) {
-    height: 12rem;
+    height: 7rem;
   }
 
-  @media (min-width: ${SCREENS["2xl"]}) {
-    margin-left: 0;
-    height: 14rem;
+  @media (min-width: ${SCREENS.xl}) {
+    height: 11rem;
   }
 `;
 

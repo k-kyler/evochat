@@ -132,38 +132,55 @@ const BlobContainer = styled.div`
     right: -15em;
     transform: rotate(-20deg);
   }
+
+  @media (min-width: ${SCREENS["2xl"]}) {
+    width: 70em;
+    max-height: 30em;
+    top: -22em;
+    right: -15em;
+    transform: rotate(336deg);
+  }
 `;
 
 const IntroIllustration = styled.div`
   position: absolute;
-  top: -3.5em;
-  right: 0em;
+  top: -3em;
+  right: -0.5em;
   width: auto;
-  height: 7em;
+  height: 8em;
 
   img {
-    border-radius: 12px;
+    ${tw`
+      rounded-full
+    `}
+
     width: auto;
     height: 100%;
     max-width: fit-content;
   }
 
   @media (min-width: ${SCREENS.sm}) {
-    height: 13em;
-    top: -5em;
-    right: 1em;
+    height: 16em;
+    top: -6.5em;
+    right: 0.5em;
   }
 
   @media (min-width: ${SCREENS.lg}) {
-    height: 18em;
-    top: -3em;
-    right: 0em;
+    height: 23em;
+    top: -5em;
+    right: -1.5em;
   }
 
   @media (min-width: ${SCREENS.xl}) {
-    height: 26em;
-    top: -7em;
+    height: 31em;
+    top: -9em;
     right: -2em;
+  }
+
+  @media (min-width: ${SCREENS["2xl"]}) {
+    height: 31em;
+    top: -8em;
+    right: -8em;
   }
 `;
 
