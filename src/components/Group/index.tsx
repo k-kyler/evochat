@@ -2,13 +2,9 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { SCREENS } from "../../screens";
+import { GroupType } from "../../typings/GroupType";
 
-interface IGroupProps {
-  id: string;
-  image: string;
-  title: string;
-  content: string;
-}
+interface IGroupProps extends GroupType {}
 
 const Group: FC<IGroupProps> = ({ id, image, title, content }) => {
   return (

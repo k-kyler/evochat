@@ -4,10 +4,11 @@ import tw from "twin.macro";
 import IntroSection from "./IntroSection";
 import NavBar from "../../components/NavBar";
 import Group from "../../components/Group";
+import { GroupType } from "../../typings/GroupType";
 
 import ChatImage from "../../assets/chat.svg";
 
-const AboutData = {
+const AboutData: GroupType = {
   id: "about",
   image: ChatImage,
   title: "About",
