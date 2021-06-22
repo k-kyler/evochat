@@ -29,10 +29,10 @@ const GroupContainer = styled.div`
     flex
     flex-wrap
     px-7
-    py-24
+    pt-24
     items-center
     justify-center
-    md:py-48
+    md:pt-48
   `}
 `;
 
