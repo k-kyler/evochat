@@ -6,22 +6,34 @@ import NavBar from "../../components/NavBar";
 import Group from "../../components/Group";
 import { GroupType } from "../../typings/GroupType";
 
-import ChatImage from "../../assets/chat.svg";
+import AboutImage from "../../assets/about.svg";
+import ServicesImage from "../../assets/services.svg";
 
-const AboutData: GroupType = {
-  id: "about",
-  image: ChatImage,
-  title: "About",
-  content:
-    "Evochat is an open-source project created by kkyler (Quang Khai) that provides a realtime platform for users to chat in realtime using features of Firebase and React.js",
-};
+const groupData: GroupType[] = [
+  {
+    id: "about",
+    image: AboutImage,
+    title: "About",
+    content:
+      "Evochat is an open-source project created by kkyler (Quang Khai) that provides a realtime platform for users to chat in realtime using features of Firebase and React.js",
+  },
+  {
+    id: "services",
+    image: ServicesImage,
+    title: "Services",
+    content:
+      "Evochat provides a realtime communication between connecting users, you can send message or upload image and video to other users rapidly.",
+  },
+];
 
 const Home: FC = () => {
   return (
     <HomeContainer>
       <NavBar />
       <IntroSection />
-      <Group {...AboutData} />
+      {groupData.map((group) => (
+        <Group key={group.id} {...group} />
+      ))}
     </HomeContainer>
   );
 };
