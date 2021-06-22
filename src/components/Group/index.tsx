@@ -15,7 +15,6 @@ const Group: FC<IGroupProps> = ({ id, image, title, content }) => {
 
       <DescriptionContainer>
         <DescriptionTitle>{title}</DescriptionTitle>
-
         <DescriptionContent>{content}</DescriptionContent>
       </DescriptionContainer>
     </GroupContainer>
@@ -54,15 +53,15 @@ const ImageContainer = styled.div`
   }
 
   @media (min-width: ${SCREENS.md}) {
-    height: 6rem;
+    height: 5rem;
   }
 
   @media (min-width: ${SCREENS.lg}) {
-    height: 7rem;
+    height: 6rem;
   }
 
   @media (min-width: ${SCREENS.xl}) {
-    height: 11rem;
+    height: 9rem;
   }
 `;
 
@@ -83,7 +82,7 @@ const DescriptionContainer = styled.div`
 const DescriptionContent = styled.p`
   ${tw`
     font-normal
-    max-w-2xl
+    max-w-5xl
     text-gray-300
     text-xs
     lg:text-sm
@@ -103,7 +102,5 @@ const DescriptionTitle = styled.h1`
     md:font-extrabold
     lg:font-black
     lg:leading-normal
-    xl:text-6xl
-    xl:leading-relaxed
   `}
 `;
