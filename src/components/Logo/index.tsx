@@ -31,7 +31,7 @@ const WebLogoContainer = styled.div`
 const WebLogoText = styled.div`
   ${tw`
     text-black
-    m-3
+    m-1
     text-xl
     md:text-2xl
     font-bold

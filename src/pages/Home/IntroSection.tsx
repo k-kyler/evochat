@@ -5,6 +5,7 @@ import IntroImage from "../../assets/intro.gif";
 import BlobImage from "../../assets/blob.svg";
 import { SCREENS } from "../../screens";
 import Button from "../../components/Button";
+import { Link } from "react-router-dom";
 
 const IntroSection: FC = () => {
   return (
@@ -16,7 +17,9 @@ const IntroSection: FC = () => {
           cool features while using my chat services
         </Description>
         <ButtonsContainer>
-          <Button content="Get Started" theme="filled" />
+          <Link to="signin">
+            <Button content="Get Started" theme="filled" />
+          </Link>
         </ButtonsContainer>
       </LeftSide>
       <RightSide>
