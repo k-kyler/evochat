@@ -43,10 +43,18 @@ const InnerContainer = styled.div`
   `}
 
   img {
-    height: 4rem;
+    height: 5rem;
+
+    @media (min-width: ${SCREENS.md}) {
+      height: 6rem;
+    }
+
+    @media (min-width: ${SCREENS.lg}) {
+      height: 7rem;
+    }
 
     @media (min-width: ${SCREENS["2xl"]}) {
-      height: 7rem;
+      height: 8rem;
     }
   }
 
@@ -59,9 +67,9 @@ const SignInTitle = styled.h1`
   ${tw`
     mt-2
     mb-6
-    text-xl
+    text-3xl
     text-white
     font-black
-    2xl:text-4xl
+    lg:text-4xl
   `}
 `;
