@@ -3,12 +3,15 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import Logo from "../Logo";
 import NavItems from "./NavItems";
+import { Link } from "react-router-dom";
 
 const NavBar: FC = () => {
   return (
     <NavBarContainer>
       <LogoContainer>
-        <Logo color="white" />
+        <Link to="/">
+          <Logo color="white" />
+        </Link>
       </LogoContainer>
 
       <NavItems />

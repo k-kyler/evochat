@@ -1,11 +1,18 @@
 import Home from "./pages/Home";
 import styled from "styled-components";
 import tw from "twin.macro";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import SignIn from "./pages/SignIn";
 
 function App() {
   return (
     <AppContainer>
-      <Home />
+      <Router>
+        <Switch>
+          <Route exact component={Home} path="/" />
+          <Route exact component={SignIn} path="/signin" />
+        </Switch>
+      </Router>
     </AppContainer>
   );
 }

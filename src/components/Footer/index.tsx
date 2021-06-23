@@ -11,9 +11,11 @@ const Footer: FC = () => {
         <BrandContainer>
           <Logo color="white" />
           <GitRepo>
-            <Icon>
-              <DiGithubAlt />
-            </Icon>
+            <a href="https://github.com/k-kyler/evochat" target="__blank">
+              <Icon>
+                <DiGithubAlt />
+              </Icon>
+            </a>
           </GitRepo>
         </BrandContainer>
 
@@ -66,6 +68,10 @@ const Icon = styled.span`
     text-gray-300
     lg:text-3xl
     xl:text-4xl
+    hover:text-gray-400
+    transition-all
+    duration-300
+    ease-in-out
   `}
 `;
 
