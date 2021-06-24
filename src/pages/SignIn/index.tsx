@@ -1,23 +1,15 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 import WebLogoImage from "../../assets/web-logo.svg";
 import { SCREENS } from "../../screens";
-import { AuthContext } from "../../contexts/Auth/AuthProvider";
-import { Redirect } from "react-router-dom";
-import { auth, googleAuthProvider, facebookAuthProvider } from "../../firebase";
+import { useAuth } from "../../contexts/AuthContext";
+import { Link, Redirect } from "react-router-dom";
+import { IoReturnUpBackSharp } from "react-icons/io5";
 
 const SignIn: FC = () => {
-  const { user, setUser } = useContext(AuthContext);
-
-  const signInHandler = (provider: any) => {
-    auth
-      .signInWithPopup(provider)
-      .then((result) => setUser(result.user))
-      .catch((error) => console.error(error));
-  };
+  const { user, googleSignInHandler, facebookSignInHandler } = useAuth();
 
   return (
     <>
@@ -26,20 +18,26 @@ const SignIn: FC = () => {
       ) : (
         <SignInContainer>
           <InnerContainer>
-            <Link to="/">
-              <img src={WebLogoImage} />
-            </Link>
+            <img src={WebLogoImage} />
             <SignInTitle>Welcome to Evochat</SignInTitle>
             <Button
               theme="facebook"
               content="Sign in with Facebook"
-              clickHandler={() => signInHandler(facebookAuthProvider)}
+              clickHandler={facebookSignInHandler}
             />
             <Button
               theme="google"
               content="Sign in with Google"
-              clickHandler={() => signInHandler(googleAuthProvider)}
+              clickHandler={googleSignInHandler}
             />
+            <Link to="/">
+              <BackToHomeContainer>
+                <BackToHomeIcon>
+                  <IoReturnUpBackSharp />
+                </BackToHomeIcon>
+                <BackToHomeContent>Back to home</BackToHomeContent>
+              </BackToHomeContainer>
+            </Link>
           </InnerContainer>
         </SignInContainer>
       )}
@@ -97,5 +95,34 @@ const SignInTitle = styled.h1`
     text-white
     font-black
     lg:text-4xl
+  `}
+`;
+
+const BackToHomeContainer = styled.div`
+  ${tw`
+    flex
+    items-center
+    mt-4
+  `}
+`;
+
+const BackToHomeIcon = styled.span`
+  ${tw`
+    text-gray-400
+    text-sm
+    mr-1
+    2xl:text-base
+  `}
+`;
+
+const BackToHomeContent = styled.p`
+  ${tw`
+    text-sm
+    text-gray-400
+    hover:underline
+    transition-all
+    duration-300
+    ease-in-out
+    2xl:text-base
   `}
 `;
