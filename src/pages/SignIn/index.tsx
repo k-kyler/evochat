@@ -1,23 +1,49 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 import WebLogoImage from "../../assets/web-logo.svg";
 import { SCREENS } from "../../screens";
+import { AuthContext } from "../../contexts/Auth/AuthProvider";
+import { Redirect } from "react-router-dom";
+import { auth, googleAuthProvider, facebookAuthProvider } from "../../firebase";
 
 const SignIn: FC = () => {
+  const { user, setUser } = useContext(AuthContext);
+
+  const signInHandler = (provider: any) => {
+    auth
+      .signInWithPopup(provider)
+      .then((result) => setUser(result.user))
+      .catch((error) => console.error(error));
+  };
+
   return (
-    <SignInContainer>
-      <InnerContainer>
-        <Link to="/">
-          <img src={WebLogoImage} />
-        </Link>
-        <SignInTitle>Welcome to Evochat</SignInTitle>
-        <Button theme="facebook" content="Sign in with Facebook" />
-        <Button theme="google" content="Sign in with Google" />
-      </InnerContainer>
-    </SignInContainer>
+    <>
+      {user ? (
+        <Redirect to="/chat" />
+      ) : (
+        <SignInContainer>
+          <InnerContainer>
+            <Link to="/">
+              <img src={WebLogoImage} />
+            </Link>
+            <SignInTitle>Welcome to Evochat</SignInTitle>
+            <Button
+              theme="facebook"
+              content="Sign in with Facebook"
+              clickHandler={() => signInHandler(facebookAuthProvider)}
+            />
+            <Button
+              theme="google"
+              content="Sign in with Google"
+              clickHandler={() => signInHandler(googleAuthProvider)}
+            />
+          </InnerContainer>
+        </SignInContainer>
+      )}
+    </>
   );
 };
 

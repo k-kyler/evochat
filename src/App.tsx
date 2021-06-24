@@ -3,17 +3,22 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import SignIn from "./pages/SignIn";
+import Chat from "./pages/Chat";
+import { AuthProvider } from "./contexts/Auth/AuthProvider";
 
 function App() {
   return (
-    <AppContainer>
-      <Router>
-        <Switch>
-          <Route exact component={Home} path="/" />
-          <Route exact component={SignIn} path="/signin" />
-        </Switch>
-      </Router>
-    </AppContainer>
+    <AuthProvider>
+      <AppContainer>
+        <Router>
+          <Switch>
+            <Route exact component={Home} path="/" />
+            <Route exact component={SignIn} path="/signin" />
+            <Route exact component={Chat} path="/chat" />
+          </Switch>
+        </Router>
+      </AppContainer>
+    </AuthProvider>
   );
 }
 
