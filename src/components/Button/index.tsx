@@ -7,13 +7,14 @@ import { FaFacebook } from "react-icons/fa";
 interface IButtonProps {
   content: string;
   theme?: "filled" | "outlined" | "google" | "facebook";
+  clickHandler?: () => void;
 }
 
-const Button: FC<IButtonProps> = ({ content, theme }) => {
+const Button: FC<IButtonProps> = ({ content, theme, clickHandler }) => {
   if (theme === "filled") return <FilledButton>{content}</FilledButton>;
   if (theme === "google")
     return (
-      <GoogleButton>
+      <GoogleButton onClick={clickHandler && clickHandler}>
         <Icon>
           <FcGoogle />
         </Icon>
@@ -22,7 +23,7 @@ const Button: FC<IButtonProps> = ({ content, theme }) => {
     );
   if (theme === "facebook")
     return (
-      <FacebookButton>
+      <FacebookButton onClick={clickHandler && clickHandler}>
         <Icon>
           <FaFacebook />
         </Icon>
