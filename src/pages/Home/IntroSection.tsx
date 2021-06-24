@@ -13,8 +13,8 @@ const IntroSection: FC = () => {
       <LeftSide>
         <Slogan>Evolution Of Chat Services For You And Your Friends</Slogan>
         <Description>
-          Join with me now and I will give you awesome experience with a lot of
-          cool features while using my chat services
+          Join with me and you will get awesome experience with a lot of cool
+          features while using my chat services
         </Description>
         <ButtonsContainer>
           <Link to="signin">
