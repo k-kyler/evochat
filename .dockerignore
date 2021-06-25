@@ -1,7 +1,0 @@
-node_modules
-yarn.lock
-Dockerfile
-.dockerignore
-.git
-.gitignore
-build
