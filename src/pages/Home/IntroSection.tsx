@@ -6,8 +6,11 @@ import BlobImage from "../../assets/blob.svg";
 import { SCREENS } from "../../screens";
 import Button from "../../components/Button";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const IntroSection: FC = () => {
+  const { user } = useAuth();
+
   return (
     <IntroSectionContainer>
       <LeftSide>
@@ -18,7 +21,10 @@ const IntroSection: FC = () => {
         </Description>
         <ButtonsContainer>
           <Link to="signin">
-            <Button content="Get Started" theme="filled" />
+            <Button
+              content={`${user ? "Open Evochat" : "Get Started"}`}
+              theme="filled"
+            />
           </Link>
         </ButtonsContainer>
       </LeftSide>
