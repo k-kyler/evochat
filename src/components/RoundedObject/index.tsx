@@ -31,7 +31,7 @@ export default RoundedObject;
 const RoundedObjectContainer = styled.div<{ active?: boolean }>`
   ${tw`
     p-3
-    mb-4
+    mb-3
     cursor-pointer
     transition-all
     duration-300
