@@ -1,27 +1,90 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import Logo from "../../assets/web-logo.svg";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import RoundedObject from "../../components/RoundedObject";
-import { FaPlus, FaUserFriends, FaBell } from "react-icons/fa";
+import { FaPlus, FaUserFriends, FaBell, FaCommentAlt } from "react-icons/fa";
+import queryString from "query-string";
+import { RoundedObjectType } from "../../typings/RoundedObjectType";
 
-const Chat: FC = () => {
+interface IChatProps {
+  location: {
+    search: string;
+  };
+}
+
+const Chat: FC<IChatProps> = ({ location }) => {
+  const [option, setOption] = useState<string | string[] | null>();
+
+  const history = useHistory();
+
+  const getBackToHome = () => {
+    history.push("/");
+  };
+
+  const getToRooms = () => {
+    history.push("/chat");
+  };
+
+  const getToFriends = () => {
+    history.push("/chat?opt=friends");
+  };
+
+  const getToAlerts = () => {
+    history.push("/chat?opt=alerts");
+  };
+
+  const openAddNewRoomModal = () => {};
+
+  const roundedObjects: RoundedObjectType[] = [
+    {
+      content: "Rooms",
+      icon: <FaCommentAlt />,
+      clickHandler: getToRooms,
+      option,
+    },
+    {
+      content: "Friends",
+      icon: <FaUserFriends />,
+      clickHandler: getToFriends,
+      option,
+    },
+    {
+      content: "Alerts",
+      icon: <FaBell />,
+      clickHandler: getToAlerts,
+      option,
+    },
+    {
+      content: "Add new rooms",
+      icon: <FaPlus />,
+      clickHandler: openAddNewRoomModal,
+      option,
+    },
+  ];
+
+  useEffect(() => {
+    setOption("rooms");
+
+    const { opt } = queryString.parse(location.search);
+
+    if (opt) setOption(opt);
+  }, [location.search]);
+
   return (
     <ChatContainer>
       <ListRoomsContainer>
-        <Link to="/">
-          <img src={Logo} />
-        </Link>
+        <img src={Logo} onClick={getBackToHome} />
 
         <LineBreak />
 
-        <RoundedObject icon={<FaBell />} />
-        <RoundedObject icon={<FaUserFriends />} />
-        <RoundedObject icon={<FaPlus />} />
+        {roundedObjects.map((object) => (
+          <RoundedObject {...object} />
+        ))}
       </ListRoomsContainer>
 
-      <RoomOptionsContainer>Room overview</RoomOptionsContainer>
+      <RoomOptionsContainer>Overview</RoomOptionsContainer>
 
       <ChatAreaContainer>Chat area</ChatAreaContainer>
     </ChatContainer>
@@ -44,22 +107,25 @@ const ListRoomsContainer = styled.div`
     p-3
     flex
     flex-col
+    items-center
   `}
 
   background-color: #202225;
 
   img {
     height: 3rem;
+    cursor: pointer;
   }
 `;
 
 const LineBreak = styled.div`
   ${tw`
-    bg-gray-500
-    my-3
+    my-4
+    w-2/3
   `}
 
-  height: 0.1rem;
+  height: 2px;
+  background-color: hsla(0, 0%, 100%, 0.06);
 `;
 
 const RoomOptionsContainer = styled.div`
