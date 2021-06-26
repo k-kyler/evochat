@@ -30,7 +30,7 @@ export default RoundedObject;
 
 const RoundedObjectContainer = styled.div<{ active?: boolean }>`
   ${tw`
-    p-4
+    p-3
     mb-4
     cursor-pointer
     transition-all
@@ -46,7 +46,7 @@ const RoundedObjectContainer = styled.div<{ active?: boolean }>`
 
   &:hover {
     background-color: #3ba55d;
-    border-radius: 12px;
+    border-radius: 14px;
 
     span:nth-child(1) {
       color: white;
@@ -64,7 +64,7 @@ const RoundedObjectContainer = styled.div<{ active?: boolean }>`
     active &&
     css`
       background-color: #3ba55d;
-      border-radius: 12px;
+      border-radius: 14px;
 
       span:nth-child(1) {
         color: white;
@@ -75,9 +75,8 @@ const RoundedObjectContainer = styled.div<{ active?: boolean }>`
 const Icon = styled.span`
   ${tw`
     text-xl
+    text-white
   `}
-
-  color: #3ba55d;
 `;
 
 const Tooltip = styled.span`
@@ -94,7 +93,7 @@ const Tooltip = styled.span`
 
   width: max-content;
   z-index: 1;
-  left: 130%;
+  left: 135%;
 
   &::after {
     ${tw`

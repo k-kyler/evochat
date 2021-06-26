@@ -2,7 +2,7 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import Logo from "../Logo";
-import { DiGithubAlt } from "react-icons/di";
+import { AiFillGithub, AiFillFacebook, AiFillLinkedin } from "react-icons/ai";
 
 const Footer: FC = () => {
   return (
@@ -10,13 +10,6 @@ const Footer: FC = () => {
       <InnerContainer>
         <BrandContainer>
           <Logo color="white" />
-          <GitRepo>
-            <a href="https://github.com/k-kyler/evochat" target="__blank">
-              <Icon>
-                <DiGithubAlt />
-              </Icon>
-            </a>
-          </GitRepo>
         </BrandContainer>
 
         <Divider />
@@ -25,6 +18,24 @@ const Footer: FC = () => {
           <CopyRightContent>
             © 2021. Evochat by kkyler. All rights reserved.
           </CopyRightContent>
+
+          <IconsContainer>
+            <a href="https://github.com/k-kyler/evochat" target="__blank">
+              <Icon>
+                <AiFillGithub />
+              </Icon>
+            </a>
+            <a href="https://www.facebook.com/quangkhai.005" target="__blank">
+              <Icon>
+                <AiFillFacebook />
+              </Icon>
+            </a>
+            <a href="https://www.linkedin.com/in/imkhai/" target="__blank">
+              <Icon>
+                <AiFillLinkedin />
+              </Icon>
+            </a>
+          </IconsContainer>
         </CopyRightContainer>
       </InnerContainer>
     </FooterContainer>
@@ -36,11 +47,12 @@ export default Footer;
 const FooterContainer = styled.div`
   ${tw`
     min-w-full
-    bg-gray-600
     py-4
     mt-24
     md:mt-48
   `}
+
+  background-color: #23272a;
 `;
 
 const InnerContainer = styled.div`
@@ -58,7 +70,6 @@ const BrandContainer = styled.div`
   ${tw`
     flex
     items-center
-    justify-between
   `}
 `;
 
@@ -67,7 +78,6 @@ const Icon = styled.span`
     text-2xl
     text-gray-300
     lg:text-3xl
-    xl:text-4xl
     hover:text-gray-400
     transition-all
     duration-300
@@ -75,26 +85,32 @@ const Icon = styled.span`
   `}
 `;
 
-const GitRepo = styled.div`
+const IconsContainer = styled.div`
   ${tw`
     flex
     items-center
   `}
+
+  a:not(:last-child) {
+    margin-right: 0.5rem;
+  }
 `;
 
 const Divider = styled.div`
   ${tw`
-    bg-gray-700
-    my-2
+    my-4
   `}
 
+  background-color: hsla(0, 0%, 100%, 0.06);
   height: 0.1rem;
 `;
 
 const CopyRightContainer = styled.div`
   ${tw`
     min-w-full
-    mt-2
+    flex
+    items-center
+    justify-between
   `}
 `;
 

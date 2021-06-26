@@ -4,9 +4,10 @@ import tw from "twin.macro";
 import Logo from "../../assets/web-logo.svg";
 import { useHistory } from "react-router-dom";
 import RoundedObject from "../../components/RoundedObject";
-import { FaPlus, FaUserFriends, FaBell, FaCommentAlt } from "react-icons/fa";
+import { FaPlus, FaUserFriends, FaBell, FaComments } from "react-icons/fa";
 import queryString from "query-string";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface IChatProps {
   location: {
@@ -16,6 +17,8 @@ interface IChatProps {
 
 const Chat: FC<IChatProps> = ({ location }) => {
   const [option, setOption] = useState<string | string[] | null>();
+
+  const { user } = useAuth();
 
   const history = useHistory();
 
@@ -40,7 +43,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
   const roundedObjects: RoundedObjectType[] = [
     {
       content: "Rooms",
-      icon: <FaCommentAlt />,
+      icon: <FaComments />,
       clickHandler: getToRooms,
       option,
     },
@@ -57,7 +60,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
       option,
     },
     {
-      content: "Add new rooms",
+      content: "Add new room",
       icon: <FaPlus />,
       clickHandler: openAddNewRoomModal,
       option,
@@ -80,11 +83,15 @@ const Chat: FC<IChatProps> = ({ location }) => {
         <LineBreak />
 
         {roundedObjects.map((object) => (
-          <RoundedObject {...object} />
+          <RoundedObject key={object.content} {...object} />
         ))}
       </ListRoomsContainer>
 
-      <RoomOptionsContainer>Overview</RoomOptionsContainer>
+      <OptionsContainer>
+        <Header>
+          <HeaderContent>{option}</HeaderContent>
+        </Header>
+      </OptionsContainer>
 
       <ChatAreaContainer>Chat area</ChatAreaContainer>
     </ChatContainer>
@@ -128,13 +135,29 @@ const LineBreak = styled.div`
   background-color: hsla(0, 0%, 100%, 0.06);
 `;
 
-const RoomOptionsContainer = styled.div`
+const OptionsContainer = styled.div`
   ${tw`
     text-white
   `}
 
   background-color: #2f3136;
   flex: 0.2;
+`;
+
+const Header = styled.div`
+  ${tw`
+    p-3
+    border-b
+    border-gray-600
+  `}
+`;
+
+const HeaderContent = styled.p`
+  ${tw`
+    text-base
+    font-medium
+    capitalize
+  `}
 `;
 
 const ChatAreaContainer = styled.div`
