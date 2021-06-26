@@ -65,6 +65,12 @@ const NavItem = styled.li<{ menu?: any }>`
     hover:text-gray-400
   `}
 
+  a {
+    ${tw`
+      font-semibold
+    `}
+  }
+
   ${({ menu }) =>
     menu &&
     css`
