@@ -10,7 +10,7 @@ type AuthContextProps = {
   logOutHandler: () => void;
 };
 
-export const AuthContext = createContext<Partial<AuthContextProps>>({});
+const AuthContext = createContext<Partial<AuthContextProps>>({});
 
 export const useAuth = () => {
   return useContext(AuthContext);
