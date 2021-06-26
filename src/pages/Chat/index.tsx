@@ -4,7 +4,7 @@ import tw from "twin.macro";
 import Logo from "../../assets/web-logo.svg";
 import { useHistory } from "react-router-dom";
 import RoundedObject from "../../components/RoundedObject";
-import { FaPlus, FaUserFriends, FaBell, FaComments } from "react-icons/fa";
+import { FaPlus, FaUserFriends, FaBell, FaClone, FaCog } from "react-icons/fa";
 import queryString from "query-string";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
 import { useAuth } from "../../contexts/AuthContext";
@@ -43,7 +43,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
   const roundedObjects: RoundedObjectType[] = [
     {
       content: "Rooms",
-      icon: <FaComments />,
+      icon: <FaClone />,
       clickHandler: getToRooms,
       option,
     },
@@ -82,15 +82,34 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
         <LineBreak />
 
-        {roundedObjects.map((object) => (
-          <RoundedObject key={object.content} {...object} />
-        ))}
+        {roundedObjects.map((object, index) => {
+          if (index === roundedObjects.length - 1)
+            return (
+              <>
+                <LineBreak style={{ marginTop: "0" }} />
+                <RoundedObject key={object.content} {...object} />
+              </>
+            );
+          return <RoundedObject key={object.content} {...object} />;
+        })}
       </ListRoomsContainer>
 
       <OptionsContainer>
-        <Header>
+        <HeaderContainer>
           <HeaderContent>{option}</HeaderContent>
-        </Header>
+        </HeaderContainer>
+
+        <ListContainer></ListContainer>
+
+        <BottomContainer>
+          <BottomUser>
+            <img src={String(user?.photoURL)} />
+            <BottomContent>{user?.displayName}</BottomContent>
+          </BottomUser>
+          <BottomIcon>
+            <FaCog />
+          </BottomIcon>
+        </BottomContainer>
       </OptionsContainer>
 
       <ChatAreaContainer>Chat area</ChatAreaContainer>
@@ -127,7 +146,7 @@ const ListRoomsContainer = styled.div`
 
 const LineBreak = styled.div`
   ${tw`
-    my-4
+    my-3
     w-2/3
   `}
 
@@ -138,26 +157,84 @@ const LineBreak = styled.div`
 const OptionsContainer = styled.div`
   ${tw`
     text-white
+    flex
+    flex-col
   `}
 
   background-color: #2f3136;
   flex: 0.2;
 `;
 
-const Header = styled.div`
+const HeaderContainer = styled.div`
   ${tw`
     p-3
-    border-b
-    border-gray-600
   `}
+
+  box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
 `;
 
 const HeaderContent = styled.p`
   ${tw`
     text-base
-    font-medium
+    font-semibold
     capitalize
   `}
+`;
+
+const ListContainer = styled.div`
+  ${tw`
+    flex-1
+  `}
+`;
+
+const BottomContainer = styled.div`
+  ${tw`
+    px-2
+    py-3
+    flex
+    items-center
+    justify-between
+  `}
+
+  background-color: #292b2f;
+`;
+
+const BottomUser = styled.div`
+  ${tw`
+    flex
+    items-center
+  `}
+
+  img {
+    height: 2rem;
+    margin-right: 0.5rem;
+    border-radius: 50px;
+  }
+`;
+
+const BottomContent = styled.p`
+  ${tw`
+    text-sm
+    font-medium
+  `}
+`;
+
+const BottomIcon = styled.span`
+  ${tw`
+    cursor-pointer
+    text-lg
+    p-2
+    rounded-md
+    transition-all
+    duration-300
+    ease-in-out
+  `}
+
+  color: lightgray;
+
+  &:hover {
+    background-color: #2f3136;
+  }
 `;
 
 const ChatAreaContainer = styled.div`
