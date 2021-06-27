@@ -62,7 +62,7 @@ const NavItem = styled.li<{ menu?: any }>`
     transition
     duration-300
     ease-in-out
-    hover:text-gray-400
+    hover:opacity-80
   `}
 
   a {

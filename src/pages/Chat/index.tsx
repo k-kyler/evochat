@@ -4,10 +4,17 @@ import tw from "twin.macro";
 import Logo from "../../assets/web-logo.svg";
 import { useHistory } from "react-router-dom";
 import RoundedObject from "../../components/RoundedObject";
-import { FaPlus, FaUserFriends, FaBell, FaClone, FaCog } from "react-icons/fa";
+import { FaPlus, FaUserFriends, FaBell, FaClone } from "react-icons/fa";
+import { RiListSettingsLine } from "react-icons/ri";
+import {
+  HiOutlineSortDescending,
+  HiOutlineSortAscending,
+} from "react-icons/hi";
 import queryString from "query-string";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
 import { useAuth } from "../../contexts/AuthContext";
+import RoomItem from "../../components/RoomItem";
+import { RoomType } from "../../typings/RoomType";
 
 interface IChatProps {
   location: {
@@ -17,10 +24,13 @@ interface IChatProps {
 
 const Chat: FC<IChatProps> = ({ location }) => {
   const [option, setOption] = useState<string | string[] | null>();
+  const [chosenId, setChosenId] = useState("");
 
   const { user } = useAuth();
 
   const history = useHistory();
+
+  const { opt } = queryString.parse(location.search);
 
   const getBackToHome = () => {
     history.push("/");
@@ -40,77 +50,89 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   const openAddNewRoomModal = () => {};
 
+  const roomChosenHandler = () => {};
+
   const roundedObjects: RoundedObjectType[] = [
     {
       content: "Rooms",
       icon: <FaClone />,
       clickHandler: getToRooms,
-      option,
     },
     {
       content: "Friends",
       icon: <FaUserFriends />,
       clickHandler: getToFriends,
-      option,
     },
     {
       content: "Alerts",
       icon: <FaBell />,
       clickHandler: getToAlerts,
-      option,
     },
     {
       content: "Add new room",
       icon: <FaPlus />,
       clickHandler: openAddNewRoomModal,
-      option,
+    },
+  ];
+
+  const rooms: RoomType[] = [
+    {
+      id: "0",
+      name: "Kkyler's chat",
+    },
+    {
+      id: "1",
+      name: "Gaming room",
     },
   ];
 
   useEffect(() => {
     setOption("rooms");
-
-    const { opt } = queryString.parse(location.search);
+    setChosenId(rooms[0].id);
 
     if (opt) setOption(opt);
   }, [location.search]);
 
   return (
     <ChatContainer>
-      <ListRoomsContainer>
+      <ListOptionsContainer>
         <img src={Logo} onClick={getBackToHome} />
 
         <LineBreak />
 
-        {roundedObjects.map((object, index) => {
-          if (index === roundedObjects.length - 1)
-            return (
-              <>
-                <LineBreak style={{ marginTop: "0" }} />
-                <RoundedObject key={object.content} {...object} />
-              </>
-            );
-          return <RoundedObject key={object.content} {...object} />;
+        {roundedObjects.map((object) => {
+          return (
+            <RoundedObject key={object.content} {...object} option={option} />
+          );
         })}
-      </ListRoomsContainer>
+      </ListOptionsContainer>
 
-      <OptionsContainer>
+      <CurrentOptionContainer>
         <HeaderContainer>
           <HeaderContent>{option}</HeaderContent>
+          <Icon>
+            <HiOutlineSortDescending />
+          </Icon>
         </HeaderContainer>
 
-        <ListContainer></ListContainer>
+        <ListContainer>
+          {option === "rooms"
+            ? rooms.map((room) => (
+                <RoomItem key={room.id} {...room} chosenId={chosenId} />
+              ))
+            : null}
+        </ListContainer>
 
         <BottomContainer>
           <BottomUser>
             <img src={String(user?.photoURL)} />
             <BottomContent>{user?.displayName}</BottomContent>
           </BottomUser>
-          <BottomIcon>
-            <FaCog />
-          </BottomIcon>
+          <Icon>
+            <RiListSettingsLine />
+          </Icon>
         </BottomContainer>
-      </OptionsContainer>
+      </CurrentOptionContainer>
 
       <ChatAreaContainer>Chat area</ChatAreaContainer>
     </ChatContainer>
@@ -127,7 +149,7 @@ const ChatContainer = styled.div`
   `}
 `;
 
-const ListRoomsContainer = styled.div`
+const ListOptionsContainer = styled.div`
   ${tw`
   text-white
     p-3
@@ -154,7 +176,7 @@ const LineBreak = styled.div`
   background-color: hsla(0, 0%, 100%, 0.06);
 `;
 
-const OptionsContainer = styled.div`
+const CurrentOptionContainer = styled.div`
   ${tw`
     text-white
     flex
@@ -168,15 +190,25 @@ const OptionsContainer = styled.div`
 const HeaderContainer = styled.div`
   ${tw`
     p-3
+    flex
+    items-center
+    justify-between
   `}
 
   box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
+
+  span {
+    padding: 0;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
 `;
 
 const HeaderContent = styled.p`
   ${tw`
     text-base
-    font-semibold
     capitalize
   `}
 `;
@@ -184,6 +216,8 @@ const HeaderContent = styled.p`
 const ListContainer = styled.div`
   ${tw`
     flex-1
+    px-3
+    py-4
   `}
 `;
 
@@ -215,11 +249,10 @@ const BottomUser = styled.div`
 const BottomContent = styled.p`
   ${tw`
     text-sm
-    font-medium
   `}
 `;
 
-const BottomIcon = styled.span`
+const Icon = styled.span`
   ${tw`
     cursor-pointer
     text-lg
@@ -228,9 +261,8 @@ const BottomIcon = styled.span`
     transition-all
     duration-300
     ease-in-out
+    text-gray-300
   `}
-
-  color: lightgray;
 
   &:hover {
     background-color: #2f3136;
