@@ -2,15 +2,15 @@ import { FC } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { FiTwitch } from "react-icons/fi";
-import { FaCog, FaUserPlus } from "react-icons/fa";
+import { IoIosSettings, IoMdPersonAdd } from "react-icons/io";
 import { RoomType } from "../../typings/RoomType";
 
 interface IRoomItemProps extends RoomType {}
 
-const RoomItem: FC<IRoomItemProps> = ({ id, name, chosenId }) => {
+const RoomItem: FC<IRoomItemProps> = ({ id, name, chosenId, clickHandler }) => {
   if (id === chosenId)
     return (
-      <RoomItemContainer active>
+      <RoomItemContainer active onClick={clickHandler && clickHandler}>
         <TitleContainer>
           <Icon>
             <FiTwitch />
@@ -21,16 +21,16 @@ const RoomItem: FC<IRoomItemProps> = ({ id, name, chosenId }) => {
 
         <SmallIcons active>
           <SmallIcon>
-            <FaUserPlus />
+            <IoMdPersonAdd />
           </SmallIcon>
           <SmallIcon>
-            <FaCog />
+            <IoIosSettings />
           </SmallIcon>
         </SmallIcons>
       </RoomItemContainer>
     );
   return (
-    <RoomItemContainer>
+    <RoomItemContainer onClick={clickHandler && clickHandler}>
       <TitleContainer>
         <Icon>
           <FiTwitch />
@@ -41,10 +41,10 @@ const RoomItem: FC<IRoomItemProps> = ({ id, name, chosenId }) => {
 
       <SmallIcons>
         <SmallIcon>
-          <FaUserPlus />
+          <IoMdPersonAdd />
         </SmallIcon>
         <SmallIcon>
-          <FaCog />
+          <IoIosSettings />
         </SmallIcon>
       </SmallIcons>
     </RoomItemContainer>
@@ -102,7 +102,7 @@ const Icon = styled.span`
 
 const SmallIcon = styled.span`
   ${tw`
-    text-sm
+    text-lg
     text-gray-400
   `}
 `;
@@ -111,7 +111,12 @@ const Content = styled.p`
   ${tw`
     ml-2
     text-sm
+    overflow-ellipsis
+    whitespace-nowrap
+    overflow-x-hidden
   `}
+
+  width: 9em;
 `;
 
 const SmallIcons = styled.div<{ active?: boolean }>`
@@ -121,7 +126,7 @@ const SmallIcons = styled.div<{ active?: boolean }>`
   `}
 
   span:nth-child(1) {
-    margin-right: 0.75rem;
+    margin-right: 0.5rem;
   }
 
   ${({ active }) =>
