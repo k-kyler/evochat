@@ -46,7 +46,7 @@ const RoundedObjectContainer = styled.div<{ active?: boolean }>`
 
   &:hover {
     background-color: #3ba55d;
-    border-radius: 14px;
+    border-radius: 12px;
 
     span:nth-child(1) {
       color: white;
@@ -64,7 +64,7 @@ const RoundedObjectContainer = styled.div<{ active?: boolean }>`
     active &&
     css`
       background-color: #3ba55d;
-      border-radius: 14px;
+      border-radius: 12px;
 
       span:nth-child(1) {
         color: white;
@@ -85,7 +85,6 @@ const Tooltip = styled.span`
     bg-black
     text-center
     text-sm
-    font-semibold
     rounded-md
     invisible
     p-2

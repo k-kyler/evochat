@@ -1,20 +1,13 @@
 import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import Logo from "../../assets/web-logo.svg";
-import { useHistory } from "react-router-dom";
-import RoundedObject from "../../components/RoundedObject";
-import { FaPlus, FaUserFriends, FaBell, FaClone } from "react-icons/fa";
-import { RiListSettingsLine } from "react-icons/ri";
-import {
-  HiOutlineSortDescending,
-  HiOutlineSortAscending,
-} from "react-icons/hi";
 import queryString from "query-string";
-import { RoundedObjectType } from "../../typings/RoundedObjectType";
 import { useAuth } from "../../contexts/AuthContext";
-import RoomItem from "../../components/RoomItem";
+import ListOptions from "../../components/ListOptions";
+import ChosenOption from "../../components/ChosenOption";
+import UserSection from "../../components/UserSection";
 import { RoomType } from "../../typings/RoomType";
+import { db } from "../../firebase";
 
 interface IChatProps {
   location: {
@@ -23,115 +16,56 @@ interface IChatProps {
 }
 
 const Chat: FC<IChatProps> = ({ location }) => {
-  const [option, setOption] = useState<string | string[] | null>();
+  const [option, setOption] = useState<string | string[] | null>("");
   const [chosenId, setChosenId] = useState("");
+  const [rooms, setRooms] = useState<RoomType[]>([]);
 
   const { user } = useAuth();
 
-  const history = useHistory();
-
   const { opt } = queryString.parse(location.search);
 
-  const getBackToHome = () => {
-    history.push("/");
+  const chosenRoomHandler = (id: string) => setChosenId(id);
+
+  const getRooms = () => {
+    db.collection("rooms")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        setRooms(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            name: doc.data().name,
+          }))
+        );
+      });
   };
-
-  const getToRooms = () => {
-    history.push("/chat");
-  };
-
-  const getToFriends = () => {
-    history.push("/chat?opt=friends");
-  };
-
-  const getToAlerts = () => {
-    history.push("/chat?opt=alerts");
-  };
-
-  const openAddNewRoomModal = () => {};
-
-  const roomChosenHandler = () => {};
-
-  const roundedObjects: RoundedObjectType[] = [
-    {
-      content: "Rooms",
-      icon: <FaClone />,
-      clickHandler: getToRooms,
-    },
-    {
-      content: "Friends",
-      icon: <FaUserFriends />,
-      clickHandler: getToFriends,
-    },
-    {
-      content: "Alerts",
-      icon: <FaBell />,
-      clickHandler: getToAlerts,
-    },
-    {
-      content: "Add new room",
-      icon: <FaPlus />,
-      clickHandler: openAddNewRoomModal,
-    },
-  ];
-
-  const rooms: RoomType[] = [
-    {
-      id: "0",
-      name: "Kkyler's chat",
-    },
-    {
-      id: "1",
-      name: "Gaming room",
-    },
-  ];
 
   useEffect(() => {
+    if (rooms?.length) setChosenId(rooms[0].id);
     setOption("rooms");
-    setChosenId(rooms[0].id);
-
     if (opt) setOption(opt);
   }, [location.search]);
 
+  useEffect(() => {
+    getRooms();
+  }, []);
+
   return (
     <ChatContainer>
-      <ListOptionsContainer>
-        <img src={Logo} onClick={getBackToHome} />
-
-        <LineBreak />
-
-        {roundedObjects.map((object) => {
-          return (
-            <RoundedObject key={object.content} {...object} option={option} />
-          );
-        })}
-      </ListOptionsContainer>
+      <ListOptions option={option} />
 
       <CurrentOptionContainer>
-        <HeaderContainer>
-          <HeaderContent>{option}</HeaderContent>
-          <Icon>
-            <HiOutlineSortDescending />
-          </Icon>
-        </HeaderContainer>
+        <OptionNameContainer>
+          <OptionName>{option}</OptionName>
+        </OptionNameContainer>
 
-        <ListContainer>
-          {option === "rooms"
-            ? rooms.map((room) => (
-                <RoomItem key={room.id} {...room} chosenId={chosenId} />
-              ))
-            : null}
-        </ListContainer>
+        <ChosenOption
+          rooms={rooms}
+          chosenId={chosenId}
+          option={option}
+          clickHandler={chosenRoomHandler}
+        />
 
-        <BottomContainer>
-          <BottomUser>
-            <img src={String(user?.photoURL)} />
-            <BottomContent>{user?.displayName}</BottomContent>
-          </BottomUser>
-          <Icon>
-            <RiListSettingsLine />
-          </Icon>
-        </BottomContainer>
+        <UserSection user={user} />
       </CurrentOptionContainer>
 
       <ChatAreaContainer>Chat area</ChatAreaContainer>
@@ -149,33 +83,6 @@ const ChatContainer = styled.div`
   `}
 `;
 
-const ListOptionsContainer = styled.div`
-  ${tw`
-  text-white
-    p-3
-    flex
-    flex-col
-    items-center
-  `}
-
-  background-color: #202225;
-
-  img {
-    height: 3rem;
-    cursor: pointer;
-  }
-`;
-
-const LineBreak = styled.div`
-  ${tw`
-    my-3
-    w-2/3
-  `}
-
-  height: 2px;
-  background-color: hsla(0, 0%, 100%, 0.06);
-`;
-
 const CurrentOptionContainer = styled.div`
   ${tw`
     text-white
@@ -187,86 +94,19 @@ const CurrentOptionContainer = styled.div`
   flex: 0.2;
 `;
 
-const HeaderContainer = styled.div`
+const OptionNameContainer = styled.div`
   ${tw`
     p-3
-    flex
-    items-center
-    justify-between
   `}
 
   box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
-
-  span {
-    padding: 0;
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
 `;
 
-const HeaderContent = styled.p`
+const OptionName = styled.p`
   ${tw`
     text-base
     capitalize
   `}
-`;
-
-const ListContainer = styled.div`
-  ${tw`
-    flex-1
-    px-3
-    py-4
-  `}
-`;
-
-const BottomContainer = styled.div`
-  ${tw`
-    px-2
-    py-3
-    flex
-    items-center
-    justify-between
-  `}
-
-  background-color: #292b2f;
-`;
-
-const BottomUser = styled.div`
-  ${tw`
-    flex
-    items-center
-  `}
-
-  img {
-    height: 2rem;
-    margin-right: 0.5rem;
-    border-radius: 50px;
-  }
-`;
-
-const BottomContent = styled.p`
-  ${tw`
-    text-sm
-  `}
-`;
-
-const Icon = styled.span`
-  ${tw`
-    cursor-pointer
-    text-lg
-    p-2
-    rounded-md
-    transition-all
-    duration-300
-    ease-in-out
-    text-gray-300
-  `}
-
-  &:hover {
-    background-color: #2f3136;
-  }
 `;
 
 const ChatAreaContainer = styled.div`
