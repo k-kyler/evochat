@@ -3,11 +3,11 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import queryString from "query-string";
 import { useOption } from "../../contexts/OptionContext";
+import { useRooms } from "../../contexts/RoomsContext";
 import ListOptions from "../../components/ListOptions";
 import ChosenOption from "../../components/ChosenOption";
 import UserSection from "../../components/UserSection";
 import OptionHeader from "../../components/OptionHeader";
-import { RoomType } from "../../typings/RoomType";
 import { db } from "../../firebase";
 
 interface IChatProps {
@@ -18,9 +18,9 @@ interface IChatProps {
 
 const Chat: FC<IChatProps> = ({ location }) => {
   const [chosenRoomId, setChosenRoomId] = useState("");
-  const [rooms, setRooms] = useState<RoomType[]>([]);
 
   const { setOption } = useOption();
+  const { rooms, setRooms } = useRooms();
 
   const { opt } = queryString.parse(location.search);
 
@@ -54,10 +54,9 @@ const Chat: FC<IChatProps> = ({ location }) => {
       <ListOptions />
 
       <CurrentOptionContainer>
-        <OptionHeader rooms={rooms} />
+        <OptionHeader />
 
         <ChosenOption
-          rooms={rooms}
           chosenRoomId={chosenRoomId}
           clickHandler={chosenRoomIdHandler}
         />
