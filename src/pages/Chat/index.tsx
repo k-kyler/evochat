@@ -17,14 +17,10 @@ interface IChatProps {
 }
 
 const Chat: FC<IChatProps> = ({ location }) => {
-  const [chosenRoomId, setChosenRoomId] = useState("");
-
   const { setOption } = useOption();
   const { rooms, setRooms } = useRooms();
 
   const { opt } = queryString.parse(location.search);
-
-  const chosenRoomIdHandler = (id: string) => setChosenRoomId(id);
 
   const getRooms = () => {
     db.collection("rooms")
@@ -40,10 +36,9 @@ const Chat: FC<IChatProps> = ({ location }) => {
   };
 
   useEffect(() => {
-    if (rooms?.length) setChosenRoomId(rooms[0].id);
     setOption("rooms");
     if (opt) setOption(opt);
-  }, [location.search, rooms]);
+  }, [location.search]);
 
   useEffect(() => {
     getRooms();
@@ -55,12 +50,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
       <CurrentOptionContainer>
         <OptionHeader />
-
-        <ChosenOption
-          chosenRoomId={chosenRoomId}
-          clickHandler={chosenRoomIdHandler}
-        />
-
+        <ChosenOption />
         <UserSection />
       </CurrentOptionContainer>
 

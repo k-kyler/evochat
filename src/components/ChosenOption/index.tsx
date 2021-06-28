@@ -1,21 +1,19 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import RoomItem from "../RoomItem";
 import { useOption } from "../../contexts/OptionContext";
 import { useRooms } from "../../contexts/RoomsContext";
 
-interface IChosenOptionProps {
-  chosenRoomId: string;
-  clickHandler: (id: string) => void;
-}
+const ChosenOption: FC = () => {
+  const [chosenRoomId, setChosenRoomId] = useState("");
 
-const ChosenOption: FC<IChosenOptionProps> = ({
-  chosenRoomId,
-  clickHandler,
-}) => {
   const { option } = useOption();
   const { rooms } = useRooms();
+
+  useEffect(() => {
+    if (rooms?.length) setChosenRoomId(rooms[0].id);
+  }, [rooms]);
 
   return (
     <ChosenOptionContainer>
@@ -25,7 +23,7 @@ const ChosenOption: FC<IChosenOptionProps> = ({
               key={room.id}
               {...room}
               chosenRoomId={chosenRoomId}
-              clickHandler={() => clickHandler(room.id)}
+              clickHandler={() => setChosenRoomId(room.id)}
             />
           ))
         : null}
