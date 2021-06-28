@@ -1,28 +1,22 @@
-import Home from "./pages/Home";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import Chat from "./pages/Chat";
-import { AuthProvider } from "./contexts/AuthContext";
-import { OptionProvider } from "./contexts/OptionContext";
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
-    <AuthProvider>
-      <OptionProvider>
-        <AppContainer>
-          <Router>
-            <Switch>
-              <Route exact component={Home} path="/" />
-              <Route exact component={SignIn} path="/signin" />
-              <PrivateRoute exact component={Chat} path="/chat" />
-            </Switch>
-          </Router>
-        </AppContainer>
-      </OptionProvider>
-    </AuthProvider>
+    <AppContainer>
+      <Router>
+        <Switch>
+          <Route exact component={Home} path="/" />
+          <Route exact component={SignIn} path="/signin" />
+          <PrivateRoute exact component={Chat} path="/chat" />
+        </Switch>
+      </Router>
+    </AppContainer>
   );
 }
 
