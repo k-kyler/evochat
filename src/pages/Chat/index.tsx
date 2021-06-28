@@ -2,10 +2,11 @@ import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import queryString from "query-string";
-import { useAuth } from "../../contexts/AuthContext";
+import { useOption } from "../../contexts/OptionContext";
 import ListOptions from "../../components/ListOptions";
 import ChosenOption from "../../components/ChosenOption";
 import UserSection from "../../components/UserSection";
+import OptionHeader from "../../components/OptionHeader";
 import { RoomType } from "../../typings/RoomType";
 import { db } from "../../firebase";
 
@@ -16,15 +17,14 @@ interface IChatProps {
 }
 
 const Chat: FC<IChatProps> = ({ location }) => {
-  const [option, setOption] = useState<string | string[] | null>("");
-  const [chosenId, setChosenId] = useState("");
+  const [chosenRoomId, setChosenRoomId] = useState("");
   const [rooms, setRooms] = useState<RoomType[]>([]);
 
-  const { user } = useAuth();
+  const { setOption } = useOption();
 
   const { opt } = queryString.parse(location.search);
 
-  const chosenRoomHandler = (id: string) => setChosenId(id);
+  const chosenRoomIdHandler = (id: string) => setChosenRoomId(id);
 
   const getRooms = () => {
     db.collection("rooms")
@@ -40,10 +40,10 @@ const Chat: FC<IChatProps> = ({ location }) => {
   };
 
   useEffect(() => {
-    if (rooms?.length) setChosenId(rooms[0].id);
+    if (rooms?.length) setChosenRoomId(rooms[0].id);
     setOption("rooms");
     if (opt) setOption(opt);
-  }, [location.search]);
+  }, [location.search, rooms]);
 
   useEffect(() => {
     getRooms();
@@ -51,21 +51,18 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   return (
     <ChatContainer>
-      <ListOptions option={option} />
+      <ListOptions />
 
       <CurrentOptionContainer>
-        <OptionNameContainer>
-          <OptionName>{option}</OptionName>
-        </OptionNameContainer>
+        <OptionHeader rooms={rooms} />
 
         <ChosenOption
           rooms={rooms}
-          chosenId={chosenId}
-          option={option}
-          clickHandler={chosenRoomHandler}
+          chosenRoomId={chosenRoomId}
+          clickHandler={chosenRoomIdHandler}
         />
 
-        <UserSection user={user} />
+        <UserSection />
       </CurrentOptionContainer>
 
       <ChatAreaContainer>Chat area</ChatAreaContainer>
@@ -92,21 +89,6 @@ const CurrentOptionContainer = styled.div`
 
   background-color: #2f3136;
   flex: 0.2;
-`;
-
-const OptionNameContainer = styled.div`
-  ${tw`
-    p-3
-  `}
-
-  box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
-`;
-
-const OptionName = styled.p`
-  ${tw`
-    text-base
-    capitalize
-  `}
 `;
 
 const ChatAreaContainer = styled.div`

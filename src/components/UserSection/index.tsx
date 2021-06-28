@@ -1,12 +1,12 @@
 import { FC } from "react";
-import { FaListUl } from "react-icons/fa";
+import { FaCog } from "react-icons/fa";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { UserType } from "../../typings/UserType";
+import { useAuth } from "../../contexts/AuthContext";
 
-interface IUserSectionProps extends UserType {}
+const UserSection: FC = () => {
+  const { user } = useAuth();
 
-const UserSection: FC<IUserSectionProps> = ({ user }) => {
   return (
     <UserSectionContainer>
       <UserInfo>
@@ -14,7 +14,7 @@ const UserSection: FC<IUserSectionProps> = ({ user }) => {
         <Content>{user?.displayName}</Content>
       </UserInfo>
       <Icon>
-        <FaListUl />
+        <FaCog />
       </Icon>
     </UserSectionContainer>
   );
