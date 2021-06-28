@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import queryString from "query-string";
@@ -18,7 +18,7 @@ interface IChatProps {
 
 const Chat: FC<IChatProps> = ({ location }) => {
   const { setOption } = useOption();
-  const { rooms, setRooms } = useRooms();
+  const { setRooms } = useRooms();
 
   const { opt } = queryString.parse(location.search);
 
