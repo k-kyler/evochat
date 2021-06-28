@@ -2,15 +2,13 @@ import { FC } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
+import { useOption } from "../../contexts/OptionContext";
 
 interface IRoundedObject extends RoundedObjectType {}
 
-const RoundedObject: FC<IRoundedObject> = ({
-  content,
-  icon,
-  option,
-  clickHandler,
-}) => {
+const RoundedObject: FC<IRoundedObject> = ({ content, icon, clickHandler }) => {
+  const { option } = useOption();
+
   if (option === content.toLowerCase())
     return (
       <RoundedObjectContainer active onClick={clickHandler && clickHandler}>

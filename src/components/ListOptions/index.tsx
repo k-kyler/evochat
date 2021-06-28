@@ -6,11 +6,8 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { FaPlus, FaUserFriends, FaBell, FaClone } from "react-icons/fa";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
-import { OptionType } from "../../typings/OptionType";
 
-interface IListOptionsProps extends OptionType {}
-
-const ListOptions: FC<IListOptionsProps> = ({ option }) => {
+const ListOptions: FC = () => {
   const history = useHistory();
 
   const getBackToHome = () => {
@@ -61,9 +58,7 @@ const ListOptions: FC<IListOptionsProps> = ({ option }) => {
       <LineBreak />
 
       {roundedObjects.map((object) => {
-        return (
-          <RoundedObject key={object.content} {...object} option={option} />
-        );
+        return <RoundedObject key={object.content} {...object} />;
       })}
     </ListOptionsContainer>
   );

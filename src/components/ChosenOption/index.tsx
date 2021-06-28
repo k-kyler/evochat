@@ -1,22 +1,23 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { OptionType } from "../../typings/OptionType";
 import { RoomType } from "../../typings/RoomType";
 import RoomItem from "../RoomItem";
+import { useOption } from "../../contexts/OptionContext";
 
-interface IChosenOptionProps extends OptionType {
+interface IChosenOptionProps {
   rooms: RoomType[];
-  chosenId: string;
+  chosenRoomId: string;
   clickHandler: (id: string) => void;
 }
 
 const ChosenOption: FC<IChosenOptionProps> = ({
   rooms,
-  chosenId,
-  option,
+  chosenRoomId,
   clickHandler,
 }) => {
+  const { option } = useOption();
+
   return (
     <ChosenOptionContainer>
       {option === "rooms"
@@ -24,7 +25,7 @@ const ChosenOption: FC<IChosenOptionProps> = ({
             <RoomItem
               key={room.id}
               {...room}
-              chosenId={chosenId}
+              chosenRoomId={chosenRoomId}
               clickHandler={() => clickHandler(room.id)}
             />
           ))

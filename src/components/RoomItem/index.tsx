@@ -7,8 +7,13 @@ import { RoomType } from "../../typings/RoomType";
 
 interface IRoomItemProps extends RoomType {}
 
-const RoomItem: FC<IRoomItemProps> = ({ id, name, chosenId, clickHandler }) => {
-  if (id === chosenId)
+const RoomItem: FC<IRoomItemProps> = ({
+  id,
+  name,
+  chosenRoomId,
+  clickHandler,
+}) => {
+  if (id === chosenRoomId)
     return (
       <RoomItemContainer active onClick={clickHandler && clickHandler}>
         <TitleContainer>
