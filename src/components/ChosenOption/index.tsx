@@ -18,7 +18,7 @@ const ChosenOption: FC = () => {
   return (
     <ChosenOptionContainer>
       {option === "rooms"
-        ? rooms?.map((room: any) => (
+        ? rooms?.map((room) => (
             <RoomItem
               key={room.id}
               {...room}

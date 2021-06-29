@@ -2,6 +2,7 @@ import { FC, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import queryString from "query-string";
+import { useAuth } from "../../contexts/AuthContext";
 import { useOption } from "../../contexts/OptionContext";
 import { useRooms } from "../../contexts/RoomsContext";
 import ListOptions from "../../components/ListOptions";
@@ -17,6 +18,7 @@ interface IChatProps {
 }
 
 const Chat: FC<IChatProps> = ({ location }) => {
+  const { user } = useAuth();
   const { setOption } = useOption();
   const { setRooms } = useRooms();
 
@@ -27,10 +29,13 @@ const Chat: FC<IChatProps> = ({ location }) => {
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         setRooms(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            name: doc.data().name,
-          }))
+          snapshot.docs.map((doc) => {
+            if (user?.uid === doc.data().uid)
+              return {
+                id: doc.id,
+                name: doc.data().name,
+              };
+          })
         );
       });
   };
