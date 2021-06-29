@@ -73,4 +73,10 @@ const Input = styled.input`
   `}
 
   background-color: #2f3136;
+
+  &::placeholder {
+    ${tw`
+      text-sm
+    `}
+  }
 `;
