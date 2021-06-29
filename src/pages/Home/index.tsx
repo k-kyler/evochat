@@ -17,7 +17,7 @@ const groupData: GroupType[] = [
     image: AboutImage,
     title: "About",
     content:
-      "Evochat is an open-source project created by kkyler (Quang Khai) that provides a realtime platform for users to chat in realtime using features of Firebase and React.js",
+      "Evochat is an open-source project created by kkyler (Quang Khai) that provides a realtime platform for users to communicate in realtime using features of Firebase and React.js",
   },
   {
     id: "services",
@@ -31,7 +31,7 @@ const groupData: GroupType[] = [
     image: ContactImage,
     title: "Contact",
     content:
-      "I'm kkyler (Quang Khai), please contact with me if there are any issues through this email khaiquang690@gmail.com",
+      "I'm kkyler (Quang Khai), please contact with me if there are any issues through my email",
   },
 ];
 

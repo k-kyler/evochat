@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { FaSearch, FaAngleLeft } from "react-icons/fa";
+import { FaSearch, FaArrowLeft } from "react-icons/fa";
 import SearchBar from "../SearchBar";
 import { useOption } from "../../contexts/OptionContext";
 
@@ -15,7 +15,7 @@ const OptionHeader: FC = () => {
       {searchMode ? (
         <>
           <Icon onClick={() => setSearchMode(!searchMode)}>
-            <FaAngleLeft />
+            <FaArrowLeft />
           </Icon>
           <SearchBar />
         </>
@@ -56,10 +56,10 @@ const Icon = styled.span`
     p-1
     cursor-pointer
     text-base
+    text-gray-400
     transition-all
     duration-300
     ease-in-out
-    text-gray-400
     hover:opacity-80
   `}
 `;

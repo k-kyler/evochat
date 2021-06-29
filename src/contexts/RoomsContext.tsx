@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { RoomType } from "../typings/RoomType";
 
 type RoomsContextProps = {
-  rooms: RoomType[] | any;
+  rooms: RoomType[];
   setRooms: any;
 };
 

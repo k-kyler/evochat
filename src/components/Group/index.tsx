@@ -15,7 +15,14 @@ const Group: FC<IGroupProps> = ({ id, image, title, content }) => {
 
       <DescriptionContainer>
         <DescriptionTitle>{title}</DescriptionTitle>
-        <DescriptionContent>{content}</DescriptionContent>
+        {id === "contact" ? (
+          <DescriptionContent>
+            {content}{" "}
+            <a href="mailto:khaiquang690@gmail.com">khaiquang690@gmail.com</a>
+          </DescriptionContent>
+        ) : (
+          <DescriptionContent>{content}</DescriptionContent>
+        )}
       </DescriptionContainer>
     </GroupContainer>
   );
@@ -87,7 +94,17 @@ const DescriptionContent = styled.p`
     text-xs
     lg:text-sm
     xl:text-lg
-`}
+  `}
+
+  a {
+    ${tw`
+      transition-all
+      duration-300
+      ease-in-out
+      hover:text-white
+      hover:underline
+    `}
+  }
 `;
 
 const DescriptionTitle = styled.h1`
