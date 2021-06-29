@@ -38,5 +38,26 @@ const ChosenOptionContainer = styled.div`
     flex-1
     px-3
     py-4
+    overflow-y-auto
   `}
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 0.47rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #2f3136;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    ${tw`
+      bg-gray-500
+      rounded-lg
+    `}
+  }
+
+  /* Firefox */
+  scrollbar-width: 0.47rem;
+  scrollbar-color: #6b7280 #2f3136;
 `;
