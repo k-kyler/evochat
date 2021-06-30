@@ -65,7 +65,7 @@ const OnlineStatus = styled.div`
 
   width: 0.6rem;
   height: 0.6rem;
-  background-color: #63dd1d;
+  background-color: #3ba55d;
 
   &::after {
     ${tw`
@@ -76,7 +76,7 @@ const OnlineStatus = styled.div`
     `}
 
     content: '';
-    border: 1px solid #63dd1d;
+    border: 1px solid #3ba55d;
     animation: ripple 1.2s infinite ease-in-out;
   }
 
