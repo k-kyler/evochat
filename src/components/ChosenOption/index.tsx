@@ -2,6 +2,7 @@ import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import RoomItem from "../RoomItem";
+import { useHistory } from "react-router-dom";
 import { useOption } from "../../contexts/OptionContext";
 import { useRooms } from "../../contexts/RoomsContext";
 
@@ -11,8 +12,18 @@ const ChosenOption: FC = () => {
   const { option } = useOption();
   const { rooms } = useRooms();
 
+  const history = useHistory();
+
+  const switchRoomHandler = (id: string) => {
+    setChosenRoomId(id);
+    history.push(`/chat?id=${id}`);
+  };
+
   useEffect(() => {
-    if (rooms?.length) setChosenRoomId(rooms[0].id);
+    if (rooms?.length) {
+      setChosenRoomId(rooms[0].id);
+      history.push(`/chat?id=${rooms[0].id}`);
+    }
   }, [rooms]);
 
   return (
@@ -23,7 +34,7 @@ const ChosenOption: FC = () => {
               key={room.id}
               {...room}
               chosenRoomId={chosenRoomId}
-              clickHandler={() => setChosenRoomId(room.id)}
+              clickHandler={() => switchRoomHandler(room.id)}
             />
           ))
         : null}
@@ -48,6 +59,7 @@ const ChosenOptionContainer = styled.div`
 
   &::-webkit-scrollbar-track {
     background: #2f3136;
+    border-top: 1px solid rgba(4, 4, 5, 0.2);
   }
 
   &::-webkit-scrollbar-thumb {
