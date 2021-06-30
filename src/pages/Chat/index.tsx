@@ -24,7 +24,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
   const { setOption } = useOption();
   const { setRooms } = useRooms();
 
-  const { opt } = queryString.parse(location.search);
+  const { opt, id } = queryString.parse(location.search);
 
   const getRooms = () => {
     db.collection("rooms")
@@ -36,6 +36,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
               return {
                 id: doc.id,
                 name: doc.data().name,
+                background: doc.data().background,
               };
           })
         );
@@ -62,7 +63,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
       </CurrentOptionContainer>
 
       <ChatAreaContainer>
-        <ChatAreaHeader />
+        <ChatAreaHeader id={id} />
         <Messages />
       </ChatAreaContainer>
     </ChatContainer>

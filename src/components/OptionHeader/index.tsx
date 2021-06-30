@@ -1,7 +1,8 @@
 import { FC, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { FaSearch, FaArrowLeft } from "react-icons/fa";
+// import { FaSearch, FaArrowLeft } from "react-icons/fa";
+import { FiArrowLeft, FiSearch } from "react-icons/fi";
 import SearchBar from "../SearchBar";
 import { useOption } from "../../contexts/OptionContext";
 
@@ -15,7 +16,7 @@ const OptionHeader: FC = () => {
       {searchMode ? (
         <>
           <Icon onClick={() => setSearchMode(!searchMode)}>
-            <FaArrowLeft />
+            <FiArrowLeft />
           </Icon>
           <SearchBar />
         </>
@@ -23,7 +24,7 @@ const OptionHeader: FC = () => {
         <>
           <OptionName>{option}</OptionName>
           <Icon onClick={() => setSearchMode(!searchMode)}>
-            <FaSearch />
+            <FiSearch />
           </Icon>
         </>
       )}
@@ -55,7 +56,7 @@ const Icon = styled.span`
   ${tw`
     p-1
     cursor-pointer
-    text-lg
+    text-xl
     text-gray-400
     transition-all
     duration-300

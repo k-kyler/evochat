@@ -1,15 +1,45 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { FiVolume2, FiVolumeX, FiUsers, FiGrid } from "react-icons/fi";
-import { db } from "../../firebase";
+import {
+  FiVolume2,
+  FiVolumeX,
+  FiUsers,
+  FiGrid,
+  FiTwitch,
+} from "react-icons/fi";
+import { useRooms } from "../../contexts/RoomsContext";
+import { QueryType } from "../../typings/QueryType";
+import { RoomType } from "../../typings/RoomType";
 
-const ChatAreaHeader: FC = () => {
+interface IChatAreaHeaderProps extends QueryType {}
+
+const ChatAreaHeader: FC<IChatAreaHeaderProps> = ({ id }) => {
+  const [roomInfo, setRoomInfo] = useState<RoomType>();
+
+  const { rooms } = useRooms();
+
+  const getRoomHandler = () => {
+    const room = rooms?.filter((r) => r.id === id)[0];
+
+    setRoomInfo(room);
+  };
+
+  useEffect(() => {
+    if (rooms?.length) getRoomHandler();
+  }, [rooms, id]);
+
   return (
     <ChatAreaHeaderContainer>
       <RoomInfoContainer>
-        {/* <img src={String(user?.photoURL)} /> */}
-        <RoomName>kkyler's chat</RoomName>
+        {roomInfo?.background ? (
+          <img src={String(roomInfo?.background)} />
+        ) : (
+          <LargeIcon>
+            <FiTwitch />
+          </LargeIcon>
+        )}
+        <RoomName>{roomInfo?.name}</RoomName>
       </RoomInfoContainer>
 
       <Icons>
@@ -47,9 +77,13 @@ const RoomInfoContainer = styled.div`
   `}
 
   img {
-    border-radius: 50px;
-    height: 1.6rem;
-    margin-right: 1rem;
+    ${tw`
+      mr-2
+      rounded-full
+    `}
+
+    width: 1.7rem;
+    height: 1.7rem;
   }
 `;
 
@@ -70,7 +104,7 @@ const Icon = styled.span`
   ${tw`
     p-1
     cursor-pointer
-    text-lg
+    text-xl
     text-gray-400
     transition-all
     duration-300
@@ -79,6 +113,14 @@ const Icon = styled.span`
   `}
 
   &:not(:last-child) {
-    margin-right: 1rem;
+    margin-right: 1.5rem;
   }
+`;
+
+const LargeIcon = styled.span`
+  ${tw`
+    text-2xl
+    text-gray-400
+    mr-2
+  `}
 `;
