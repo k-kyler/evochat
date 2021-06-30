@@ -10,7 +10,10 @@ const UserSection: FC = () => {
   return (
     <UserSectionContainer>
       <UserInfo>
-        <img src={String(user?.photoURL)} />
+        <AvatarContainer>
+          <img src={String(user?.photoURL)} />
+          <OnlineStatus />
+        </AvatarContainer>
         <Content>{user?.displayName}</Content>
       </UserInfo>
       <Icon>
@@ -39,11 +42,53 @@ const UserInfo = styled.div`
     flex
     items-center
   `}
+`;
+
+const AvatarContainer = styled.div`
+  ${tw`
+    relative
+  `}
 
   img {
     height: 2rem;
-    margin-right: 0.5rem;
     border-radius: 50px;
+  }
+`;
+
+const OnlineStatus = styled.div`
+  ${tw`
+    rounded-full
+    absolute
+    bottom-0
+    right-0
+  `}
+
+  width: 0.6rem;
+  height: 0.6rem;
+  background-color: #63dd1d;
+
+  &::after {
+    ${tw`
+      h-full
+      w-full
+      absolute
+      rounded-full
+    `}
+
+    content: '';
+    border: 1px solid #63dd1d;
+    animation: ripple 1.2s infinite ease-in-out;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0.8);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2.4);
+      opacity: 0;
+    }
   }
 `;
 
@@ -53,6 +98,7 @@ const Content = styled.p`
     overflow-ellipsis
     whitespace-nowrap
     overflow-x-hidden
+    ml-2
   `}
 
   width: 10em;

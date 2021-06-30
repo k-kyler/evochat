@@ -58,6 +58,6 @@ const ChosenOptionContainer = styled.div`
   }
 
   /* Firefox */
-  scrollbar-width: 0.47rem;
+  scrollbar-width: auto;
   scrollbar-color: #6b7280 #2f3136;
 `;
