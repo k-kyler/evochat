@@ -9,6 +9,8 @@ import ListOptions from "../../components/ListOptions";
 import ChosenOption from "../../components/ChosenOption";
 import UserSection from "../../components/UserSection";
 import OptionHeader from "../../components/OptionHeader";
+import ChatAreaHeader from "../../components/ChatAreaHeader";
+import Messages from "../../components/Messages";
 import { db } from "../../firebase";
 
 interface IChatProps {
@@ -59,7 +61,10 @@ const Chat: FC<IChatProps> = ({ location }) => {
         <UserSection />
       </CurrentOptionContainer>
 
-      <ChatAreaContainer>Chat area</ChatAreaContainer>
+      <ChatAreaContainer>
+        <ChatAreaHeader />
+        <Messages />
+      </ChatAreaContainer>
     </ChatContainer>
   );
 };
@@ -88,6 +93,8 @@ const CurrentOptionContainer = styled.div`
 const ChatAreaContainer = styled.div`
   ${tw`
     text-white
+    flex
+    flex-col
   `}
 
   background-color: #36393f;

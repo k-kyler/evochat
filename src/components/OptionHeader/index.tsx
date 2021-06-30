@@ -55,7 +55,7 @@ const Icon = styled.span`
   ${tw`
     p-1
     cursor-pointer
-    text-base
+    text-lg
     text-gray-400
     transition-all
     duration-300
