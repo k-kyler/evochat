@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { FaComment, FaCommentSlash, FaListUl, FaUpload } from "react-icons/fa";
+import { FiVolume2, FiVolumeX, FiUsers, FiGrid } from "react-icons/fi";
 import { db } from "../../firebase";
 
 const ChatAreaHeader: FC = () => {
@@ -14,13 +14,13 @@ const ChatAreaHeader: FC = () => {
 
       <Icons>
         <Icon>
-          <FaComment />
+          <FiVolume2 />
         </Icon>
         <Icon>
-          <FaListUl />
+          <FiUsers />
         </Icon>
         <Icon>
-          <FaUpload />
+          <FiGrid />
         </Icon>
       </Icons>
     </ChatAreaHeaderContainer>
