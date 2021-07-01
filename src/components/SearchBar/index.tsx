@@ -2,7 +2,7 @@ import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { useRooms } from "../../contexts/RoomsContext";
-import { useOption } from "../../contexts/OptionContext";
+// import { useOption } from "../../contexts/OptionContext";
 import { RoomType } from "../../typings/RoomType";
 
 const SearchBar: FC = () => {
@@ -10,16 +10,16 @@ const SearchBar: FC = () => {
   const [tempRooms, setTempRooms] = useState<RoomType[]>();
 
   const { rooms, setRooms } = useRooms();
-  const { option } = useOption();
+  // const { option } = useOption();
 
   const searchHandler = () => {
-    if (option === "rooms") {
-      const res = rooms?.filter((room) =>
-        room.name.trim().toLowerCase().includes(input.trim().toLowerCase())
-      );
+    // if (option === "rooms") {
+    const res = rooms?.filter((room) =>
+      room.name.trim().toLowerCase().includes(input.trim().toLowerCase())
+    );
 
-      setRooms(res);
-    }
+    setRooms(res);
+    // }
   };
 
   const inputHandler = () => {
@@ -46,7 +46,7 @@ const SearchBar: FC = () => {
         autoComplete="off"
         spellCheck="false"
         type="text"
-        placeholder={`Search ${option}...`}
+        placeholder={`Search...`}
         value={input}
         onChange={(event) => setInput(event.target.value)}
       />
@@ -67,7 +67,7 @@ const Input = styled.input`
   ${tw`
     w-full
     h-4
-    text-base
+    text-sm
     outline-none
     border-none
   `}
