@@ -2,23 +2,41 @@ import { FC } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
-import { useOption } from "../../contexts/OptionContext";
 
-interface IRoundedObject extends RoundedObjectType {}
+interface IRoundedObject extends RoundedObjectType {
+  chosenRoomId?: string;
+}
 
-const RoundedObject: FC<IRoundedObject> = ({ content, icon, clickHandler }) => {
-  const { option } = useOption();
-
-  if (option === content.toLowerCase())
+const RoundedObject: FC<IRoundedObject> = ({
+  id,
+  content,
+  icon,
+  type,
+  clickHandler,
+  chosenRoomId,
+}) => {
+  if (id === chosenRoomId)
     return (
-      <RoundedObjectContainer active onClick={clickHandler && clickHandler}>
-        <Icon>{icon}</Icon>
+      <RoundedObjectContainer
+        active
+        type={type}
+        onClick={clickHandler && clickHandler}
+      >
+        {type === "room" ? (
+          <Text>{content[0].toUpperCase()}</Text>
+        ) : (
+          <Icon>{icon}</Icon>
+        )}
         <Tooltip>{content}</Tooltip>
       </RoundedObjectContainer>
     );
   return (
-    <RoundedObjectContainer onClick={clickHandler && clickHandler}>
-      <Icon>{icon}</Icon>
+    <RoundedObjectContainer type={type} onClick={clickHandler && clickHandler}>
+      {type === "room" ? (
+        <Text>{content[0].toUpperCase()}</Text>
+      ) : (
+        <Icon>{icon}</Icon>
+      )}
       <Tooltip>{content}</Tooltip>
     </RoundedObjectContainer>
   );
@@ -26,7 +44,7 @@ const RoundedObject: FC<IRoundedObject> = ({ content, icon, clickHandler }) => {
 
 export default RoundedObject;
 
-const RoundedObjectContainer = styled.div<{ active?: boolean }>`
+const RoundedObjectContainer = styled.div<{ active?: boolean; type?: string }>`
   ${tw`
     p-3
     mb-3
@@ -41,6 +59,10 @@ const RoundedObjectContainer = styled.div<{ active?: boolean }>`
 
   border-radius: 50px;
   background-color: #36393f;
+
+  span:nth-child(1) {
+    color: #3ba55d;
+  }
 
   &:hover {
     background-color: #3ba55d;
@@ -58,29 +80,41 @@ const RoundedObjectContainer = styled.div<{ active?: boolean }>`
     }
   }
 
-  ${({ active }) =>
-    active &&
-    css`
-      background-color: #3ba55d;
-      border-radius: 12px;
+  ${({ type }) =>
+    type === "room" &&
+    tw`
+    hover:bg-blue-500
+  `}
 
-      span:nth-child(1) {
-        color: white;
-      }
+  ${({ active, type }) =>
+    active &&
+    type === "room" &&
+    css`
+      ${tw`bg-blue-500`}
+
+      border-radius: 12px;
     `}
 `;
 
 const Icon = styled.span`
   ${tw`
     text-xl
-    text-white
   `}
+`;
+
+const Text = styled.p`
+  ${tw`
+    text-sm
+    text-center
+  `}
+
+  width: 1.25rem;
+  height: 1.25rem;
 `;
 
 const Tooltip = styled.span`
   ${tw`
     absolute
-    bg-black
     text-center
     text-sm
     rounded-md
@@ -88,9 +122,10 @@ const Tooltip = styled.span`
     p-2
   `}
 
+  background-color: rgba(0, 0, 0, 0.95);
   width: max-content;
   z-index: 1;
-  left: 135%;
+  left: 140%;
 
   &::after {
     ${tw`

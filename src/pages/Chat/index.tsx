@@ -3,13 +3,11 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import queryString from "query-string";
 import { useAuth } from "../../contexts/AuthContext";
-import { useOption } from "../../contexts/OptionContext";
 import { useRooms } from "../../contexts/RoomsContext";
-import ListOptions from "../../components/ListOptions";
-import ChosenOption from "../../components/ChosenOption";
+import FeaturesList from "../../components/FeaturesList";
+import OptionsList from "../../components/OptionsList";
 import UserSection from "../../components/UserSection";
-import OptionHeader from "../../components/OptionHeader";
-import ChatAreaHeader from "../../components/ChatAreaHeader";
+import RoomHeader from "../../components/RoomHeader";
 import Messages from "../../components/Messages";
 import { db } from "../../firebase";
 
@@ -21,10 +19,9 @@ interface IChatProps {
 
 const Chat: FC<IChatProps> = ({ location }) => {
   const { user } = useAuth();
-  const { setOption } = useOption();
   const { setRooms } = useRooms();
 
-  const { opt, id } = queryString.parse(location.search);
+  const { id } = queryString.parse(location.search);
 
   const getRooms = () => {
     db.collection("rooms")
@@ -44,26 +41,20 @@ const Chat: FC<IChatProps> = ({ location }) => {
   };
 
   useEffect(() => {
-    setOption("rooms");
-    if (opt) setOption(opt);
-  }, [location.search]);
-
-  useEffect(() => {
     getRooms();
   }, []);
 
   return (
     <ChatContainer>
-      <ListOptions />
+      <FeaturesList />
 
-      <CurrentOptionContainer>
-        <OptionHeader />
-        <ChosenOption />
+      <RoomOptionContainer>
+        <RoomHeader id={id} />
+        <OptionsList />
         <UserSection />
-      </CurrentOptionContainer>
+      </RoomOptionContainer>
 
       <ChatAreaContainer>
-        <ChatAreaHeader id={id} />
         <Messages />
       </ChatAreaContainer>
     </ChatContainer>
@@ -80,7 +71,7 @@ const ChatContainer = styled.div`
   `}
 `;
 
-const CurrentOptionContainer = styled.div`
+const RoomOptionContainer = styled.div`
   ${tw`
     text-white
     flex
