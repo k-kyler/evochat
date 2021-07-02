@@ -1,5 +1,5 @@
 export type RoundedObjectType = {
-  id?: string;
+  id: string;
   content: string;
   icon?: any;
   type?: string;
