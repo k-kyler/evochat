@@ -1,31 +1,17 @@
-import { FC, useState, useEffect } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { FaAngleDown } from "react-icons/fa";
-import { useRooms } from "../../contexts/RoomsContext";
-import { QueryType } from "../../typings/QueryType";
 import { RoomType } from "../../typings/RoomType";
 
-interface IRoomHeaderProps extends QueryType {}
+interface IRoomHeader {
+  selectedRoom?: RoomType;
+}
 
-const RoomHeader: FC<IRoomHeaderProps> = ({ id }) => {
-  const [roomInfo, setRoomInfo] = useState<RoomType>();
-
-  const { rooms } = useRooms();
-
-  const getRoomHandler = () => {
-    const room = rooms?.filter((r) => r.id === id)[0];
-
-    setRoomInfo(room);
-  };
-
-  useEffect(() => {
-    if (rooms?.length) getRoomHandler();
-  }, [rooms, id]);
-
+const RoomHeader: FC<IRoomHeader> = ({ selectedRoom }) => {
   return (
     <RoomHeaderContainer>
-      <RoomName>{roomInfo?.name}</RoomName>
+      <RoomName>{selectedRoom?.name}</RoomName>
       <Icon>
         <FaAngleDown />
       </Icon>

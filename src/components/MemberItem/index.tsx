@@ -1,63 +1,45 @@
 import { FC } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
-// import { BiMessageDots } from "react-icons/bi";
-// import { IoIosSettings, IoMdPersonAdd } from "react-icons/io";
+import { FaUser } from "react-icons/fa";
+import { IoIosSettings } from "react-icons/io";
 
-interface IMemberItemProps {}
+interface IMemberItemProps {
+  name: string;
+  avatar: string;
+  active: boolean;
+  clickHandler?: () => void;
+}
 
-const MemberItem: FC<IMemberItemProps> = () => {
-  // if (id === chosenRoomId)
-  //   return (
-  //     <RoomItemContainer active onClick={clickHandler && clickHandler}>
-  //       <TitleContainer>
-  //         <Icon>
-  //           <BiMessageDots />
-  //         </Icon>
+const MemberItem: FC<IMemberItemProps> = ({
+  name,
+  avatar,
+  active,
+  clickHandler,
+}) => {
+  return (
+    <MemberItemContainer onClick={clickHandler && clickHandler}>
+      <InfoContainer>
+        <Icon>
+          <FaUser />
+        </Icon>
 
-  //         <Content>{name}</Content>
-  //       </TitleContainer>
+        <Content>{name}</Content>
+      </InfoContainer>
 
-  //       <SmallIcons active>
-  //         <SmallIcon>
-  //           <IoMdPersonAdd />
-  //         </SmallIcon>
-  //         <SmallIcon>
-  //           <IoIosSettings />
-  //         </SmallIcon>
-  //       </SmallIcons>
-  //     </RoomItemContainer>
-  //   );
-  // return (
-  //   <RoomItemContainer onClick={clickHandler && clickHandler}>
-  //     <TitleContainer>
-  //       <Icon>
-  //         <BiMessageDots />
-  //       </Icon>
-
-  //       <Content>{name}</Content>
-  //     </TitleContainer>
-
-  //     <SmallIcons>
-  //       <SmallIcon>
-  //         <IoMdPersonAdd />
-  //       </SmallIcon>
-  //       <SmallIcon>
-  //         <IoIosSettings />
-  //       </SmallIcon>
-  //     </SmallIcons>
-  //   </RoomItemContainer>
-  // );
-
-  return <></>;
+      <SmallIcons>
+        <SmallIcon>
+          <IoIosSettings />
+        </SmallIcon>
+      </SmallIcons>
+    </MemberItemContainer>
+  );
 };
 
 export default MemberItem;
 
-const RoomItemContainer = styled.div<{ active?: boolean }>`
+const MemberItemContainer = styled.div`
   ${tw`
-    p-2
-    mb-2
     rounded
     flex
     items-center
@@ -66,6 +48,7 @@ const RoomItemContainer = styled.div<{ active?: boolean }>`
     duration-300
     ease-in-out
     cursor-pointer
+    p-2
   `}
 
   &:hover {
@@ -75,19 +58,9 @@ const RoomItemContainer = styled.div<{ active?: boolean }>`
       display: block;
     }
   }
-
-  ${({ active }) =>
-    active &&
-    css`
-      background-color: rgb(57, 60, 66);
-
-      &:hover {
-        background-color: rgb(57, 60, 66);
-      }
-    `}
 `;
 
-const TitleContainer = styled.div`
+const InfoContainer = styled.div`
   ${tw`
     flex
     items-center
@@ -96,7 +69,7 @@ const TitleContainer = styled.div`
 
 const Icon = styled.span`
   ${tw`
-    text-lg
+    text-sm
     text-gray-400
     rounded-full
     bg-gray-600
@@ -128,10 +101,6 @@ const SmallIcons = styled.div<{ active?: boolean }>`
     flex
     items-center
   `}
-
-  span:nth-child(1) {
-    margin-right: 0.5rem;
-  }
 
   ${({ active }) =>
     !active &&

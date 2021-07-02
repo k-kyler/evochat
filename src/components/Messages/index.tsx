@@ -1,8 +1,13 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
+import { RoomType } from "../../typings/RoomType";
 
-const Messages: FC = () => {
+interface IMessagesProps {
+  selectedRoom?: RoomType;
+}
+
+const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   return <div></div>;
 };
 

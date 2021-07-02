@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import queryString from "query-string";
@@ -9,6 +9,7 @@ import OptionsList from "../../components/OptionsList";
 import UserSection from "../../components/UserSection";
 import RoomHeader from "../../components/RoomHeader";
 import Messages from "../../components/Messages";
+import { RoomType } from "../../typings/RoomType";
 import { db } from "../../firebase";
 
 interface IChatProps {
@@ -18,12 +19,14 @@ interface IChatProps {
 }
 
 const Chat: FC<IChatProps> = ({ location }) => {
+  const [selectedRoom, setSelectedRoom] = useState<RoomType>();
+
   const { user } = useAuth();
-  const { setRooms } = useRooms();
+  const { rooms, setRooms } = useRooms();
 
   const { id } = queryString.parse(location.search);
 
-  const getRooms = () => {
+  const getRoomsHandler = () => {
     db.collection("rooms")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
@@ -40,22 +43,32 @@ const Chat: FC<IChatProps> = ({ location }) => {
       });
   };
 
+  const getSelectedRoomHandler = () => {
+    const room = rooms?.filter((r) => r.id === id)[0];
+
+    setSelectedRoom(room);
+  };
+
   useEffect(() => {
-    getRooms();
+    getRoomsHandler();
   }, []);
+
+  useEffect(() => {
+    if (rooms?.length) getSelectedRoomHandler();
+  }, [rooms, id]);
 
   return (
     <ChatContainer>
       <FeaturesList />
 
       <RoomOptionContainer>
-        <RoomHeader id={id} />
-        <OptionsList />
+        <RoomHeader selectedRoom={selectedRoom} />
+        <OptionsList selectedRoom={selectedRoom} />
         <UserSection />
       </RoomOptionContainer>
 
       <ChatAreaContainer>
-        <Messages />
+        <Messages selectedRoom={selectedRoom} />
       </ChatAreaContainer>
     </ChatContainer>
   );
