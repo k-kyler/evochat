@@ -6,28 +6,31 @@ import NavBar from "../../components/NavBar";
 import Group from "../../components/Group";
 import Footer from "../../components/Footer";
 import { GroupType } from "../../typings/GroupType";
-
 import AboutImage from "../../assets/about.svg";
 import ServicesImage from "../../assets/services.svg";
 import ContactImage from "../../assets/contact.svg";
+import { nanoid } from "nanoid";
 
 const groupData: GroupType[] = [
   {
-    id: "about",
+    id: nanoid(),
+    htmlId: "about",
     image: AboutImage,
     title: "About",
     content:
       "Evochat is an open-source project created by kkyler (Quang Khai) that provides a realtime platform for users to communicate in realtime using features of Firebase and React.js",
   },
   {
-    id: "services",
+    id: nanoid(),
+    htmlId: "services",
     image: ServicesImage,
     title: "Services",
     content:
       "Evochat provides a realtime communication between connecting users, you can send message or upload image and video to other users rapidly",
   },
   {
-    id: "contact",
+    id: nanoid(),
+    htmlId: "contact",
     image: ContactImage,
     title: "Contact",
     content:

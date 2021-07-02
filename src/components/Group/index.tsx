@@ -6,16 +6,16 @@ import { GroupType } from "../../typings/GroupType";
 
 interface IGroupProps extends GroupType {}
 
-const Group: FC<IGroupProps> = ({ id, image, title, content }) => {
+const Group: FC<IGroupProps> = ({ id, htmlId, image, title, content }) => {
   return (
-    <GroupContainer id={`${id}`}>
+    <GroupContainer id={`${htmlId}`}>
       <ImageContainer>
         <img src={image} />
       </ImageContainer>
 
       <DescriptionContainer>
         <DescriptionTitle>{title}</DescriptionTitle>
-        {id === "contact" ? (
+        {htmlId === "contact" ? (
           <DescriptionContent>
             {content}{" "}
             <a href="mailto:khaiquang690@gmail.com">khaiquang690@gmail.com</a>

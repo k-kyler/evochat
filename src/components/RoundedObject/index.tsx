@@ -23,7 +23,10 @@ const RoundedObject: FC<IRoundedObject> = ({
         onClick={clickHandler && clickHandler}
       >
         {type === "room" ? (
-          <Text>{content[0].toUpperCase()}</Text>
+          <>
+            <AdditionalActiveObject />
+            <Text>{content[0].toUpperCase()}</Text>
+          </>
         ) : (
           <Icon>{icon}</Icon>
         )}
@@ -33,7 +36,10 @@ const RoundedObject: FC<IRoundedObject> = ({
   return (
     <RoundedObjectContainer type={type} onClick={clickHandler && clickHandler}>
       {type === "room" ? (
-        <Text>{content[0].toUpperCase()}</Text>
+        <>
+          <AdditionalActiveObject />
+          <Text>{content[0].toUpperCase()}</Text>
+        </>
       ) : (
         <Icon>{icon}</Icon>
       )}
@@ -52,7 +58,6 @@ const RoundedObjectContainer = styled.div<{ active?: boolean; type?: string }>`
     transition-all
     duration-300
     ease-in-out
-    relative
     flex
     items-center
   `}
@@ -72,19 +77,20 @@ const RoundedObjectContainer = styled.div<{ active?: boolean; type?: string }>`
       color: white;
     }
 
-    span:nth-child(2) {
+    span:nth-child(2),
+    span:nth-child(3) {
       ${tw`
         visible
         text-gray-300
       `}
     }
+
+    div:nth-child(1) {
+      ${tw`visible`}
+    }
   }
 
-  ${({ type }) =>
-    type === "room" &&
-    tw`
-    hover:bg-blue-500
-  `}
+  ${({ type }) => type === "room" && tw`hover:bg-blue-500`}
 
   ${({ active, type }) =>
     active &&
@@ -93,6 +99,17 @@ const RoundedObjectContainer = styled.div<{ active?: boolean; type?: string }>`
       ${tw`bg-blue-500`}
 
       border-radius: 12px;
+
+      div:nth-child(1) {
+        ${tw`
+          visible
+          transition-all
+          duration-300
+          ease-in-out
+        `}
+
+        height: 2.4rem;
+      }
     `}
 `;
 
@@ -112,6 +129,20 @@ const Text = styled.p`
   height: 1.25rem;
 `;
 
+const AdditionalActiveObject = styled.div`
+  ${tw`
+    absolute
+    left-0
+    bg-white
+    rounded-tr-md
+    rounded-br-md
+    invisible
+  `}
+
+  width: 0.25rem;
+  height: 1.2rem;
+`;
+
 const Tooltip = styled.span`
   ${tw`
     absolute
@@ -125,7 +156,7 @@ const Tooltip = styled.span`
   background-color: rgba(0, 0, 0, 0.95);
   width: max-content;
   z-index: 1;
-  left: 140%;
+  left: 105%;
 
   &::after {
     ${tw`

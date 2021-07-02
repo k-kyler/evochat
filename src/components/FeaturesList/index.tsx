@@ -4,9 +4,10 @@ import RoundedObject from "../RoundedObject";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { FaPlus, FaSignInAlt } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
 import { useRooms } from "../../contexts/RoomsContext";
+import { nanoid } from "nanoid";
 
 const FeaturesList: FC = () => {
   const [chosenRoomId, setChosenRoomId] = useState("");
@@ -30,11 +31,13 @@ const FeaturesList: FC = () => {
 
   const options: RoundedObjectType[] = [
     {
+      id: nanoid(),
       content: "Find room",
-      icon: <FaSignInAlt />,
+      icon: <FaSearch />,
       clickHandler: openFindRoomModal,
     },
     {
+      id: nanoid(),
       content: "Create new room",
       icon: <FaPlus />,
       clickHandler: openCreateNewRoomModal,
@@ -50,24 +53,26 @@ const FeaturesList: FC = () => {
 
   return (
     <FeaturesListContainer>
-      <img src={Logo} onClick={getBackToHome} />
+      <InnerContainer>
+        <img src={Logo} onClick={getBackToHome} />
 
-      <LineBreak />
+        <LineBreak />
 
-      {rooms?.map((room) => (
-        <RoundedObject
-          key={room.id}
-          id={room.id}
-          content={room.name}
-          type="room"
-          chosenRoomId={chosenRoomId}
-          clickHandler={() => switchRoomHandler(room.id)}
-        />
-      ))}
+        {rooms?.map((room) => (
+          <RoundedObject
+            key={room.id}
+            id={room.id}
+            content={room.name}
+            type="room"
+            chosenRoomId={chosenRoomId}
+            clickHandler={() => switchRoomHandler(room.id)}
+          />
+        ))}
 
-      {options.map((option) => (
-        <RoundedObject key={option.content} {...option} />
-      ))}
+        {options.map((option) => (
+          <RoundedObject key={option.id} {...option} />
+        ))}
+      </InnerContainer>
     </FeaturesListContainer>
   );
 };
@@ -78,9 +83,7 @@ const FeaturesListContainer = styled.div`
   ${tw`
   text-white
     p-3
-    flex
-    flex-col
-    items-center
+    relative
   `}
 
   background-color: #202225;
@@ -89,6 +92,23 @@ const FeaturesListContainer = styled.div`
     height: 3rem;
     cursor: pointer;
   }
+`;
+
+const InnerContainer = styled.div`
+  ${tw`
+    flex
+    flex-col
+    items-center
+    overflow-y-auto
+  `}
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 0rem;
+  }
+
+  /* Firefox */
+  scrollbar-width: none;
 `;
 
 const LineBreak = styled.div`
