@@ -16,10 +16,7 @@ const Group: FC<IGroupProps> = ({ id, htmlId, image, title, content }) => {
       <DescriptionContainer>
         <DescriptionTitle>{title}</DescriptionTitle>
         {htmlId === "contact" ? (
-          <DescriptionContent>
-            {content}{" "}
-            <a href="mailto:khaiquang690@gmail.com">khaiquang690@gmail.com</a>
-          </DescriptionContent>
+          <DescriptionContent dangerouslySetInnerHTML={{ __html: content }} />
         ) : (
           <DescriptionContent>{content}</DescriptionContent>
         )}

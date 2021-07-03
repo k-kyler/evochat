@@ -26,7 +26,7 @@ const groupData: GroupType[] = [
     image: ServicesImage,
     title: "Services",
     content:
-      "Evochat provides a realtime communication between connecting users, you can send message or upload image and video to other users rapidly",
+      "Evochat provides a realtime communication between connecting users, you can send message or share your images and videos to other users rapidly",
   },
   {
     id: nanoid(),
@@ -34,7 +34,7 @@ const groupData: GroupType[] = [
     image: ContactImage,
     title: "Contact",
     content:
-      "I'm kkyler (Quang Khai), please contact with me if there are any issues through my email",
+      "I'm kkyler (Quang Khai), please contact with me if there are any issues through my email <a href='mailto:khaiquang690@gmail.com'>khaiquang690@gmail.com</a>",
   },
 ];
 
