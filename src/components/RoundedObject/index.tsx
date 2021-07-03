@@ -2,6 +2,7 @@ import { FC } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
+import Tooltip from "../Tooltip";
 
 interface IRoundedObject extends RoundedObjectType {
   selectedRoomId?: string;
@@ -27,14 +28,11 @@ const RoundedObject: FC<IRoundedObject> = ({
       >
         {type === "room" ? (
           <>
-            <AdditionalActiveObject />
+            <AdditionalActive />
 
             {/* Display room background if it's existed else display first letter of room name */}
             {background ? (
-              <img
-                src={background}
-                alt={`${(<Text>{content[0].toUpperCase()}</Text>)}`}
-              />
+              <img src={background} />
             ) : (
               <Text>{content[0].toUpperCase()}</Text>
             )}
@@ -42,7 +40,8 @@ const RoundedObject: FC<IRoundedObject> = ({
         ) : (
           <Icon>{icon}</Icon>
         )}
-        <Tooltip>{content}</Tooltip>
+
+        <Tooltip left={105} content={content} arrow="left" />
       </RoundedObjectContainer>
     );
   return (
@@ -53,14 +52,11 @@ const RoundedObject: FC<IRoundedObject> = ({
     >
       {type === "room" ? (
         <>
-          <AdditionalActiveObject />
+          <AdditionalActive />
 
           {/* Display room background if it's existed else display first letter of room name */}
           {background ? (
-            <img
-              src={background}
-              alt={`${(<Text>{content[0].toUpperCase()}</Text>)}`}
-            />
+            <img src={background} />
           ) : (
             <Text>{content[0].toUpperCase()}</Text>
           )}
@@ -68,7 +64,8 @@ const RoundedObject: FC<IRoundedObject> = ({
       ) : (
         <Icon>{icon}</Icon>
       )}
-      <Tooltip>{content}</Tooltip>
+
+      <Tooltip left={105} content={content} arrow="left" />
     </RoundedObjectContainer>
   );
 };
@@ -94,6 +91,12 @@ const RoundedObjectContainer = styled.div<{
   background-color: #36393f;
 
   img {
+    ${tw`
+      transition-all
+      duration-300
+      ease-in-out
+    `}
+
     height: 2.75rem;
     width: 2.75rem;
     border-radius: 50px;
@@ -109,12 +112,7 @@ const RoundedObjectContainer = styled.div<{
     background-color: #3ba55d;
 
     img {
-      ${tw`
-        transition-all
-        duration-300
-        ease-in-out
-        rounded-xl
-      `}
+      ${tw`rounded-xl`}
     }
 
     span:nth-child(1) {
@@ -134,25 +132,16 @@ const RoundedObjectContainer = styled.div<{
     }
   }
 
-  &:not(:hover) {
-    img {
-      ${tw`
-        transition-all
-        duration-300
-        ease-in-out
-      `}
-    }
-  }
-
   ${({ background }) => !background && tw`p-3`}
 
   ${({ type }) => type === "room" && tw`hover:bg-blue-500`}
 
-  ${({ active, type }) =>
+  ${({ active, type, background }) =>
     active &&
     type === "room" &&
     css`
-      ${tw`
+      ${!background &&
+      tw`
         bg-blue-500
         rounded-xl
       `}
@@ -195,7 +184,7 @@ const Text = styled.p`
   height: 1.25rem;
 `;
 
-const AdditionalActiveObject = styled.div`
+const AdditionalActive = styled.div`
   ${tw`
     absolute
     left-0
@@ -207,34 +196,4 @@ const AdditionalActiveObject = styled.div`
 
   width: 0.25rem;
   height: 1.2rem;
-`;
-
-const Tooltip = styled.span`
-  ${tw`
-    absolute
-    text-center
-    text-sm
-    rounded-md
-    invisible
-    p-2
-  `}
-
-  background-color: rgba(0, 0, 0, 0.95);
-  width: max-content;
-  z-index: 1;
-  left: 105%;
-
-  &::after {
-    ${tw`
-      absolute
-      right-full
-      top-2/4
-    `}
-
-    content: "";
-    margin-top: -7px;
-    border-width: 7px;
-    border-style: solid;
-    border-color: transparent black transparent transparent;
-  }
 `;
