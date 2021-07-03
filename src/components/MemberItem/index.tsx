@@ -24,7 +24,7 @@ const MemberItem: FC<IMemberItemProps> = ({
           <FaUser />
         </Icon>
 
-        <Content>{name}</Content>
+        <Content title={name}>{name}</Content>
       </InfoContainer>
 
       <SmallIcons>

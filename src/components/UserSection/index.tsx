@@ -15,7 +15,7 @@ const UserSection: FC = () => {
           <img src={String(user?.photoURL)} />
           <OnlineStatus />
         </AvatarContainer>
-        <Content>{user?.displayName}</Content>
+        <Content title={`${user?.displayName}`}>{user?.displayName}</Content>
       </UserInfo>
 
       <Icon>

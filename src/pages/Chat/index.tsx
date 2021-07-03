@@ -32,12 +32,13 @@ const Chat: FC<IChatProps> = ({ location }) => {
       .onSnapshot((snapshot) => {
         setRooms(
           snapshot.docs.map((doc) => {
-            if (user?.uid === doc.data().uid)
+            if (user?.uid === doc.data().oid) {
               return {
                 id: doc.id,
                 name: doc.data().name,
                 background: doc.data().background,
               };
+            }
           })
         );
       });
@@ -49,8 +50,26 @@ const Chat: FC<IChatProps> = ({ location }) => {
     setSelectedRoom(room);
   };
 
+  const checkUserHandler = () => {
+    db.collection("users").onSnapshot((snapshot) => {
+      const existedUser = snapshot.docs.filter(
+        (doc) => doc.data().uid === user?.uid
+      );
+
+      if (!existedUser.length) {
+        db.collection("users").add({
+          uid: user?.uid,
+          avatar: user?.photoURL,
+          email: user?.email,
+          username: user?.displayName,
+        });
+      }
+    });
+  };
+
   useEffect(() => {
     getRoomsHandler();
+    checkUserHandler();
   }, []);
 
   useEffect(() => {
