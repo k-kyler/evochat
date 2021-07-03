@@ -4,28 +4,40 @@ import tw from "twin.macro";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
 
 interface IRoundedObject extends RoundedObjectType {
-  chosenRoomId?: string;
+  selectedRoomId?: string;
 }
 
 const RoundedObject: FC<IRoundedObject> = ({
   id,
   content,
   icon,
+  background,
   type,
   clickHandler,
-  chosenRoomId,
+  selectedRoomId,
 }) => {
-  if (id === chosenRoomId)
+  // Set active styles if room is selected
+  if (id === selectedRoomId)
     return (
       <RoundedObjectContainer
         active
+        background={background}
         type={type}
         onClick={clickHandler && clickHandler}
       >
         {type === "room" ? (
           <>
             <AdditionalActiveObject />
-            <Text>{content[0].toUpperCase()}</Text>
+
+            {/* Display room background if it's existed else display first letter of room name */}
+            {background ? (
+              <img
+                src={background}
+                alt={`${(<Text>{content[0].toUpperCase()}</Text>)}`}
+              />
+            ) : (
+              <Text>{content[0].toUpperCase()}</Text>
+            )}
           </>
         ) : (
           <Icon>{icon}</Icon>
@@ -34,11 +46,24 @@ const RoundedObject: FC<IRoundedObject> = ({
       </RoundedObjectContainer>
     );
   return (
-    <RoundedObjectContainer type={type} onClick={clickHandler && clickHandler}>
+    <RoundedObjectContainer
+      background={background}
+      type={type}
+      onClick={clickHandler && clickHandler}
+    >
       {type === "room" ? (
         <>
           <AdditionalActiveObject />
-          <Text>{content[0].toUpperCase()}</Text>
+
+          {/* Display room background if it's existed else display first letter of room name */}
+          {background ? (
+            <img
+              src={background}
+              alt={`${(<Text>{content[0].toUpperCase()}</Text>)}`}
+            />
+          ) : (
+            <Text>{content[0].toUpperCase()}</Text>
+          )}
         </>
       ) : (
         <Icon>{icon}</Icon>
@@ -50,9 +75,12 @@ const RoundedObject: FC<IRoundedObject> = ({
 
 export default RoundedObject;
 
-const RoundedObjectContainer = styled.div<{ active?: boolean; type?: string }>`
+const RoundedObjectContainer = styled.div<{
+  active?: boolean;
+  type?: string;
+  background?: string;
+}>`
   ${tw`
-    p-3
     mb-3
     cursor-pointer
     transition-all
@@ -65,13 +93,29 @@ const RoundedObjectContainer = styled.div<{ active?: boolean; type?: string }>`
   border-radius: 50px;
   background-color: #36393f;
 
+  img {
+    height: 2.75rem;
+    width: 2.75rem;
+    border-radius: 50px;
+  }
+
   span:nth-child(1) {
     color: #3ba55d;
   }
 
   &:hover {
+    ${tw`rounded-xl`}
+
     background-color: #3ba55d;
-    border-radius: 12px;
+
+    img {
+      ${tw`
+        transition-all
+        duration-300
+        ease-in-out
+        rounded-xl
+      `}
+    }
 
     span:nth-child(1) {
       color: white;
@@ -81,7 +125,7 @@ const RoundedObjectContainer = styled.div<{ active?: boolean; type?: string }>`
     span:nth-child(3) {
       ${tw`
         visible
-        text-gray-300
+        text-white
       `}
     }
 
@@ -90,15 +134,37 @@ const RoundedObjectContainer = styled.div<{ active?: boolean; type?: string }>`
     }
   }
 
+  &:not(:hover) {
+    img {
+      ${tw`
+        transition-all
+        duration-300
+        ease-in-out
+      `}
+    }
+  }
+
+  ${({ background }) => !background && tw`p-3`}
+
   ${({ type }) => type === "room" && tw`hover:bg-blue-500`}
 
   ${({ active, type }) =>
     active &&
     type === "room" &&
     css`
-      ${tw`bg-blue-500`}
+      ${tw`
+        bg-blue-500
+        rounded-xl
+      `}
 
-      border-radius: 12px;
+      img {
+        ${tw`
+          transition-all
+          duration-300
+          ease-in-out
+          rounded-xl
+        `}
+      }
 
       div:nth-child(1) {
         ${tw`
