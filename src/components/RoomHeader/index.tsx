@@ -3,6 +3,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { FaAngleDown } from "react-icons/fa";
 import { RoomType } from "../../typings/RoomType";
+import Tooltip from "../Tooltip";
 
 interface IRoomHeader {
   selectedRoom?: RoomType;
@@ -14,6 +15,7 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom }) => {
       <RoomName>{selectedRoom?.name}</RoomName>
       <Icon>
         <FaAngleDown />
+        <Tooltip content="Room setting" arrow="top" />
       </Icon>
     </RoomHeaderContainer>
   );
@@ -50,5 +52,24 @@ const Icon = styled.span`
   ${tw`
     text-base
     text-gray-400
+    relative
   `}
+
+  span {
+    top: 350%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:hover {
+    span {
+      ${tw`
+        visible
+        transition-all
+        duration-300
+        ease-in-out
+        text-white
+      `}
+    }
+  }
 `;
