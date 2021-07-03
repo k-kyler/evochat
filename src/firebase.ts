@@ -1,13 +1,13 @@
 import firebase from "firebase";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCDFGCKL7g5eQbr136j7A2SwbmAQLzD24o",
-  authDomain: "evochat-56ff6.firebaseapp.com",
-  projectId: "evochat-56ff6",
-  storageBucket: "evochat-56ff6.appspot.com",
-  messagingSenderId: "60009989182",
-  appId: "1:60009989182:web:300df2e069090641097d6f",
-  measurementId: "G-EFS0DZ7QRY",
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
