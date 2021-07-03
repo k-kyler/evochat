@@ -3,6 +3,7 @@ import { FaCog } from "react-icons/fa";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { useAuth } from "../../contexts/AuthContext";
+import Tooltip from "../Tooltip";
 
 const UserSection: FC = () => {
   const { user } = useAuth();
@@ -16,8 +17,10 @@ const UserSection: FC = () => {
         </AvatarContainer>
         <Content>{user?.displayName}</Content>
       </UserInfo>
+
       <Icon>
         <FaCog />
+        <Tooltip content="User setting" arrow="bottom" />
       </Icon>
     </UserSectionContainer>
   );
@@ -32,6 +35,7 @@ const UserSectionContainer = styled.div`
     flex
     items-center
     justify-between
+    relative
   `}
 
   background-color: #292b2f;
@@ -114,9 +118,26 @@ const Icon = styled.span`
     duration-300
     ease-in-out
     text-gray-400
+    relative
   `}
+
+  span {
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   &:hover {
     background-color: #2f3136;
+
+    span {
+      ${tw`
+        visible
+        transition-all
+        duration-300
+        ease-in-out
+        text-white
+      `}
+    }
   }
 `;
