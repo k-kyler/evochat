@@ -93,7 +93,7 @@ const Content = styled.p`
     overflow-x-hidden
   `}
 
-  width: 9em;
+  width: 11em;
 `;
 
 const SmallIcons = styled.div<{ active?: boolean }>`

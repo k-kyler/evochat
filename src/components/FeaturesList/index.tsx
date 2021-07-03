@@ -10,7 +10,7 @@ import { useRooms } from "../../contexts/RoomsContext";
 import { nanoid } from "nanoid";
 
 const FeaturesList: FC = () => {
-  const [chosenRoomId, setChosenRoomId] = useState("");
+  const [selectedRoomId, setSelectedRoomId] = useState("");
 
   const history = useHistory();
 
@@ -21,7 +21,7 @@ const FeaturesList: FC = () => {
   };
 
   const switchRoomHandler = (id: string) => {
-    setChosenRoomId(id);
+    setSelectedRoomId(id);
     history.push(`/chat?id=${id}`);
   };
 
@@ -46,7 +46,7 @@ const FeaturesList: FC = () => {
 
   useEffect(() => {
     if (rooms?.length) {
-      setChosenRoomId(rooms[0].id);
+      setSelectedRoomId(rooms[0].id);
       history.push(`/chat?id=${rooms[0].id}`);
     }
   }, [rooms]);
@@ -63,8 +63,9 @@ const FeaturesList: FC = () => {
             key={room.id}
             id={room.id}
             content={room.name}
+            background={room.background}
             type="room"
-            chosenRoomId={chosenRoomId}
+            selectedRoomId={selectedRoomId}
             clickHandler={() => switchRoomHandler(room.id)}
           />
         ))}
