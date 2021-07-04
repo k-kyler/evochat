@@ -24,7 +24,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
-  const { users, setUsers } = useUsers();
+  const { setUsers } = useUsers();
 
   const { id } = queryString.parse(location.search);
 

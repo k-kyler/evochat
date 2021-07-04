@@ -5,6 +5,7 @@ import { FaUser } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
 import { IoIosSettings } from "react-icons/io";
 import { MemberItemType } from "../../typings/MemberItemType";
+import OnlineStatus from "../OnlineStatus";
 
 interface IMemberItemProps extends MemberItemType {}
 
@@ -20,7 +21,10 @@ const MemberItem: FC<IMemberItemProps> = ({
     <MemberItemContainer onClick={clickHandler && clickHandler}>
       <InfoContainer>
         {avatar ? (
-          <img src={avatar} />
+          <AvatarContainer>
+            <img src={avatar} />
+            <OnlineStatus effect="none" />
+          </AvatarContainer>
         ) : (
           <Icon>
             <FaUser />
@@ -80,6 +84,10 @@ const InfoContainer = styled.div`
     width: 2rem;
     height: 2rem;
   }
+`;
+
+const AvatarContainer = styled.div`
+  ${tw`relative`}
 `;
 
 const Icon = styled.span`
