@@ -20,16 +20,18 @@ const SignIn: FC = () => {
           <InnerContainer>
             <img src={WebLogoImage} />
             <SignInTitle>Welcome to Evochat</SignInTitle>
-            <Button
-              theme="facebook"
-              content="Sign in with Facebook"
-              clickHandler={facebookSignInHandler}
-            />
-            <Button
-              theme="google"
-              content="Sign in with Google"
-              clickHandler={googleSignInHandler}
-            />
+            <Buttons>
+              <Button
+                theme="facebook"
+                content="Sign in with Facebook"
+                clickHandler={facebookSignInHandler}
+              />
+              <Button
+                theme="google"
+                content="Sign in with Google"
+                clickHandler={googleSignInHandler}
+              />
+            </Buttons>
             <Link to="/">
               <BackToHomeContainer>
                 <BackToHomeIcon>
@@ -124,5 +126,12 @@ const BackToHomeContent = styled.p`
     duration-300
     ease-in-out
     2xl:text-base
+  `}
+`;
+
+const Buttons = styled.div`
+  ${tw`
+    flex
+    flex-col
   `}
 `;

@@ -4,7 +4,6 @@ import { auth, googleAuthProvider, facebookAuthProvider } from "../firebase";
 
 type AuthContextProps = {
   user: firebase.User | null;
-  isLoading: boolean;
   googleSignInHandler: () => void;
   facebookSignInHandler: () => void;
   logOutHandler: () => void;
