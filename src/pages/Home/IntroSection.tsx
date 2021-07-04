@@ -105,9 +105,9 @@ const Description = styled.p`
 
 const BlobContainer = styled.div`
   position: absolute;
-  top: -8em;
+  top: -9em;
   right: -6em;
-  width: 20em;
+  width: 24em;
   height: 10em;
   transform: rotate(-30deg);
   z-index: -1;
@@ -153,10 +153,10 @@ const BlobContainer = styled.div`
 
 const IntroIllustration = styled.div`
   position: absolute;
-  top: -3em;
-  right: -0.5em;
+  top: -3.5em;
+  right: -0.3em;
   width: auto;
-  height: 8em;
+  height: 10em;
 
   img {
     ${tw`

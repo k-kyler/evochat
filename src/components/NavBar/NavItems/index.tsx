@@ -57,13 +57,22 @@ const NavItem = styled.li<{ menu?: any }>`
     md:text-base
     font-medium
     mr-1
-    md:mr-5
+    md:mr-9
     cursor-pointer
     transition
     duration-300
     ease-in-out
-    hover:opacity-80
+    border-b-2
+    hover:border-white
   `}
+
+  border-bottom-color: transparent;
+
+  &:last-child {
+    ${tw`
+      mr-0
+    `}
+  }
 
   a {
     ${tw`

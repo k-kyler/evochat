@@ -37,7 +37,9 @@ const OptionsList: FC<IOptionsListProps> = ({ selectedRoom }) => {
       });
     });
 
-    setRoomMembers([...(owner as any), ...(members as any)]);
+    if (owner?.length && members?.length)
+      setRoomMembers([...owner, ...members]);
+    if (owner?.length && !members?.length) setRoomMembers([...owner]);
   };
 
   useEffect(() => {

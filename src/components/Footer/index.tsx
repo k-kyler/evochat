@@ -116,7 +116,8 @@ const CopyRightContainer = styled.div`
 
 const CopyRightContent = styled.p`
   ${tw`
-    text-sm
     text-gray-400
-  `}
+    text-xs
+    md:text-sm
+`}
 `;

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { useAuth } from "../../contexts/AuthContext";
 import Tooltip from "../Tooltip";
+import OnlineStatus from "../OnlineStatus";
 
 const UserSection: FC = () => {
   const { user } = useAuth();
@@ -13,7 +14,7 @@ const UserSection: FC = () => {
       <UserInfo>
         <AvatarContainer>
           <img src={String(user?.photoURL)} />
-          <OnlineStatus />
+          <OnlineStatus effect="ripple" />
         </AvatarContainer>
         <Content title={`${user?.displayName}`}>{user?.displayName}</Content>
       </UserInfo>
@@ -56,43 +57,6 @@ const AvatarContainer = styled.div`
   img {
     height: 2rem;
     border-radius: 50px;
-  }
-`;
-
-const OnlineStatus = styled.div`
-  ${tw`
-    rounded-full
-    absolute
-    bottom-0
-    right-0
-  `}
-
-  width: 0.6rem;
-  height: 0.6rem;
-  background-color: #3ba55d;
-
-  &::after {
-    ${tw`
-      h-full
-      w-full
-      absolute
-      rounded-full
-    `}
-
-    content: '';
-    border: 1px solid #3ba55d;
-    animation: ripple 1.2s infinite ease-in-out;
-  }
-
-  @keyframes ripple {
-    0% {
-      transform: scale(0.8);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(2.4);
-      opacity: 0;
-    }
   }
 `;
 
