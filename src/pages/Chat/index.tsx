@@ -21,6 +21,7 @@ interface IChatProps {
 
 const Chat: FC<IChatProps> = ({ location }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
+  const [allRooms, setAllRooms] = useState<RoomType[]>([]);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
@@ -28,27 +29,23 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   const { id } = queryString.parse(location.search);
 
-  const getRoomsHandler = () => {
+  const getAllRoomsHandler = () => {
     db.collection("rooms")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        setRooms(
-          snapshot.docs.map((doc) => {
-            if (user?.uid === doc.data().oid) {
-              return {
-                id: doc.id,
-                oid: doc.data().oid,
-                name: doc.data().name,
-                background: doc.data().background,
-                members: doc.data().members,
-              };
-            }
-          })
+        setAllRooms(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            oid: doc.data().oid,
+            name: doc.data().name,
+            background: doc.data().background,
+            members: doc.data().members,
+          }))
         );
       });
   };
 
-  const getUsersHandler = () => {
+  const getAllUsersHandler = () => {
     db.collection("users").onSnapshot((snapshot) => {
       setUsers(
         snapshot.docs.map((doc) => ({
@@ -84,11 +81,24 @@ const Chat: FC<IChatProps> = ({ location }) => {
     });
   };
 
+  const setJoinedRooms = () => {
+    const joinedRooms = allRooms?.filter(
+      (room) =>
+        room.oid === user?.uid || room.members?.includes(user?.uid as any)
+    );
+
+    if (joinedRooms?.length) setRooms(joinedRooms);
+  };
+
   useEffect(() => {
-    getRoomsHandler();
-    getUsersHandler();
+    getAllRoomsHandler();
+    getAllUsersHandler();
     checkUserHandler();
   }, []);
+
+  useEffect(() => {
+    if (allRooms.length) setJoinedRooms();
+  }, [allRooms]);
 
   useEffect(() => {
     if (rooms?.length) getSelectedRoomHandler();

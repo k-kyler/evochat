@@ -1,5 +1,5 @@
 type RoomMembers = {
-  uid: string;
+  uid?: string;
 };
 
 export type RoomType = {
