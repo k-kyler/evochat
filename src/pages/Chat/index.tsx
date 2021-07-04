@@ -4,6 +4,7 @@ import tw from "twin.macro";
 import queryString from "query-string";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRooms } from "../../contexts/RoomsContext";
+import { useUsers } from "../../contexts/UsersContext";
 import FeaturesList from "../../components/FeaturesList";
 import OptionsList from "../../components/OptionsList";
 import UserSection from "../../components/UserSection";
@@ -23,6 +24,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
+  const { users, setUsers } = useUsers();
 
   const { id } = queryString.parse(location.search);
 
@@ -35,13 +37,28 @@ const Chat: FC<IChatProps> = ({ location }) => {
             if (user?.uid === doc.data().oid) {
               return {
                 id: doc.id,
+                oid: doc.data().oid,
                 name: doc.data().name,
                 background: doc.data().background,
+                members: doc.data().members,
               };
             }
           })
         );
       });
+  };
+
+  const getUsersHandler = () => {
+    db.collection("users").onSnapshot((snapshot) => {
+      setUsers(
+        snapshot.docs.map((doc) => ({
+          uid: doc.data().uid,
+          username: doc.data().username,
+          avatar: doc.data().avatar,
+          email: doc.data().email,
+        }))
+      );
+    });
   };
 
   const getSelectedRoomHandler = () => {
@@ -69,6 +86,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   useEffect(() => {
     getRoomsHandler();
+    getUsersHandler();
     checkUserHandler();
   }, []);
 

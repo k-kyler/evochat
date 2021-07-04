@@ -2,29 +2,39 @@ import { FC } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { FaUser } from "react-icons/fa";
+import { RiVipCrownFill } from "react-icons/ri";
 import { IoIosSettings } from "react-icons/io";
+import { MemberItemType } from "../../typings/MemberItemType";
 
-interface IMemberItemProps {
-  name: string;
-  avatar: string;
-  active: boolean;
-  clickHandler?: () => void;
-}
+interface IMemberItemProps extends MemberItemType {}
 
 const MemberItem: FC<IMemberItemProps> = ({
-  name,
+  username,
   avatar,
   active,
+  uid,
+  oid,
   clickHandler,
 }) => {
   return (
     <MemberItemContainer onClick={clickHandler && clickHandler}>
       <InfoContainer>
-        <Icon>
-          <FaUser />
-        </Icon>
+        {avatar ? (
+          <img src={avatar} />
+        ) : (
+          <Icon>
+            <FaUser />
+          </Icon>
+        )}
 
-        <Content title={name}>{name}</Content>
+        <Content title={username}>
+          {username}
+          {uid === oid && (
+            <SmallIcon>
+              <RiVipCrownFill />
+            </SmallIcon>
+          )}
+        </Content>
       </InfoContainer>
 
       <SmallIcons>
@@ -65,6 +75,11 @@ const InfoContainer = styled.div`
     flex
     items-center
   `}
+
+  img {
+    width: 2rem;
+    height: 2rem;
+  }
 `;
 
 const Icon = styled.span`
@@ -87,13 +102,23 @@ const SmallIcon = styled.span`
 const Content = styled.p`
   ${tw`
     ml-2
-    text-sm
+    text-xs
     overflow-ellipsis
     whitespace-nowrap
     overflow-x-hidden
+    flex
+    items-center
   `}
 
-  width: 11em;
+  width: 12em;
+
+  span {
+    ${tw`
+      ml-2
+      text-yellow-400
+      text-base
+    `}
+  }
 `;
 
 const SmallIcons = styled.div<{ active?: boolean }>`

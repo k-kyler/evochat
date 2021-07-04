@@ -4,6 +4,7 @@ type RoomMembers = {
 
 export type RoomType = {
   id: string;
+  oid: string;
   name: string;
   background?: string;
   members?: RoomMembers[];

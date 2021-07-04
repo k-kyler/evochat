@@ -3,14 +3,15 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { FaAngleRight } from "react-icons/fa";
 import MemberItem from "../MemberItem";
+import { MemberItemType } from "../../typings/MemberItemType";
 
 interface IOptionGroupProps {
   name: string;
   type: "members" | "media" | "files";
-  // data: {}[];
+  members?: MemberItemType[];
 }
 
-const OptionGroup: FC<IOptionGroupProps> = ({ name, type }) => {
+const OptionGroup: FC<IOptionGroupProps> = ({ name, type, members }) => {
   const [checkDropDownGroup, setCheckDropDownGroup] = useState(false);
   const [rotateState, setRotateState] = useState(true);
 
@@ -39,9 +40,16 @@ const OptionGroup: FC<IOptionGroupProps> = ({ name, type }) => {
 
       {type === "members" && checkDropDownGroup ? (
         <MembersContainer>
-          <MemberItem name="Quang Khai" active={true} avatar="" />
-          <MemberItem name="Kkyler" active={true} avatar="" />
-          <MemberItem name="bla bla bla" active={true} avatar="" />
+          {members?.map((member) => (
+            <MemberItem
+              key={member.uid}
+              uid={member.uid}
+              oid={member.oid}
+              username={member.username}
+              avatar={member.avatar}
+              active={true}
+            />
+          ))}
         </MembersContainer>
       ) : null}
     </OptionGroupContainer>

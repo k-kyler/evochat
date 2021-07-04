@@ -1,17 +1,52 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { RoomType } from "../../typings/RoomType";
 import OptionGroup from "../OptionGroup";
+import { useUsers } from "../../contexts/UsersContext";
 
 interface IOptionsListProps {
   selectedRoom?: RoomType;
 }
 
 const OptionsList: FC<IOptionsListProps> = ({ selectedRoom }) => {
+  const [roomMembers, setRoomMembers] = useState<any>([]);
+
+  const { users } = useUsers();
+
+  const getRoomMembersHandler = () => {
+    const owner = users?.map((user) => {
+      if (user.uid === selectedRoom?.oid) {
+        return {
+          oid: user.uid,
+          uid: user.uid,
+          username: user.username,
+          avatar: user.avatar,
+        };
+      }
+    });
+    const members = selectedRoom?.members?.map((member) => {
+      return users?.map((user) => {
+        if (member.uid === user.uid) {
+          return {
+            uid: user.uid,
+            username: user.username,
+            avatar: user.avatar,
+          };
+        }
+      });
+    });
+
+    setRoomMembers([...(owner as any), ...(members as any)]);
+  };
+
+  useEffect(() => {
+    getRoomMembersHandler();
+  }, [selectedRoom]);
+
   return (
     <OptionsListContainer>
-      <OptionGroup type="members" name="Room members" />
+      <OptionGroup type="members" name="Room members" members={roomMembers} />
       <OptionGroup type="media" name="Shared media" />
       <OptionGroup type="files" name="Shared files" />
     </OptionsListContainer>
