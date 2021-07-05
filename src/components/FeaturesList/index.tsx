@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import Logo from "../../assets/web-logo.svg";
 import RoundedObject from "../RoundedObject";
+import Modal from "../Modal";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -52,29 +53,33 @@ const FeaturesList: FC = () => {
   }, [rooms]);
 
   return (
-    <FeaturesListContainer>
-      <InnerContainer>
-        <img src={Logo} onClick={getBackToHome} />
+    <>
+      <FeaturesListContainer>
+        <InnerContainer>
+          <img src={Logo} onClick={getBackToHome} />
 
-        <LineBreak />
+          <LineBreak />
 
-        {rooms?.map((room) => (
-          <RoundedObject
-            key={room.id}
-            id={room.id}
-            content={room.name}
-            background={room.background}
-            type="room"
-            selectedRoomId={selectedRoomId}
-            clickHandler={() => switchRoomHandler(room.id)}
-          />
-        ))}
+          {rooms?.map((room) => (
+            <RoundedObject
+              key={room.id}
+              id={room.id}
+              content={room.name}
+              background={room.background}
+              type="room"
+              selectedRoomId={selectedRoomId}
+              clickHandler={() => switchRoomHandler(room.id)}
+            />
+          ))}
 
-        {options.map((option) => (
-          <RoundedObject key={option.id} {...option} />
-        ))}
-      </InnerContainer>
-    </FeaturesListContainer>
+          {options.map((option) => (
+            <RoundedObject key={option.id} {...option} />
+          ))}
+        </InnerContainer>
+      </FeaturesListContainer>
+
+      <Modal />
+    </>
   );
 };
 
