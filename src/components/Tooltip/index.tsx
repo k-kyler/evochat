@@ -23,9 +23,10 @@ const TooltipContainer = styled.span<{ arrow: string }>`
     p-2
   `}
 
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: black;
   width: max-content;
   z-index: 1;
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2), 2px 5px 7px rgba(0, 0, 0, 0.4);
 
   &::after {
     ${tw`absolute`}

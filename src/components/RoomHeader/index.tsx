@@ -11,7 +11,7 @@ interface IRoomHeader {
 const RoomHeader: FC<IRoomHeader> = ({ selectedRoom }) => {
   return (
     <RoomHeaderContainer>
-      <RoomName>{selectedRoom?.name}</RoomName>
+      <RoomName title={selectedRoom?.name}>{selectedRoom?.name}</RoomName>
       <Icon>
         <FaAngleDown />
       </Icon>
@@ -43,7 +43,12 @@ const RoomHeaderContainer = styled.div`
 const RoomName = styled.p`
   ${tw`
     text-base
+    overflow-ellipsis
+    overflow-x-hidden
+    whitespace-nowrap
   `}
+
+  width: 13em;
 `;
 
 const Icon = styled.span`

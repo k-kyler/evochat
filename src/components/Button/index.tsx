@@ -6,12 +6,24 @@ import { FaFacebook } from "react-icons/fa";
 
 interface IButtonProps {
   content: string;
-  theme?: "filled" | "outlined" | "google" | "facebook";
+  theme?: "filled" | "outlined" | "normal" | "google" | "facebook";
+  color?: "red" | "blue";
   clickHandler?: () => void;
 }
 
-const Button: FC<IButtonProps> = ({ content, theme, clickHandler }) => {
-  if (theme === "filled") return <FilledButton>{content}</FilledButton>;
+const Button: FC<IButtonProps> = ({ content, theme, color, clickHandler }) => {
+  if (theme === "filled")
+    return (
+      <FilledButton color={color} onClick={clickHandler && clickHandler}>
+        {content}
+      </FilledButton>
+    );
+  if (theme === "normal")
+    return (
+      <NormalButton color={color} onClick={clickHandler && clickHandler}>
+        {content}
+      </NormalButton>
+    );
   if (theme === "google")
     return (
       <GoogleButton onClick={clickHandler && clickHandler}>
@@ -30,7 +42,11 @@ const Button: FC<IButtonProps> = ({ content, theme, clickHandler }) => {
         {content}
       </FacebookButton>
     );
-  return <OutlinedButton>{content}</OutlinedButton>;
+  return (
+    <OutlinedButton color={color} onClick={clickHandler && clickHandler}>
+      {content}
+    </OutlinedButton>
+  );
 };
 
 export default Button;
@@ -56,23 +72,60 @@ const BaseButton = styled.button`
   `}
 `;
 
-const OutlinedButton = styled(BaseButton)`
+const OutlinedButton = styled(BaseButton)<{ color?: string }>`
   ${tw`
     bg-transparent
-    text-red-500
-    border-red-500
-    hover:bg-red-500
     hover:text-white
     hover:border-transparent
   `}
+
+  ${({ color }) =>
+    color === "blue"
+      ? tw`
+    text-blue-500
+    border-blue-500
+    hover:bg-blue-500
+  `
+      : tw`
+    text-red-500
+    border-red-500
+    hover:bg-red-500
+  `}
 `;
 
-const FilledButton = styled(BaseButton)`
+const FilledButton = styled(BaseButton)<{ color?: string }>`
   ${tw`
-    bg-red-500
     hover:bg-transparent
+  `}
+
+  ${({ color }) =>
+    color === "blue"
+      ? tw`
+    bg-blue-500
+    hover:text-blue-500
+    hover:border-blue-500
+  `
+      : tw`
+    bg-red-500
     hover:text-red-500
     hover:border-red-500
+  `}
+`;
+
+const NormalButton = styled(BaseButton)<{ color?: string }>`
+  ${tw`
+    text-white
+  `}
+
+  ${({ color }) =>
+    color === "blue"
+      ? tw`
+    bg-blue-500
+    hover:bg-blue-600
+  `
+      : tw`
+    bg-red-500
+    hover:bg-red-600
   `}
 `;
 

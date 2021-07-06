@@ -12,6 +12,7 @@ import { nanoid } from "nanoid";
 
 const FeaturesList: FC = () => {
   const [selectedRoomId, setSelectedRoomId] = useState("");
+  const [openCreateNewRoomModal, setOpenCreateNewRoomModal] = useState(false);
 
   const history = useHistory();
 
@@ -26,22 +27,20 @@ const FeaturesList: FC = () => {
     history.push(`/chat?id=${id}`);
   };
 
-  const openFindRoomModal = () => {};
-
-  const openCreateNewRoomModal = () => {};
+  const searchRoomModalHandler = () => {};
 
   const options: RoundedObjectType[] = [
     {
       id: nanoid(),
-      content: "Find room",
+      content: "Search room",
       icon: <FaSearch />,
-      clickHandler: openFindRoomModal,
+      clickHandler: searchRoomModalHandler,
     },
     {
       id: nanoid(),
       content: "Create new room",
       icon: <FaPlus />,
-      clickHandler: openCreateNewRoomModal,
+      clickHandler: () => setOpenCreateNewRoomModal(true),
     },
   ];
 
@@ -78,7 +77,13 @@ const FeaturesList: FC = () => {
         </InnerContainer>
       </FeaturesListContainer>
 
-      <Modal />
+      <Modal
+        type="create-room"
+        title="Create new room"
+        description="Dive into your room by giving it a nice background and name"
+        open={openCreateNewRoomModal}
+        closeHandler={() => setOpenCreateNewRoomModal(false)}
+      />
     </>
   );
 };
