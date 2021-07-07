@@ -7,6 +7,7 @@ import Button from "../Button";
 import { db } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
+import { FaSearch } from "react-icons/fa";
 
 interface IModalProps {
   title: string;
@@ -39,38 +40,57 @@ const Modal: FC<IModalProps> = ({
       });
   };
 
+  const switchToSearchRoomModal = () => {};
+
   if (!open) return null;
   return createPortal(
     <>
       <ModalOverlay onClick={closeHandler} />
 
       <ModalContent>
-        <ModalHeader>
-          <CloseModalButton onClick={closeHandler}>&times;</CloseModalButton>
-        </ModalHeader>
+        <ModalInnerContent>
+          <ModalHeader>
+            <CloseModalButton onClick={closeHandler}>&times;</CloseModalButton>
+          </ModalHeader>
 
-        <ModalBody>
-          <ModalTitle>{title}</ModalTitle>
+          <ModalBody>
+            <ModalTitle>{title}</ModalTitle>
 
-          <ModalDescription>{description}</ModalDescription>
+            <ModalDescription>{description}</ModalDescription>
 
-          <ModalFeature>
-            {type === "create-room" ? (
-              <CreateRoomContainer>
-                <Input type="upload-image" refValue={inputImageRef} />
-                <Input label="Room name" type="text" refValue={inputTextRef} />
-                <ButtonsContainer>
-                  <Button
-                    content="Create"
-                    theme="normal"
-                    color="blue"
-                    clickHandler={createNewRoomHandler}
+            <ModalFeature>
+              {type === "create-room" ? (
+                <CreateRoomFeature>
+                  <Input type="upload-image" refValue={inputImageRef} />
+                  <Input
+                    label="Room name"
+                    type="text"
+                    refValue={inputTextRef}
                   />
-                </ButtonsContainer>
-              </CreateRoomContainer>
-            ) : null}
-          </ModalFeature>
-        </ModalBody>
+                </CreateRoomFeature>
+              ) : null}
+            </ModalFeature>
+          </ModalBody>
+        </ModalInnerContent>
+
+        <ModalActions>
+          {type === "create-room" ? (
+            <CreateRoomButtons>
+              <Button
+                content="Search room"
+                theme="text-icon"
+                color="dark"
+                icon={<FaSearch />}
+              />
+              <Button
+                content="Create"
+                theme="filled-no-outlined"
+                color="blue"
+                clickHandler={createNewRoomHandler}
+              />
+            </CreateRoomButtons>
+          ) : null}
+        </ModalActions>
       </ModalContent>
     </>,
     document.getElementById("modal") as HTMLElement
@@ -95,7 +115,6 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   ${tw`
     bg-white
-    p-4
     shadow-lg
     rounded-md
     w-2/5
@@ -116,6 +135,12 @@ const ModalContent = styled.div`
       opacity: 1;
     }
   }
+`;
+
+const ModalInnerContent = styled.div`
+  ${tw`
+    p-4
+  `}
 `;
 
 const ModalHeader = styled.div`
@@ -164,12 +189,12 @@ const ModalDescription = styled.p`
   ${tw`
     text-center
     text-sm
-    text-gray-400
+    text-gray-500
     pointer-events-none
     select-none
   `}
 
-  width: 24em;
+  width: 26em;
 `;
 
 const ModalFeature = styled.div`
@@ -180,31 +205,36 @@ const ModalFeature = styled.div`
   `}
 `;
 
-const CreateRoomContainer = styled.div`
+const ModalActions = styled.div`
+  ${tw`
+    bg-gray-100
+    px-4
+    py-3
+  `}
+
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+`;
+
+const CreateRoomFeature = styled.div`
   ${tw`
     flex
     flex-col
     items-center
   `}
 
-  div:not(:last-child) {
+  div {
     ${tw`
       my-2
     `}
   }
-
-  div:last-child {
-    ${tw`
-      mt-2
-    `}
-  }
 `;
 
-const ButtonsContainer = styled.div`
+const CreateRoomButtons = styled.div`
   ${tw`
     flex
     items-center
-    justify-end
+    justify-between
     w-full
   `}
 `;

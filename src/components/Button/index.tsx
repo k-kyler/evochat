@@ -6,23 +6,46 @@ import { FaFacebook } from "react-icons/fa";
 
 interface IButtonProps {
   content: string;
-  theme?: "filled" | "outlined" | "normal" | "google" | "facebook";
-  color?: "red" | "blue";
+  theme?:
+    | "filled"
+    | "filled-no-outlined"
+    | "outlined"
+    | "text-icon"
+    | "google"
+    | "facebook";
+  color?: "red" | "blue" | "dark";
+  icon?: any;
   clickHandler?: () => void;
 }
 
-const Button: FC<IButtonProps> = ({ content, theme, color, clickHandler }) => {
+const Button: FC<IButtonProps> = ({
+  content,
+  theme,
+  color,
+  icon,
+  clickHandler,
+}) => {
   if (theme === "filled")
     return (
       <FilledButton color={color} onClick={clickHandler && clickHandler}>
         {content}
       </FilledButton>
     );
-  if (theme === "normal")
+  if (theme === "filled-no-outlined")
     return (
-      <NormalButton color={color} onClick={clickHandler && clickHandler}>
+      <FilledNoOutlinedButton
+        color={color}
+        onClick={clickHandler && clickHandler}
+      >
         {content}
-      </NormalButton>
+      </FilledNoOutlinedButton>
+    );
+  if (theme === "text-icon")
+    return (
+      <TextButton color={color} onClick={clickHandler && clickHandler}>
+        <Icon>{icon}</Icon>
+        {content}
+      </TextButton>
     );
   if (theme === "google")
     return (
@@ -86,6 +109,12 @@ const OutlinedButton = styled(BaseButton)<{ color?: string }>`
     border-blue-500
     hover:bg-blue-500
   `
+      : color === "dark"
+      ? tw`
+    text-black
+    border-black
+    hover:bg-black
+      `
       : tw`
     text-red-500
     border-red-500
@@ -105,6 +134,12 @@ const FilledButton = styled(BaseButton)<{ color?: string }>`
     hover:text-blue-500
     hover:border-blue-500
   `
+      : color === "dark"
+      ? tw`
+    bg-black
+    hover:text-black
+    hover:border-black
+      `
       : tw`
     bg-red-500
     hover:text-red-500
@@ -112,7 +147,7 @@ const FilledButton = styled(BaseButton)<{ color?: string }>`
   `}
 `;
 
-const NormalButton = styled(BaseButton)<{ color?: string }>`
+const FilledNoOutlinedButton = styled(BaseButton)<{ color?: string }>`
   ${tw`
     text-white
   `}
@@ -123,9 +158,35 @@ const NormalButton = styled(BaseButton)<{ color?: string }>`
     bg-blue-500
     hover:bg-blue-600
   `
+      : color === "dark"
+      ? tw`
+    bg-black
+    hover:bg-black
+      `
       : tw`
     bg-red-500
     hover:bg-red-600
+  `}
+`;
+
+const TextButton = styled(BaseButton)<{ color?: string }>`
+  ${tw`
+    flex
+    items-center
+    px-0
+  `}
+
+  ${({ color }) =>
+    color === "blue"
+      ? tw`
+    text-blue-500
+  `
+      : color === "dark"
+      ? tw`
+    text-black
+      `
+      : tw`
+    text-red-500    
   `}
 `;
 

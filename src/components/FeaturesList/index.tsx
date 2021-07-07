@@ -80,7 +80,7 @@ const FeaturesList: FC = () => {
       <Modal
         type="create-room"
         title="Create new room"
-        description="Dive into your room by giving it a nice background and name"
+        description="Dive into your awesome room by giving it a nice background and name"
         open={openCreateNewRoomModal}
         closeHandler={() => setOpenCreateNewRoomModal(false)}
       />

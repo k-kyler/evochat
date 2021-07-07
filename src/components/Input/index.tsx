@@ -62,8 +62,9 @@ const InputTextContainer = styled.div`
 
 const InputLabel = styled.label`
   ${tw`
-    text-base
-    text-gray-700
+    uppercase
+    text-sm
+    text-gray-500
     mb-1
   `}
 `;
@@ -91,7 +92,7 @@ const UploadImageContainer = styled.div`
     rounded-full
     border-solid
     border
-    border-gray-400
+    border-gray-300
   `}
 
   input {
@@ -102,7 +103,7 @@ const UploadImageContainer = styled.div`
 const UploadImageIcon = styled.span`
   ${tw`
     text-3xl
-    text-gray-900
+    text-gray-800
     cursor-pointer
     flex
     items-center

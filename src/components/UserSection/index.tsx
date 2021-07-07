@@ -56,7 +56,8 @@ const AvatarContainer = styled.div`
 
   img {
     height: 2rem;
-    border-radius: 50px;
+    width: auto;
+    border-radius: 9999px;
   }
 `;
 
@@ -69,7 +70,7 @@ const Content = styled.p`
     ml-2
   `}
 
-  width: 10em;
+  max-width: 11.5em;
 `;
 
 const Icon = styled.span`

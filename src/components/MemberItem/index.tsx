@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { FaUser } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
-import { IoIosSettings } from "react-icons/io";
 import { MemberItemType } from "../../typings/MemberItemType";
 import OnlineStatus from "../OnlineStatus";
 
@@ -31,21 +30,14 @@ const MemberItem: FC<IMemberItemProps> = ({
           </Icon>
         )}
 
-        <Content title={username}>
-          {username}
-          {uid === oid && (
-            <SmallIcon>
-              <RiVipCrownFill />
-            </SmallIcon>
-          )}
-        </Content>
-      </InfoContainer>
+        <Content title={username}>{username}</Content>
 
-      <SmallIcons>
-        <SmallIcon>
-          <IoIosSettings />
-        </SmallIcon>
-      </SmallIcons>
+        {uid === oid && (
+          <SmallIcon title="Room's admin">
+            <RiVipCrownFill />
+          </SmallIcon>
+        )}
+      </InfoContainer>
     </MemberItemContainer>
   );
 };
@@ -57,7 +49,6 @@ const MemberItemContainer = styled.div`
     rounded
     flex
     items-center
-    justify-between
     transition-all
     duration-300
     ease-in-out
@@ -80,14 +71,25 @@ const InfoContainer = styled.div`
     items-center
   `}
 
-  img {
-    width: 2rem;
-    height: 2rem;
+  span {
+    ${tw`
+      ml-2
+      text-yellow-400
+      text-base
+    `}
   }
 `;
 
 const AvatarContainer = styled.div`
-  ${tw`relative`}
+  ${tw`
+    relative
+  `}
+
+  img {
+    border-radius: 9999px;
+    width: auto;
+    height: 2rem;
+  }
 `;
 
 const Icon = styled.span`
@@ -114,32 +116,7 @@ const Content = styled.p`
     overflow-ellipsis
     whitespace-nowrap
     overflow-x-hidden
-    flex
-    items-center
   `}
 
-  width: 12em;
-
-  span {
-    ${tw`
-      ml-2
-      text-yellow-400
-      text-base
-    `}
-  }
-`;
-
-const SmallIcons = styled.div<{ active?: boolean }>`
-  ${tw`
-    flex
-    items-center
-  `}
-
-  ${({ active }) =>
-    !active &&
-    css`
-      span {
-        display: none;
-      }
-    `}
+  max-width: 13em;
 `;

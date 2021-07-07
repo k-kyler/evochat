@@ -48,7 +48,7 @@ const RoomName = styled.p`
     whitespace-nowrap
   `}
 
-  width: 13em;
+  max-width: 13em;
 `;
 
 const Icon = styled.span`
