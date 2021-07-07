@@ -1,10 +1,10 @@
 import { FC } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import tw from "twin.macro";
 import { FaUser } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
-import { MemberItemType } from "../../typings/MemberItemType";
-import OnlineStatus from "../OnlineStatus";
+import { MemberItemType } from "../../../typings/MemberItemType";
+import OnlineStatus from "../../OnlineStatus";
 
 interface IMemberItemProps extends MemberItemType {}
 
@@ -73,7 +73,7 @@ const InfoContainer = styled.div`
 
   span {
     ${tw`
-      ml-2
+      ml-1
       text-yellow-400
       text-base
     `}

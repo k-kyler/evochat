@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { FaCog } from "react-icons/fa";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -11,12 +11,12 @@ const UserSection: FC = () => {
 
   return (
     <UserSectionContainer>
-      <UserInfo>
+      <UserInfo title={`${user?.displayName}`}>
         <AvatarContainer>
           <img src={String(user?.photoURL)} />
           <OnlineStatus effect="ripple" />
         </AvatarContainer>
-        <Content title={`${user?.displayName}`}>{user?.displayName}</Content>
+        <Content>{user?.displayName}</Content>
       </UserInfo>
 
       <Icon>

@@ -21,9 +21,9 @@ const TooltipContainer = styled.span<{ arrow: string }>`
     rounded-md
     invisible
     p-2
+    bg-black
   `}
 
-  background-color: black;
   width: max-content;
   z-index: 1;
   box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2), 2px 5px 7px rgba(0, 0, 0, 0.4);

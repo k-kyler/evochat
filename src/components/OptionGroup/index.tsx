@@ -2,7 +2,7 @@ import { FC, useState, useRef } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { FaAngleRight } from "react-icons/fa";
-import MemberItem from "../MemberItem";
+import MemberItem from "./MemberItem";
 import { MemberItemType } from "../../typings/MemberItemType";
 
 interface IOptionGroupProps {
