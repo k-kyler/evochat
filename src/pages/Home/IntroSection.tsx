@@ -14,7 +14,7 @@ const IntroSection: FC = () => {
   return (
     <IntroSectionContainer>
       <LeftSide>
-        <Slogan>Evolution Of Chat Services For You And Your Friends</Slogan>
+        <Slogan>Feel The Awesome Chat Services With Your Friends</Slogan>
         <Description>
           Join with me and you will get awesome experience with a lot of cool
           features while using my chat services

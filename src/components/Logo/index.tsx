@@ -31,7 +31,7 @@ const WebLogoContainer = styled.div`
 const WebLogoText = styled.div`
   ${tw`
     text-black
-    m-1
+    m-2
     text-xl
     md:text-2xl
     font-bold
@@ -44,7 +44,7 @@ const WebLogoText = styled.div`
 const WebLogoImage = styled.div`
   ${tw`
     h-6
-    md:h-9
+    md:h-12
   `}
 
   width: auto;

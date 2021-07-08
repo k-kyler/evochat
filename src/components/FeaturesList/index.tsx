@@ -100,8 +100,10 @@ const FeaturesListContainer = styled.div`
   background-color: #202225;
 
   img {
-    height: 3rem;
-    cursor: pointer;
+    ${tw`
+      h-12
+      cursor-pointer
+    `}
   }
 `;
 

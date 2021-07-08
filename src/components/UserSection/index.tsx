@@ -55,9 +55,10 @@ const AvatarContainer = styled.div`
   `}
 
   img {
-    height: 2rem;
-    width: auto;
-    border-radius: 9999px;
+    ${tw`
+      w-8
+      rounded-full
+    `}
   }
 `;
 

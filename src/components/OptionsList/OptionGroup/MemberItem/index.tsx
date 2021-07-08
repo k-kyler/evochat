@@ -91,9 +91,10 @@ const AvatarContainer = styled.div`
   `}
 
   img {
-    border-radius: 9999px;
-    width: auto;
-    height: 2rem;
+    ${tw`
+      w-8
+      rounded-full
+    `}
   }
 `;
 

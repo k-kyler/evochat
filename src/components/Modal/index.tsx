@@ -12,7 +12,13 @@ import { FaSearch } from "react-icons/fa";
 interface IModalProps {
   title: string;
   description?: string;
-  type: "create-room" | "search-room" | "user-setting" | "room-panel";
+  type:
+    | "create-room"
+    | "search-room"
+    | "user-setting"
+    | "room-panel"
+    | "image"
+    | "video";
   open: boolean;
   closeHandler: () => void;
 }
