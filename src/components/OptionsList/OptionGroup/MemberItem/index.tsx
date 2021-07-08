@@ -3,8 +3,8 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { FaUser } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
-import { MemberItemType } from "../../../typings/MemberItemType";
-import OnlineStatus from "../../OnlineStatus";
+import { MemberItemType } from "../../../../typings/MemberItemType";
+import OnlineStatus from "../../../OnlineStatus";
 
 interface IMemberItemProps extends MemberItemType {}
 

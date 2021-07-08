@@ -1,63 +1,113 @@
-import { FC } from "react";
+import { FC, useRef, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { FaAngleDown } from "react-icons/fa";
-import { RoomType } from "../../typings/RoomType";
-import Panel from "../Panel";
-import { PanelOptionType } from "../../typings/PanelOptionType";
+import { FaAngleDown, FaTimes } from "react-icons/fa";
 import {
   FcAbout,
   FcLandscape,
   FcImport,
   FcDocument,
   FcSupport,
-  FcHighPriority,
+  FcFlashOn,
 } from "react-icons/fc";
+import Panel from "./Panel";
+import { RoomType } from "../../typings/RoomType";
+import { PanelOptionType } from "../../typings/PanelOptionType";
+import { nanoid } from "nanoid";
 
 interface IRoomHeader {
   selectedRoom?: RoomType;
 }
 
 const RoomHeader: FC<IRoomHeader> = ({ selectedRoom }) => {
+  const [openPanel, setOpenPanel] = useState(false);
+  const [rotateState, setRotateState] = useState(true);
+
+  const iconRef = useRef<HTMLSpanElement>(null);
+
   const adminPanelData: PanelOptionType[] = [
     {
+      id: nanoid(),
+      name: "Room setting",
+      icon: <FcSupport />,
+      bottomDivider: true,
+    },
+    {
+      id: nanoid(),
       name: "Change name",
       icon: <FcDocument />,
     },
     {
+      id: nanoid(),
       name: "Change background",
       icon: <FcLandscape />,
+      bottomDivider: true,
     },
     {
-      name: "Delete room",
-      icon: <FcHighPriority />,
-    },
-  ];
-
-  const panelGeneralData: PanelOptionType[] = [
-    {
-      name: "Room setting",
-      icon: <FcSupport />,
-    },
-    {
+      id: nanoid(),
       name: "Invite member",
       icon: <FcAbout />,
       highlight: "blue",
+      bottomDivider: true,
     },
     {
+      id: nanoid(),
+      name: "Leave room",
+      icon: <FcImport />,
+      highlight: "red",
+    },
+    {
+      id: nanoid(),
+      name: "Delete room",
+      icon: <FcFlashOn />,
+      highlight: "red",
+    },
+  ];
+
+  const generalPanelData: PanelOptionType[] = [
+    {
+      id: nanoid(),
+      name: "Room setting",
+      icon: <FcSupport />,
+      bottomDivider: true,
+    },
+    {
+      id: nanoid(),
+      name: "Invite member",
+      icon: <FcAbout />,
+      highlight: "blue",
+      bottomDivider: true,
+    },
+    {
+      id: nanoid(),
       name: "Leave room",
       icon: <FcImport />,
       highlight: "red",
     },
   ];
 
+  const openPanelHandler = () => {
+    const icon = iconRef.current;
+
+    setOpenPanel(!openPanel);
+    setRotateState(!rotateState);
+
+    if (icon) {
+      icon.style.transform = `rotate(${rotateState ? "270" : "0"}deg)`;
+      icon.style.transition = "all 0.4s ease-in-out";
+    }
+  };
+
   return (
-    <RoomHeaderContainer>
+    <RoomHeaderContainer onClick={openPanelHandler}>
       <RoomName title={selectedRoom?.name}>{selectedRoom?.name}</RoomName>
-      <Icon>
-        <FaAngleDown />
-      </Icon>
-      <Panel />
+      <Icon ref={iconRef}>{openPanel ? <FaTimes /> : <FaAngleDown />}</Icon>
+      <Panel
+        oid={selectedRoom?.oid}
+        generalData={generalPanelData}
+        adminData={adminPanelData}
+        open={openPanel}
+      />
     </RoomHeaderContainer>
   );
 };

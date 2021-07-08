@@ -2,7 +2,7 @@ import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { RoomType } from "../../typings/RoomType";
-import OptionGroup from "../OptionGroup";
+import OptionGroup from "./OptionGroup";
 import { useUsers } from "../../contexts/UsersContext";
 
 interface IOptionsListProps {

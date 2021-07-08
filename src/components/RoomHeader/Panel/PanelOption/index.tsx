@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { PanelOptionType } from "../../../typings/PanelOptionType";
+import { PanelOptionType } from "../../../../typings/PanelOptionType";
 
 interface IPanelOptionProps extends PanelOptionType {}
 
@@ -9,13 +9,17 @@ const PanelOption: FC<IPanelOptionProps> = ({
   name,
   icon,
   highlight,
+  bottomDivider,
   clickHandler,
 }) => {
   return (
-    <PanelOptionContainer>
-      <PanelOptionName highlight={highlight}>{name}</PanelOptionName>
-      <PanelOptionIcon>{icon}</PanelOptionIcon>
-    </PanelOptionContainer>
+    <>
+      <PanelOptionContainer>
+        <PanelOptionName highlight={highlight}>{name}</PanelOptionName>
+        <PanelOptionIcon>{icon}</PanelOptionIcon>
+      </PanelOptionContainer>
+      {bottomDivider && <Divider />}
+    </>
   );
 };
 
@@ -26,7 +30,7 @@ const PanelOptionContainer = styled.div`
     flex
     items-center
     justify-between
-    my-1
+    my-2
     cursor-pointer
     transition-all
     duration-300
@@ -39,6 +43,7 @@ const PanelOptionName = styled.p<{ highlight?: string }>`
   ${tw`
     text-xs
     text-gray-400
+    font-semibold
     capitalize
   `}
 
@@ -58,4 +63,13 @@ const PanelOptionIcon = styled.span`
   ${tw`
     text-xl
   `}
+`;
+
+const Divider = styled.div`
+  ${tw`
+    my-2
+  `}
+
+  background-color: rgba(255, 255, 255, 0.1);
+  height: 0.1px;
 `;
