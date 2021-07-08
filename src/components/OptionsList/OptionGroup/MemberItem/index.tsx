@@ -58,9 +58,14 @@ const MemberItemContainer = styled.div`
 
   &:hover {
     background-color: rgb(51, 54, 60);
+  }
 
-    span {
-      display: block;
+  opacity: 0;
+  animation: fadeIn 0.2s ease-in-out forwards;
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
     }
   }
 `;
@@ -112,7 +117,7 @@ const SmallIcon = styled.span`
 const Content = styled.p`
   ${tw`
     ml-2
-    text-xs
+    text-sm
     overflow-ellipsis
     whitespace-nowrap
     overflow-x-hidden
