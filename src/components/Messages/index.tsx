@@ -2,7 +2,7 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { RoomType } from "../../typings/RoomType";
-import RoomIntro from "./RoomIntro";
+import Intro from "./Intro";
 
 interface IMessagesProps {
   selectedRoom?: RoomType;
@@ -11,7 +11,10 @@ interface IMessagesProps {
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   return (
     <MessagesContainer>
-      <RoomIntro roomName={selectedRoom?.name} />
+      <Intro
+        roomName={selectedRoom?.name}
+        timestamp={selectedRoom?.timestamp}
+      />
     </MessagesContainer>
   );
 };
@@ -24,5 +27,6 @@ const MessagesContainer = styled.div`
     flex-col
     items-center
     w-full
+    px-4
   `}
 `;

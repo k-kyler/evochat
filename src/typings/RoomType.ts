@@ -8,4 +8,5 @@ export type RoomType = {
   name: string;
   background?: string;
   members?: RoomMembers[];
+  timestamp?: any;
 };
