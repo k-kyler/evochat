@@ -56,6 +56,7 @@ const AvatarContainer = styled.div`
 
   img {
     ${tw`
+      h-8
       w-8
       rounded-full
     `}

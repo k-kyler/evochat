@@ -94,7 +94,7 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom }) => {
 
     if (icon) {
       icon.style.transform = `rotate(${rotateState ? "270" : "0"}deg)`;
-      icon.style.transition = "all 0.4s ease-in-out";
+      icon.style.transition = "all 0.2s ease-in-out";
     }
   };
 
