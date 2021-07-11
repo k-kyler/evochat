@@ -1,32 +1,98 @@
-import { FC, useRef } from "react";
+import { FC, useRef, useState, useEffect, MouseEvent } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { BiMessageDetail } from "react-icons/bi";
+import { BiMessageDetail, BiGhost, BiImages } from "react-icons/bi";
+import { RiFileGifLine } from "react-icons/ri";
+import Tooltip from "../../Tooltip";
+import Modal from "../../Modal";
+import Picker, { IEmojiData } from "emoji-picker-react";
 import { db } from "../../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../../contexts/AuthContext";
 
 const SendingArea: FC = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
+  const [openEmojiModal, setOpenEmojiModal] = useState(false);
 
-  const inputFocusHandler = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const textAreaFocusHandler = () => {
+    if (textAreaRef.current) {
+      textAreaRef.current.focus();
     }
   };
 
+  const textAreaOnChangeHandler = () => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.cssText = "height: auto";
+      textAreaRef.current.style.cssText =
+        "height: " + textAreaRef.current.scrollHeight + "px";
+    }
+  };
+
+  const chosenEmojiHandler = (
+    event: MouseEvent<Element, globalThis.MouseEvent>,
+    emojiObject: IEmojiData
+  ) => {
+    setChosenEmoji(emojiObject);
+  };
+
+  useEffect(() => {
+    if (chosenEmoji && textAreaRef.current)
+      textAreaRef.current.value += chosenEmoji.emoji;
+  }, [chosenEmoji]);
+
   return (
-    <SendingAreaContainer>
-      <InputContainer>
-        <InputIcon onClick={inputFocusHandler}>
-          <BiMessageDetail />
-        </InputIcon>
+    <>
+      <SendingAreaContainer>
+        <TextAreaContainer>
+          <Icon onClick={textAreaFocusHandler}>
+            <BiMessageDetail />
+          </Icon>
 
-        <Input ref={inputRef} placeholder="Type a message..." />
-      </InputContainer>
+          <TextArea
+            onChange={textAreaOnChangeHandler}
+            ref={textAreaRef}
+            spellCheck="false"
+            placeholder="Type a message..."
+            rows={1}
+          />
+        </TextAreaContainer>
 
-      <Options></Options>
-    </SendingAreaContainer>
+        <Options>
+          <Icon onClick={() => setOpenEmojiModal(true)}>
+            <BiGhost />
+            <Tooltip content="Emoji" arrow="bottom" />
+          </Icon>
+          <Icon>
+            <BiImages />
+            <Tooltip content="Image & Video" arrow="bottom" />
+          </Icon>
+          <Icon>
+            <RiFileGifLine />
+            <Tooltip content="Giphy" arrow="bottom" />
+          </Icon>
+        </Options>
+      </SendingAreaContainer>
+
+      <Modal
+        type="emoji"
+        emojiPicker={
+          <Picker
+            onEmojiClick={chosenEmojiHandler}
+            disableAutoFocus={true}
+            native
+            pickerStyle={{
+              width: "100%",
+              boxShadow: "none",
+              borderTop: "none",
+            }}
+          />
+        }
+        open={openEmojiModal}
+        closeHandler={() => setOpenEmojiModal(false)}
+      />
+    </>
   );
 };
 
@@ -35,7 +101,7 @@ export default SendingArea;
 const SendingAreaContainer = styled.div`
   ${tw`
     flex
-    items-center
+    justify-between
     absolute
     bottom-6
     left-6
@@ -46,35 +112,69 @@ const SendingAreaContainer = styled.div`
   `}
 `;
 
-const InputContainer = styled.div`
+const TextAreaContainer = styled.div`
   ${tw`
     flex
-    items-center
     w-full
   `}
 `;
 
-const Input = styled.input`
+const TextArea = styled.textarea`
   ${tw`
     w-full
     text-white
-    ml-2
+    mx-2
     bg-transparent
     outline-none
+    resize-none
+    overflow-hidden
   `}
 `;
 
 const Options = styled.div`
   ${tw`
     flex
-    items-center
   `}
+
+  span {
+    ${tw`
+      cursor-pointer
+      hover:opacity-80
+    `}
+
+    &:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
 `;
 
-const InputIcon = styled.span`
+const Icon = styled.span`
   ${tw`
+    relative
     text-2xl
   `}
 
   color: #9ca3af;
+
+  span {
+    ${tw`
+      text-sm
+    `}
+
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:hover {
+    span {
+      ${tw`
+        visible
+        transition-all
+        duration-300
+        ease-in-out
+        text-white
+      `}
+    }
+  }
 `;

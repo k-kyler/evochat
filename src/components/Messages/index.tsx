@@ -51,6 +51,8 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         <Message key={message.id} {...message} />
       ))}
 
+      <Marginer />
+
       <SendingArea />
     </MessagesContainer>
   );
@@ -66,5 +68,11 @@ const MessagesContainer = styled.div`
     h-full
     px-4
     relative
+  `}
+`;
+
+const Marginer = styled.div`
+  ${tw`
+    mb-24
   `}
 `;

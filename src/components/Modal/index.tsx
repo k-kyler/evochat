@@ -10,15 +10,17 @@ import { useAuth } from "../../contexts/AuthContext";
 import { FaSearch } from "react-icons/fa";
 
 interface IModalProps {
-  title: string;
+  title?: string;
   description?: string;
+  emojiPicker?: any;
   type:
     | "create-room"
     | "search-room"
     | "user-setting"
     | "room-panel"
-    | "image"
-    | "video";
+    | "image-video"
+    | "giphy"
+    | "emoji";
   open: boolean;
   closeHandler: () => void;
 }
@@ -26,6 +28,7 @@ interface IModalProps {
 const Modal: FC<IModalProps> = ({
   title,
   description,
+  emojiPicker,
   type,
   open,
   closeHandler,
@@ -54,17 +57,21 @@ const Modal: FC<IModalProps> = ({
       <ModalOverlay onClick={closeHandler} />
 
       <ModalContent>
-        <ModalInnerContent>
-          <ModalHeader>
-            <CloseModalButton onClick={closeHandler}>&times;</CloseModalButton>
-          </ModalHeader>
+        <ModalInnerContent isEmoji={type}>
+          {type !== "emoji" && (
+            <ModalHeader>
+              <CloseModalButton onClick={closeHandler}>
+                &times;
+              </CloseModalButton>
+            </ModalHeader>
+          )}
 
           <ModalBody>
             <ModalTitle>{title}</ModalTitle>
 
             <ModalDescription>{description}</ModalDescription>
 
-            <ModalFeature>
+            <ModalFeature isEmoji={type}>
               {type === "create-room" ? (
                 <CreateRoomFeature>
                   <Input type="upload-image" refValue={inputImageRef} />
@@ -74,29 +81,33 @@ const Modal: FC<IModalProps> = ({
                     refValue={inputTextRef}
                   />
                 </CreateRoomFeature>
+              ) : type === "emoji" ? (
+                emojiPicker
               ) : null}
             </ModalFeature>
           </ModalBody>
         </ModalInnerContent>
 
-        <ModalActions>
-          {type === "create-room" ? (
-            <CreateRoomButtons>
-              <Button
-                content="Search room"
-                theme="text-icon"
-                color="dark"
-                icon={<FaSearch />}
-              />
-              <Button
-                content="Create"
-                theme="filled-no-outlined"
-                color="blue"
-                clickHandler={createNewRoomHandler}
-              />
-            </CreateRoomButtons>
-          ) : null}
-        </ModalActions>
+        {type !== "emoji" && (
+          <ModalActions>
+            {type === "create-room" ? (
+              <CreateRoomButtons>
+                <Button
+                  content="Search room"
+                  theme="text-icon"
+                  color="dark"
+                  icon={<FaSearch />}
+                />
+                <Button
+                  content="Create"
+                  theme="filled-no-outlined"
+                  color="blue"
+                  clickHandler={createNewRoomHandler}
+                />
+              </CreateRoomButtons>
+            ) : null}
+          </ModalActions>
+        )}
       </ModalContent>
     </>,
     document.getElementById("modal") as HTMLElement
@@ -141,10 +152,8 @@ const ModalContent = styled.div`
   }
 `;
 
-const ModalInnerContent = styled.div`
-  ${tw`
-    p-4
-  `}
+const ModalInnerContent = styled.div<{ isEmoji?: string }>`
+  ${({ isEmoji }) => isEmoji !== "emoji" && tw`p-4`}
 `;
 
 const ModalHeader = styled.div`
@@ -201,12 +210,13 @@ const ModalDescription = styled.p`
   width: 26em;
 `;
 
-const ModalFeature = styled.div`
+const ModalFeature = styled.div<{ isEmoji?: string }>`
   ${tw`
-    mt-3
     select-none
     w-full
   `}
+
+  ${({ isEmoji }) => isEmoji !== "emoji" && tw`mt-3`}
 `;
 
 const ModalActions = styled.div`

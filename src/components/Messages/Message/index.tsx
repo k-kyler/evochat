@@ -16,7 +16,7 @@ const Message: FC<IMessageProps> = ({
   active,
   type,
 }) => {
-  const [showMessageTimestamp, setShowMessageTimestamp] = useState(false);
+  const [showMessageTimestamp, setShowMessageTimestamp] = useState(true);
 
   const messageTimestampRef = useRef<HTMLSpanElement>(null);
   const messageContentRef = useRef<HTMLParagraphElement>(null);
@@ -31,7 +31,7 @@ const Message: FC<IMessageProps> = ({
         showMessageTimestamp ? "block" : "none"
       }`;
       messageContentRef.current.style.opacity = `${
-        showMessageTimestamp ? "0.9" : "1"
+        showMessageTimestamp ? "0.85" : "1"
       }`;
       messageContentRef.current.style.transition = "all 0.3s ease-in-out";
     }
@@ -80,6 +80,12 @@ const MessageContainer = styled.div<{ isUser?: boolean }>`
         display: none;
       }
 
+      div:nth-child(2) {
+        span {
+          ${tw`text-right`}
+        }
+      }
+
       p {
         ${tw`text-white`}
         background-color: #2c9984;
@@ -114,7 +120,7 @@ const SenderName = styled.span`
   ${tw`
     text-gray-400
     text-xs
-    mb-2
+    mb-1
     max-w-xs
   `}
 `;
@@ -127,7 +133,6 @@ const MessageContent = styled.p`
     max-w-md
     bg-white
     cursor-pointer
-    select-none
   `}
 
   width: fit-content;
@@ -137,9 +142,10 @@ const MessageTimestamp = styled.span`
   ${tw`
     text-xs
     text-gray-400
-    mt-2
+    mt-1
     absolute
     top-full
+    w-full
   `}
 
   display: none;
