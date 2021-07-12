@@ -97,6 +97,7 @@ const FeaturesListContainer = styled.div`
     relative
   `}
 
+  overflow: hidden scroll;
   background-color: #202225;
 
   img {
@@ -105,6 +106,15 @@ const FeaturesListContainer = styled.div`
       cursor-pointer
     `}
   }
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  /* Firefox */
+  scrollbar-width: none;
 `;
 
 const InnerContainer = styled.div`
@@ -112,16 +122,7 @@ const InnerContainer = styled.div`
     flex
     flex-col
     items-center
-    overflow-y-auto
   `}
-
-  /* Chrome, Edge, and Safari */
-  &::-webkit-scrollbar {
-    width: 0rem;
-  }
-
-  /* Firefox */
-  scrollbar-width: none;
 `;
 
 const LineBreak = styled.div`

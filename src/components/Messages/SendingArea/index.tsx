@@ -1,4 +1,13 @@
-import { FC, useRef, useState, useEffect, MouseEvent } from "react";
+import {
+  FC,
+  useRef,
+  useState,
+  useEffect,
+  MouseEvent,
+  KeyboardEvent,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { BiMessageDetail, BiGhost, BiImages } from "react-icons/bi";
@@ -6,15 +15,24 @@ import { RiFileGifLine } from "react-icons/ri";
 import Tooltip from "../../Tooltip";
 import Modal from "../../Modal";
 import Picker, { IEmojiData } from "emoji-picker-react";
-import { db } from "../../../firebase";
-import firebase from "firebase";
+import { MessageType } from "../../../typings/MessageType";
 import { useAuth } from "../../../contexts/AuthContext";
+import { db } from "../../../firebase";
+import { nanoid } from "nanoid";
 
-const SendingArea: FC = () => {
+interface ISendingArea {
+  roomId?: string;
+  messages: MessageType[];
+  setMessages: Dispatch<SetStateAction<MessageType[]>>;
+}
+
+const SendingArea: FC<ISendingArea> = ({ roomId, messages, setMessages }) => {
   const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const { user } = useAuth();
 
   const textAreaFocusHandler = () => {
     if (textAreaRef.current) {
@@ -37,6 +55,30 @@ const SendingArea: FC = () => {
     setChosenEmoji(emojiObject);
   };
 
+  const sendMessageHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+
+      if (user && textAreaRef.current) {
+        const messageObject: MessageType = {
+          id: nanoid(),
+          uid: user.uid,
+          message: textAreaRef.current.value,
+          type: "text",
+          timestamp: new Date(),
+        };
+
+        db.collection("rooms")
+          .doc(roomId)
+          .update({
+            messages: [...messages, messageObject],
+          });
+
+        if (textAreaRef.current) textAreaRef.current.value = "";
+      }
+    }
+  };
+
   useEffect(() => {
     if (chosenEmoji && textAreaRef.current)
       textAreaRef.current.value += chosenEmoji.emoji;
@@ -52,6 +94,7 @@ const SendingArea: FC = () => {
 
           <TextArea
             onChange={textAreaOnChangeHandler}
+            onKeyDown={(event) => sendMessageHandler(event)}
             ref={textAreaRef}
             spellCheck="false"
             placeholder="Type a message..."
@@ -102,7 +145,7 @@ const SendingAreaContainer = styled.div`
   ${tw`
     flex
     justify-between
-    absolute
+    sticky
     bottom-6
     left-6
     right-6
@@ -139,7 +182,7 @@ const Options = styled.div`
   span {
     ${tw`
       cursor-pointer
-      hover:opacity-80
+      hover:text-white
     `}
 
     &:not(:last-child) {

@@ -59,7 +59,28 @@ const HomeContainer = styled.div`
     flex-col
     items-center
     overflow-x-hidden
+    overflow-y-auto
     h-full
     w-full
   `}
+
+  /* Chrome, Edge, and Safari */
+   &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #2f3136;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    ${tw`
+      bg-gray-600
+      rounded-lg
+    `}
+  }
+
+  /* Firefox */
+  scrollbar-width: auto;
+  scrollbar-color: #4b5563 #2f3136;
 `;

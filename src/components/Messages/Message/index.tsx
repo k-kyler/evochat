@@ -31,7 +31,7 @@ const Message: FC<IMessageProps> = ({
         showMessageTimestamp ? "block" : "none"
       }`;
       messageContentRef.current.style.opacity = `${
-        showMessageTimestamp ? "0.85" : "1"
+        showMessageTimestamp ? "0.8" : "1"
       }`;
       messageContentRef.current.style.transition = "all 0.3s ease-in-out";
     }
@@ -81,9 +81,7 @@ const MessageContainer = styled.div<{ isUser?: boolean }>`
       }
 
       div:nth-child(2) {
-        span {
-          ${tw`text-right`}
-        }
+        ${tw`items-end`}
       }
 
       p {
@@ -112,7 +110,6 @@ const MessageInfo = styled.div`
   ${tw`
     flex
     flex-col
-    relative
   `}
 `;
 
@@ -143,9 +140,6 @@ const MessageTimestamp = styled.span`
     text-xs
     text-gray-400
     mt-1
-    absolute
-    top-full
-    w-full
   `}
 
   display: none;

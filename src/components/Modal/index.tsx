@@ -39,14 +39,17 @@ const Modal: FC<IModalProps> = ({
   const { user } = useAuth();
 
   const createNewRoomHandler = () => {
-    if (inputTextRef.current?.value)
+    if (inputTextRef.current?.value) {
       db.collection("rooms").add({
         oid: user?.uid,
         name: inputTextRef.current?.value,
         members: [],
+        messages: [],
         background: "",
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
+      closeHandler();
+    }
   };
 
   const switchToSearchRoomModal = () => {};

@@ -1,4 +1,6 @@
-type RoomMembers = {
+import { MessageType } from "./MessageType";
+
+type RoomMember = {
   uid?: string;
 };
 
@@ -7,6 +9,7 @@ export type RoomType = {
   oid: string;
   name: string;
   background?: string;
-  members?: RoomMembers[];
+  members?: RoomMember[];
+  messages?: MessageType[];
   timestamp?: any;
 };

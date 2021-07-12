@@ -40,6 +40,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
             name: doc.data().name,
             background: doc.data().background,
             members: doc.data().members,
+            messages: doc.data().messages,
             timestamp: doc.data().timestamp,
           }))
         );

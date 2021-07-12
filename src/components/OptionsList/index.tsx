@@ -66,7 +66,7 @@ const OptionsListContainer = styled.div`
 
   /* Chrome, Edge, and Safari */
   &::-webkit-scrollbar {
-    width: 0.47rem;
+    width: 0.5rem;
   }
 
   &::-webkit-scrollbar-track {
@@ -76,12 +76,12 @@ const OptionsListContainer = styled.div`
 
   &::-webkit-scrollbar-thumb {
     ${tw`
-      bg-gray-500
+      bg-gray-600
       rounded-lg
     `}
   }
 
   /* Firefox */
   scrollbar-width: auto;
-  scrollbar-color: #6b7280 #2f3136;
+  scrollbar-color: #4b5563 #2f3136;
 `;

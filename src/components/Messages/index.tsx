@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { RoomType } from "../../typings/RoomType";
@@ -6,39 +6,50 @@ import { MessageType } from "../../typings/MessageType";
 import Intro from "./Intro";
 import Message from "./Message";
 import SendingArea from "./SendingArea";
-
-import { useAuth } from "../../contexts/AuthContext";
+import { useUsers } from "../../contexts/UsersContext";
 
 interface IMessagesProps {
   selectedRoom?: RoomType;
 }
 
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
-  const { user } = useAuth();
+  const [messages, setMessages] = useState<MessageType[]>([]);
 
-  const testMessages: MessageType[] = [
-    {
-      id: "1",
-      uid: user?.uid,
-      username: String(user?.displayName),
-      avatar: String(user?.photoURL),
-      message: "Hello my awesome room",
-      timestamp: "Tue Jul 06 2021, 11:45:03 PM",
-      type: "text",
-      active: true,
-    },
-    {
-      id: "2",
-      uid: "abc",
-      username: String(user?.displayName),
-      avatar: String(user?.photoURL),
-      message:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur non aperiam consequatur inventore at esse iste sint nobis veritatis sequi quaerat id ipsum earum dolor eligendi architecto pariatur, consequuntur cumque?",
-      timestamp: "Tue Jul 06 2021, 11:45:57 PM",
-      type: "text",
-      active: true,
-    },
-  ];
+  const { users } = useUsers();
+
+  const getSelectedRoomMessages = () => {
+    const selectedRoomMessages = selectedRoom?.messages?.map((message) => {
+      return users?.map((user) => {
+        if (message.uid === user.uid) {
+          return {
+            id: message.id,
+            uid: message.uid,
+            username: user.username,
+            avatar: user.avatar,
+            message: message.message,
+            timestamp:
+              typeof message.timestamp !== "string"
+                ? new Date(message.timestamp.toDate()).toDateString() +
+                  ", " +
+                  new Date(message.timestamp.toDate()).toLocaleTimeString()
+                : message.timestamp,
+            type: message.type,
+          };
+        }
+      });
+    });
+    const convertedRoomMessages = selectedRoomMessages?.map(
+      ([message]: any) => message
+    );
+
+    if (convertedRoomMessages?.length)
+      setMessages(convertedRoomMessages as any);
+  };
+
+  useEffect(() => {
+    if (selectedRoom?.messages?.length) getSelectedRoomMessages();
+    if (!selectedRoom?.messages?.length) setMessages([]);
+  }, [selectedRoom]);
 
   return (
     <MessagesContainer>
@@ -47,13 +58,19 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         timestamp={selectedRoom?.timestamp}
       />
 
-      {testMessages.map((message) => (
-        <Message key={message.id} {...message} />
-      ))}
+      <MessagesWrapper>
+        {messages.map((message) => (
+          <Message key={message.id} {...message} />
+        ))}
+      </MessagesWrapper>
 
       <Marginer />
 
-      <SendingArea />
+      <SendingArea
+        roomId={selectedRoom?.id}
+        messages={messages}
+        setMessages={setMessages}
+      />
     </MessagesContainer>
   );
 };
@@ -68,11 +85,38 @@ const MessagesContainer = styled.div`
     h-full
     px-4
     relative
+    overflow-y-auto
   `}
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #2f3136;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    ${tw`
+      bg-gray-600
+      rounded-lg
+    `}
+  }
+
+  /* Firefox */
+  scrollbar-width: auto;
+  scrollbar-color: #4b5563 #2f3136;
 `;
 
 const Marginer = styled.div`
   ${tw`
-    mb-24
+    pb-10
+  `}
+`;
+
+const MessagesWrapper = styled.div`
+  ${tw`
+    flex-1
   `}
 `;

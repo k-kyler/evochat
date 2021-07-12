@@ -24,7 +24,7 @@ const LineAlertContainer = styled.div`
     border-b
     border-gray-500
     border-solid
-    my-4
+    my-3
     text-gray-500
     pointer-events-none
     select-none

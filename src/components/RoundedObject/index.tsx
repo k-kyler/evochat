@@ -41,7 +41,7 @@ const RoundedObject: FC<IRoundedObject> = ({
           <Icon>{icon}</Icon>
         )}
 
-        <Tooltip content={content} arrow="left" />
+        <Tooltip content={content} arrow="left" positionConfig="fixed" />
       </RoundedObjectContainer>
     );
   return (
@@ -65,7 +65,7 @@ const RoundedObject: FC<IRoundedObject> = ({
         <Icon>{icon}</Icon>
       )}
 
-      <Tooltip content={content} arrow="left" />
+      <Tooltip content={content} arrow="left" positionConfig="fixed" />
     </RoundedObjectContainer>
   );
 };
@@ -126,7 +126,7 @@ const RoundedObjectContainer = styled.div<{
         text-white
       `}
 
-      left: 105%;
+      left: 5.5%;
     }
 
     div:nth-child(1) {
