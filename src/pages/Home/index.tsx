@@ -64,8 +64,10 @@ const HomeContainer = styled.div`
     w-full
   `}
 
+  scroll-behavior: smooth;
+
   /* Chrome, Edge, and Safari */
-   &::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     width: 0.5rem;
   }
 

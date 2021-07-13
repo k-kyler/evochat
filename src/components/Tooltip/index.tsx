@@ -5,27 +5,19 @@ import tw from "twin.macro";
 interface ITooltipProps {
   content: string;
   arrow: "left" | "top" | "bottom";
-  positionConfig?: "fixed" | "absolute";
 }
 
-const Tooltip: FC<ITooltipProps> = ({ content, arrow, positionConfig }) => {
-  return (
-    <TooltipContainer arrow={arrow} positionConfig={positionConfig}>
-      {content}
-    </TooltipContainer>
-  );
+const Tooltip: FC<ITooltipProps> = ({ content, arrow }) => {
+  return <TooltipContainer arrow={arrow}>{content}</TooltipContainer>;
 };
 
 export default Tooltip;
 
 const TooltipContainer = styled.span<{
   arrow: string;
-  positionConfig?: string;
 }>`
-  ${({ positionConfig }) =>
-    positionConfig === "fixed" ? tw`fixed` : tw`absolute`}
-
   ${tw`
+    absolute
     text-center
     text-sm
     rounded-md

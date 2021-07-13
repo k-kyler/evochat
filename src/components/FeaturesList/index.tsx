@@ -55,7 +55,13 @@ const FeaturesList: FC = () => {
     <>
       <FeaturesListContainer>
         <InnerContainer>
-          <img src={Logo} onClick={getBackToHome} />
+          <ImageContainer>
+            <img src={Logo} onClick={getBackToHome} />
+          </ImageContainer>
+
+          {options.map((option) => (
+            <RoundedObject key={option.id} {...option} />
+          ))}
 
           <LineBreak />
 
@@ -69,10 +75,6 @@ const FeaturesList: FC = () => {
               selectedRoomId={selectedRoomId}
               clickHandler={() => switchRoomHandler(room.id)}
             />
-          ))}
-
-          {options.map((option) => (
-            <RoundedObject key={option.id} {...option} />
           ))}
         </InnerContainer>
       </FeaturesListContainer>
@@ -93,19 +95,15 @@ export default FeaturesList;
 const FeaturesListContainer = styled.div`
   ${tw`
   text-white
-    p-3
+    pt-3
+    px-3
     relative
+    overflow-x-hidden
+    overflow-y-auto
   `}
 
-  overflow: hidden scroll;
   background-color: #202225;
-
-  img {
-    ${tw`
-      h-12
-      cursor-pointer
-    `}
-  }
+  scroll-behavior: smooth;
 
   /* Chrome, Edge, and Safari */
   &::-webkit-scrollbar {
@@ -115,6 +113,16 @@ const FeaturesListContainer = styled.div`
 
   /* Firefox */
   scrollbar-width: none;
+`;
+
+const ImageContainer = styled.div`
+  img {
+    ${tw`
+      h-11
+      cursor-pointer
+      mb-3
+    `}
+  }
 `;
 
 const InnerContainer = styled.div`
@@ -127,7 +135,7 @@ const InnerContainer = styled.div`
 
 const LineBreak = styled.div`
   ${tw`
-    my-3
+    mb-3
     w-2/3
   `}
 

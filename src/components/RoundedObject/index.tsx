@@ -41,7 +41,7 @@ const RoundedObject: FC<IRoundedObject> = ({
           <Icon>{icon}</Icon>
         )}
 
-        <Tooltip content={content} arrow="left" positionConfig="fixed" />
+        {/* <Tooltip content={content} arrow="left" /> */}
       </RoundedObjectContainer>
     );
   return (
@@ -65,7 +65,7 @@ const RoundedObject: FC<IRoundedObject> = ({
         <Icon>{icon}</Icon>
       )}
 
-      <Tooltip content={content} arrow="left" positionConfig="fixed" />
+      {/* <Tooltip content={content} arrow="left" /> */}
     </RoundedObjectContainer>
   );
 };
@@ -95,10 +95,10 @@ const RoundedObjectContainer = styled.div<{
       transition-all
       duration-300
       ease-in-out
+      h-11
+      w-11
     `}
 
-    height: 2.75rem;
-    width: 2.75rem;
     border-radius: 50px;
   }
 
@@ -126,7 +126,7 @@ const RoundedObjectContainer = styled.div<{
         text-white
       `}
 
-      left: 5.5%;
+      left: 105%;
     }
 
     div:nth-child(1) {
@@ -180,10 +180,9 @@ const Text = styled.p`
   ${tw`
     text-sm
     text-center
+    w-5
+    h-5
   `}
-
-  width: 1.25rem;
-  height: 1.25rem;
 `;
 
 const AdditionalActive = styled.div`
@@ -194,8 +193,8 @@ const AdditionalActive = styled.div`
     rounded-tr-md
     rounded-br-md
     invisible
+    w-1
   `}
 
-  width: 0.25rem;
   height: 1.2rem;
 `;
