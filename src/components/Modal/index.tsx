@@ -43,8 +43,6 @@ const Modal: FC<IModalProps> = ({
       db.collection("rooms").add({
         oid: user?.uid,
         name: inputTextRef.current?.value,
-        members: [],
-        messages: [],
         background: "",
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });

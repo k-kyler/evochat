@@ -7,6 +7,7 @@ import Intro from "./Intro";
 import Message from "./Message";
 import SendingArea from "./SendingArea";
 import { useUsers } from "../../contexts/UsersContext";
+import { db } from "../../firebase";
 
 interface IMessagesProps {
   selectedRoom?: RoomType;
@@ -18,37 +19,29 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const { users } = useUsers();
 
   const getSelectedRoomMessages = () => {
-    const selectedRoomMessages = selectedRoom?.messages?.map((message) => {
-      return users?.map((user) => {
-        if (message.uid === user.uid) {
-          return {
-            id: message.id,
-            uid: message.uid,
-            username: user.username,
-            avatar: user.avatar,
-            message: message.message,
-            timestamp:
-              typeof message.timestamp !== "string"
-                ? new Date(message.timestamp.toDate()).toDateString() +
-                  ", " +
-                  new Date(message.timestamp.toDate()).toLocaleTimeString()
-                : message.timestamp,
-            type: message.type,
-          };
-        }
+    db.collection("rooms")
+      .doc(selectedRoom?.id)
+      .collection("messages")
+      .orderBy("timestamp", "asc")
+      .onSnapshot((snapshot) => {
+        setMessages(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            uid: doc.data().uid,
+            type: doc.data().type,
+            timestamp: doc.data().timestamp,
+            message: doc.data().message,
+            username: users?.filter((user) => user.uid === doc.data().uid)[0]
+              .username,
+            avatar: users?.filter((user) => user.uid === doc.data().uid)[0]
+              .avatar,
+          }))
+        );
       });
-    });
-    const convertedRoomMessages = selectedRoomMessages?.map(
-      ([message]: any) => message
-    );
-
-    if (convertedRoomMessages?.length)
-      setMessages(convertedRoomMessages as any);
   };
 
   useEffect(() => {
-    if (selectedRoom?.messages?.length) getSelectedRoomMessages();
-    if (!selectedRoom?.messages?.length) setMessages([]);
+    getSelectedRoomMessages();
   }, [selectedRoom]);
 
   return (
@@ -66,11 +59,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
 
       <Marginer />
 
-      <SendingArea
-        roomId={selectedRoom?.id}
-        messages={messages}
-        setMessages={setMessages}
-      />
+      <SendingArea roomId={selectedRoom?.id} />
     </MessagesContainer>
   );
 };

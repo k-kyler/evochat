@@ -1,51 +1,14 @@
-import { FC, useState, useEffect } from "react";
+import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { RoomType } from "../../typings/RoomType";
+import { MemberItemType } from "../../typings/MemberItemType";
 import OptionGroup from "./OptionGroup";
-import { useUsers } from "../../contexts/UsersContext";
 
 interface IOptionsListProps {
-  selectedRoom?: RoomType;
+  roomMembers?: MemberItemType[];
 }
 
-const OptionsList: FC<IOptionsListProps> = ({ selectedRoom }) => {
-  const [roomMembers, setRoomMembers] = useState<any>([]);
-
-  const { users } = useUsers();
-
-  const getRoomMembersHandler = () => {
-    const owner = users?.map((user) => {
-      if (user.uid === selectedRoom?.oid) {
-        return {
-          oid: user.uid,
-          uid: user.uid,
-          username: user.username,
-          avatar: user.avatar,
-        };
-      }
-    });
-    const members = selectedRoom?.members?.map((member) => {
-      return users?.map((user) => {
-        if (member.uid === user.uid) {
-          return {
-            uid: user.uid,
-            username: user.username,
-            avatar: user.avatar,
-          };
-        }
-      });
-    });
-
-    if (owner?.length && members?.length)
-      setRoomMembers([...owner, ...members]);
-    if (owner?.length && !members?.length) setRoomMembers([...owner]);
-  };
-
-  useEffect(() => {
-    getRoomMembersHandler();
-  }, [selectedRoom]);
-
+const OptionsList: FC<IOptionsListProps> = ({ roomMembers }) => {
   return (
     <OptionsListContainer>
       <OptionGroup type="members" name="Room members" members={roomMembers} />

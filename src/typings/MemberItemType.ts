@@ -1,6 +1,6 @@
 export type MemberItemType = {
-  username: string;
-  avatar: string;
+  username?: string;
+  avatar?: string;
   active?: boolean;
   uid?: string;
   oid?: string;

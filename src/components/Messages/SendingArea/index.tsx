@@ -5,8 +5,6 @@ import {
   useEffect,
   MouseEvent,
   KeyboardEvent,
-  Dispatch,
-  SetStateAction,
 } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -18,25 +16,30 @@ import Picker, { IEmojiData } from "emoji-picker-react";
 import { MessageType } from "../../../typings/MessageType";
 import { useAuth } from "../../../contexts/AuthContext";
 import { db } from "../../../firebase";
-import { nanoid } from "nanoid";
 
 interface ISendingArea {
   roomId?: string;
-  messages: MessageType[];
-  setMessages: Dispatch<SetStateAction<MessageType[]>>;
 }
 
-const SendingArea: FC<ISendingArea> = ({ roomId, messages, setMessages }) => {
+const SendingArea: FC<ISendingArea> = ({ roomId }) => {
   const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const textAreaIconRef = useRef<HTMLSpanElement>(null);
 
   const { user } = useAuth();
 
   const textAreaFocusHandler = () => {
-    if (textAreaRef.current) {
+    if (textAreaRef.current && textAreaIconRef.current) {
+      textAreaIconRef.current.style.display = "none";
       textAreaRef.current.focus();
+    }
+  };
+
+  const textAreaBlurHandler = () => {
+    if (textAreaIconRef.current) {
+      textAreaIconRef.current.style.display = "block";
     }
   };
 
@@ -61,7 +64,6 @@ const SendingArea: FC<ISendingArea> = ({ roomId, messages, setMessages }) => {
 
       if (user && textAreaRef.current) {
         const messageObject: MessageType = {
-          id: nanoid(),
           uid: user.uid,
           message: textAreaRef.current.value,
           type: "text",
@@ -70,9 +72,8 @@ const SendingArea: FC<ISendingArea> = ({ roomId, messages, setMessages }) => {
 
         db.collection("rooms")
           .doc(roomId)
-          .update({
-            messages: [...messages, messageObject],
-          });
+          .collection("messages")
+          .add(messageObject);
 
         if (textAreaRef.current) textAreaRef.current.value = "";
       }
@@ -88,13 +89,15 @@ const SendingArea: FC<ISendingArea> = ({ roomId, messages, setMessages }) => {
     <>
       <SendingAreaContainer>
         <TextAreaContainer>
-          <Icon onClick={textAreaFocusHandler}>
+          <Icon onClick={textAreaFocusHandler} ref={textAreaIconRef}>
             <BiMessageDetail />
           </Icon>
 
           <TextArea
             onChange={textAreaOnChangeHandler}
             onKeyDown={(event) => sendMessageHandler(event)}
+            onFocus={textAreaFocusHandler}
+            onBlur={textAreaBlurHandler}
             ref={textAreaRef}
             spellCheck="false"
             placeholder="Type a message..."
@@ -182,7 +185,7 @@ const Options = styled.div`
   span {
     ${tw`
       cursor-pointer
-      hover:text-white
+      hover:text-blue-500
     `}
 
     &:not(:last-child) {

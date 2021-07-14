@@ -54,7 +54,9 @@ const Message: FC<IMessageProps> = ({
             {message}
           </MessageContent>
           <MessageTimestamp ref={messageTimestampRef}>
-            {timestamp}
+            {new Date(timestamp.toDate()).toDateString() +
+              ", " +
+              new Date(timestamp.toDate()).toLocaleTimeString()}
           </MessageTimestamp>
         </MessageInfo>
       </MessageContainer>

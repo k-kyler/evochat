@@ -11,6 +11,7 @@ import UserSection from "../../components/UserSection";
 import RoomHeader from "../../components/RoomHeader";
 import Messages from "../../components/Messages";
 import { RoomType } from "../../typings/RoomType";
+import { MemberItemType } from "../../typings/MemberItemType";
 import { db } from "../../firebase";
 
 interface IChatProps {
@@ -22,10 +23,11 @@ interface IChatProps {
 const Chat: FC<IChatProps> = ({ location }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
   const [allRooms, setAllRooms] = useState<RoomType[]>([]);
+  const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
-  const { setUsers } = useUsers();
+  const { users, setUsers } = useUsers();
 
   const { id } = queryString.parse(location.search);
 
@@ -39,8 +41,6 @@ const Chat: FC<IChatProps> = ({ location }) => {
             oid: doc.data().oid,
             name: doc.data().name,
             background: doc.data().background,
-            members: doc.data().members,
-            messages: doc.data().messages,
             timestamp: doc.data().timestamp,
           }))
         );
@@ -83,10 +83,40 @@ const Chat: FC<IChatProps> = ({ location }) => {
     });
   };
 
+  const getMembersOfSelectedRoom = () => {
+    const owner = users?.filter((user) => {
+      if (user.uid === selectedRoom?.oid) {
+        return {
+          username: user.username,
+          avatar: user.avatar,
+          oid: user.uid,
+          uid: user.uid,
+        };
+      }
+    });
+
+    db.collection("rooms")
+      .doc(selectedRoom?.id)
+      .collection("members")
+      .onSnapshot((snapshot) => {
+        setRoomMembers(
+          snapshot.docs.map((doc) => ({
+            username: users?.filter((user) => user.uid === doc.data().uid)[0]
+              .username,
+            avatar: users?.filter((user) => user.uid === doc.data().uid)[0]
+              .avatar,
+            uid: doc.data().uid,
+          }))
+        );
+      });
+
+    if (roomMembers.length) setRoomMembers([...roomMembers, owner as any]);
+    if (!roomMembers.length) setRoomMembers([...(owner as any)]);
+  };
+
   const setJoinedRooms = () => {
     const joinedRooms = allRooms?.filter(
-      (room) =>
-        room.oid === user?.uid || room.members?.includes(user?.uid as any)
+      (room) => room.oid === user?.uid || roomMembers.includes(user?.uid as any)
     );
 
     if (joinedRooms?.length) setRooms(joinedRooms);
@@ -106,13 +136,17 @@ const Chat: FC<IChatProps> = ({ location }) => {
     if (rooms?.length) getSelectedRoomHandler();
   }, [rooms, id]);
 
+  useEffect(() => {
+    getMembersOfSelectedRoom();
+  }, [selectedRoom]);
+
   return (
     <ChatContainer>
       <FeaturesList />
 
       <RoomOptionContainer>
         <RoomHeader selectedRoom={selectedRoom} />
-        <OptionsList selectedRoom={selectedRoom} />
+        <OptionsList roomMembers={roomMembers} />
         <UserSection />
       </RoomOptionContainer>
 

@@ -87,7 +87,7 @@ const RoundedObjectContainer = styled.div<{
     items-center
   `}
 
-  border-radius: 50px;
+  border-radius: 50%;
   background-color: #36393f;
 
   img {
@@ -99,7 +99,7 @@ const RoundedObjectContainer = styled.div<{
       w-11
     `}
 
-    border-radius: 50px;
+    border-radius: 50%;
   }
 
   span:nth-child(1) {
