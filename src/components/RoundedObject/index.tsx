@@ -41,7 +41,7 @@ const RoundedObject: FC<IRoundedObject> = ({
           <Icon>{icon}</Icon>
         )}
 
-        {/* <Tooltip content={content} arrow="left" /> */}
+        <Tooltip content={content} arrow="left" />
       </RoundedObjectContainer>
     );
   return (
@@ -65,7 +65,7 @@ const RoundedObject: FC<IRoundedObject> = ({
         <Icon>{icon}</Icon>
       )}
 
-      {/* <Tooltip content={content} arrow="left" /> */}
+      <Tooltip content={content} arrow="left" />
     </RoundedObjectContainer>
   );
 };

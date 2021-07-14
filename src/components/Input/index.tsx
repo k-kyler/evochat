@@ -8,7 +8,7 @@ import { useAuth } from "../../contexts/AuthContext";
 interface IInputProps {
   label?: string;
   placeholder?: string;
-  type: "text" | "upload-image";
+  type: "create-room-text" | "create-room-upload-image";
   refValue: RefObject<HTMLInputElement>;
 }
 
@@ -25,7 +25,7 @@ const Input: FC<IInputProps> = ({ label, placeholder, type, refValue }) => {
 
   return (
     <>
-      {type === "text" ? (
+      {type === "create-room-text" ? (
         <InputTextContainer>
           <InputLabel onClick={inputTextFocusHandler}>{label}</InputLabel>
           <InputText
@@ -36,7 +36,7 @@ const Input: FC<IInputProps> = ({ label, placeholder, type, refValue }) => {
             defaultValue={`${user?.displayName}'s room`}
           />
         </InputTextContainer>
-      ) : type === "upload-image" ? (
+      ) : type === "create-room-upload-image" ? (
         <UploadImageContainer>
           <UploadImageIcon onClick={showHiddenInputHandler}>
             <BiImage />

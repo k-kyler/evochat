@@ -13,7 +13,7 @@ const Intro: FC<IntroProps> = ({ roomName, timestamp }) => {
   const convertedTimestamp =
     "Created on " +
     new Date(timestamp?.toDate()).toDateString() +
-    " at " +
+    ", " +
     new Date(timestamp?.toDate()).toLocaleTimeString();
 
   return (

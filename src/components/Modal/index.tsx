@@ -4,7 +4,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import Input from "../Input";
 import Button from "../Button";
-import { db } from "../../firebase";
+import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
 import { FaSearch } from "react-icons/fa";
@@ -33,19 +33,36 @@ const Modal: FC<IModalProps> = ({
   open,
   closeHandler,
 }) => {
-  const inputTextRef = useRef<HTMLInputElement>(null);
-  const inputImageRef = useRef<HTMLInputElement>(null);
+  const inputRoomNameRef = useRef<HTMLInputElement>(null);
+  const inputRoomBackgroundRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
 
   const createNewRoomHandler = () => {
-    if (inputTextRef.current?.value) {
-      db.collection("rooms").add({
-        oid: user?.uid,
-        name: inputTextRef.current?.value,
-        background: "",
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      });
+    if (inputRoomNameRef.current && inputRoomBackgroundRef.current) {
+      const roomName = inputRoomNameRef.current.value;
+      const roomBackground = inputRoomBackgroundRef.current.files;
+
+      // Add new room document to rooms collection handler
+      db.collection("rooms")
+        .add({
+          oid: user?.uid,
+          name: roomName,
+          background: "",
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then((docRef) => {
+          // Upload room background handler
+          const storageRef = storage.ref();
+          const roomBackgroundRef = storageRef.child(
+            `room-background/${docRef.id}/${roomBackground}`
+          );
+
+          // roomBackgroundRef.put(roomBackground[0] as any);
+        })
+        .catch((error) => console.error(error));
+
+      // Close create new room modal
       closeHandler();
     }
   };
@@ -75,11 +92,14 @@ const Modal: FC<IModalProps> = ({
             <ModalFeature isEmoji={type}>
               {type === "create-room" ? (
                 <CreateRoomFeature>
-                  <Input type="upload-image" refValue={inputImageRef} />
+                  <Input
+                    type="create-room-upload-image"
+                    refValue={inputRoomBackgroundRef}
+                  />
                   <Input
                     label="Room name"
-                    type="text"
-                    refValue={inputTextRef}
+                    type="create-room-text"
+                    refValue={inputRoomNameRef}
                   />
                 </CreateRoomFeature>
               ) : type === "emoji" ? (
