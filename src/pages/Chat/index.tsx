@@ -84,7 +84,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
   };
 
   const getMembersOfSelectedRoom = () => {
-    const owner = users?.filter((user) => {
+    const owner = users?.map((user) => {
       if (user.uid === selectedRoom?.oid) {
         return {
           username: user.username,
@@ -95,23 +95,23 @@ const Chat: FC<IChatProps> = ({ location }) => {
       }
     });
 
-    db.collection("rooms")
+    const members = db
+      .collection("rooms")
       .doc(selectedRoom?.id)
       .collection("members")
       .onSnapshot((snapshot) => {
-        setRoomMembers(
-          snapshot.docs.map((doc) => ({
-            username: users?.filter((user) => user.uid === doc.data().uid)[0]
-              .username,
-            avatar: users?.filter((user) => user.uid === doc.data().uid)[0]
-              .avatar,
-            uid: doc.data().uid,
-          }))
-        );
+        return snapshot.docs.map((doc) => ({
+          username: users?.filter((user) => user.uid === doc.data().uid)[0]
+            .username,
+          avatar: users?.filter((user) => user.uid === doc.data().uid)[0]
+            .avatar,
+          uid: doc.data().uid,
+        }));
       });
 
-    if (roomMembers.length) setRoomMembers([...roomMembers, owner as any]);
-    if (!roomMembers.length) setRoomMembers([...(owner as any)]);
+    if (owner?.length && members.length)
+      setRoomMembers([...owner, ...(members as any)]);
+    if (owner?.length && !members.length) setRoomMembers([...(owner as any)]);
   };
 
   const setJoinedRooms = () => {
