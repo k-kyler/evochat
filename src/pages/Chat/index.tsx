@@ -78,6 +78,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
           avatar: user?.photoURL,
           email: user?.email,
           username: user?.displayName,
+          timestamp: new Date(),
         });
       }
     });
@@ -95,23 +96,28 @@ const Chat: FC<IChatProps> = ({ location }) => {
       }
     });
 
-    const members = db
-      .collection("rooms")
+    db.collection("rooms")
       .doc(selectedRoom?.id)
       .collection("members")
-      .onSnapshot((snapshot) => {
-        return snapshot.docs.map((doc) => ({
-          username: users?.filter((user) => user.uid === doc.data().uid)[0]
-            .username,
-          avatar: users?.filter((user) => user.uid === doc.data().uid)[0]
-            .avatar,
-          uid: doc.data().uid,
-        }));
-      });
-
-    if (owner?.length && members.length)
-      setRoomMembers([...owner, ...(members as any)]);
-    if (owner?.length && !members.length) setRoomMembers([...(owner as any)]);
+      .onSnapshot(
+        (snapshot) => {
+          setRoomMembers([
+            ...(owner as any),
+            ...snapshot.docs.map((doc) => ({
+              username: users?.filter((user) => user.uid === doc.data().uid)[0]
+                .username,
+              avatar: users?.filter((user) => user.uid === doc.data().uid)[0]
+                .avatar,
+              uid: doc.data().uid,
+            })),
+          ]);
+        },
+        (error) => {
+          if (error) {
+            setRoomMembers([...(owner as any)]);
+          }
+        }
+      );
   };
 
   const setJoinedRooms = () => {
@@ -142,7 +148,9 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   return (
     <ChatContainer>
-      <FeaturesList />
+      <FeaturesListContainer>
+        <FeaturesList />
+      </FeaturesListContainer>
 
       <RoomOptionContainer>
         <RoomHeader selectedRoom={selectedRoom} />
@@ -167,6 +175,30 @@ const ChatContainer = styled.div`
   `}
 `;
 
+const FeaturesListContainer = styled.div`
+  ${tw`
+  text-white
+    pt-3
+    px-3
+    relative
+    overflow-x-hidden
+    overflow-y-auto
+  `}
+
+  flex: 0.04;
+  background-color: #202225;
+  scroll-behavior: smooth;
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  /* Firefox */
+  scrollbar-width: none;
+`;
+
 const RoomOptionContainer = styled.div`
   ${tw`
     text-white
@@ -186,5 +218,5 @@ const ChatAreaContainer = styled.div`
   `}
 
   background-color: #36393f;
-  flex: 0.8;
+  flex: 0.76;
 `;

@@ -1,4 +1,4 @@
-import { FC, RefObject } from "react";
+import { FC, RefObject, ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { BiImage } from "react-icons/bi";
@@ -8,11 +8,22 @@ import { useAuth } from "../../contexts/AuthContext";
 interface IInputProps {
   label?: string;
   placeholder?: string;
-  type: "create-room-text" | "create-room-upload-image";
+  type: "create-room-text" | "create-room-upload-background";
   refValue: RefObject<HTMLInputElement>;
+  setInputRoomBackground?: any;
 }
 
-const Input: FC<IInputProps> = ({ label, placeholder, type, refValue }) => {
+const Input: FC<IInputProps> = ({
+  label,
+  placeholder,
+  type,
+  refValue,
+  setInputRoomBackground,
+}) => {
+  const [roomBackgroundPreview, setRoomBackgroundPreview] = useState<
+    string | ArrayBuffer | null
+  >(null);
+
   const { user } = useAuth();
 
   const inputTextFocusHandler = () => {
@@ -21,6 +32,13 @@ const Input: FC<IInputProps> = ({ label, placeholder, type, refValue }) => {
 
   const showHiddenInputHandler = () => {
     if (refValue.current) refValue.current.click();
+  };
+
+  const inputRoomBackgroundHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setInputRoomBackground(event.target.files[0]);
+      setRoomBackgroundPreview(URL.createObjectURL(event.target.files[0]));
+    }
   };
 
   return (
@@ -36,15 +54,38 @@ const Input: FC<IInputProps> = ({ label, placeholder, type, refValue }) => {
             defaultValue={`${user?.displayName}'s room`}
           />
         </InputTextContainer>
-      ) : type === "create-room-upload-image" ? (
-        <UploadImageContainer>
-          <UploadImageIcon onClick={showHiddenInputHandler}>
-            <BiImage />
-            <Tooltip content="Upload image" arrow="left" />
-          </UploadImageIcon>
+      ) : type === "create-room-upload-background" ? (
+        <>
+          {roomBackgroundPreview ? (
+            <ReviewRoomBackground
+              background={roomBackgroundPreview}
+              onClick={showHiddenInputHandler}
+            >
+              <Tooltip content="Click to change" arrow="left" />
 
-          <input type="file" accept="image/*" ref={refValue} />
-        </UploadImageContainer>
+              <input
+                type="file"
+                accept="image/*"
+                ref={refValue}
+                onChange={inputRoomBackgroundHandler}
+              />
+            </ReviewRoomBackground>
+          ) : (
+            <UploadImageContainer>
+              <UploadImageIcon onClick={showHiddenInputHandler}>
+                <BiImage />
+                <Tooltip content="Upload image" arrow="left" />
+              </UploadImageIcon>
+
+              <input
+                type="file"
+                accept="image/*"
+                ref={refValue}
+                onChange={inputRoomBackgroundHandler}
+              />
+            </UploadImageContainer>
+          )}
+        </>
       ) : null}
     </>
   );
@@ -89,11 +130,12 @@ const InputText = styled.input`
 const UploadImageContainer = styled.div`
   ${tw`
     p-3
-    rounded-full
     border-solid
     border
     border-gray-300
   `}
+
+  border-radius: 50%;
 
   input {
     display: none;
@@ -112,6 +154,47 @@ const UploadImageIcon = styled.span`
 
   span {
     left: 180%;
+  }
+
+  &:hover {
+    span {
+      ${tw`
+        visible
+        transition-all
+        duration-300
+        ease-in-out
+        text-white
+      `}
+    }
+  }
+`;
+
+const ReviewRoomBackground = styled.div<{ background: any }>`
+  ${tw`
+    w-20
+    h-20
+    bg-cover
+    bg-center
+    bg-no-repeat
+    relative
+    flex
+    items-center
+    cursor-pointer
+    border-solid
+    border-2
+    border-gray-300
+    shadow-md
+  `}
+
+  border-radius: 50%;
+  background-image: url(${({ background }) => background});
+
+  input {
+    display: none;
+  }
+
+  span {
+    left: 120%;
   }
 
   &:hover {

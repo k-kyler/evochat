@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { FC, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -33,15 +33,16 @@ const Modal: FC<IModalProps> = ({
   open,
   closeHandler,
 }) => {
+  const [inputRoomBackground, setInputRoomBackground] = useState<any>(null);
+
   const inputRoomNameRef = useRef<HTMLInputElement>(null);
   const inputRoomBackgroundRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
 
   const createNewRoomHandler = () => {
-    if (inputRoomNameRef.current && inputRoomBackgroundRef.current) {
+    if (inputRoomNameRef.current) {
       const roomName = inputRoomNameRef.current.value;
-      const roomBackground = inputRoomBackgroundRef.current.files;
 
       // Add new room document to rooms collection handler
       db.collection("rooms")
@@ -52,13 +53,27 @@ const Modal: FC<IModalProps> = ({
           timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         })
         .then((docRef) => {
-          // Upload room background handler
-          const storageRef = storage.ref();
-          const roomBackgroundRef = storageRef.child(
-            `room-background/${docRef.id}/${roomBackground}`
-          );
+          if (inputRoomBackground) {
+            // Upload room background handler
+            const storageRef = storage.ref();
+            const roomBackgroundPath = `room-background/${docRef.id}/${
+              docRef.id + "." + inputRoomBackground.name.split(".")[1]
+            }`;
+            const roomBackgroundRef = storageRef.child(roomBackgroundPath);
 
-          // roomBackgroundRef.put(roomBackground[0] as any);
+            roomBackgroundRef.put(inputRoomBackground).then(() => {
+              // Retrieve the downloaded URL of room background
+              storage
+                .ref(roomBackgroundPath)
+                .getDownloadURL()
+                .then((url) => {
+                  // Update the room background URL
+                  db.collection("rooms").doc(docRef.id).update({
+                    background: url,
+                  });
+                });
+            });
+          }
         })
         .catch((error) => console.error(error));
 
@@ -93,8 +108,9 @@ const Modal: FC<IModalProps> = ({
               {type === "create-room" ? (
                 <CreateRoomFeature>
                   <Input
-                    type="create-room-upload-image"
+                    type="create-room-upload-background"
                     refValue={inputRoomBackgroundRef}
+                    setInputRoomBackground={setInputRoomBackground}
                   />
                   <Input
                     label="Room name"

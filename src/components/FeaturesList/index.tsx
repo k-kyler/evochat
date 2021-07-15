@@ -53,31 +53,29 @@ const FeaturesList: FC = () => {
 
   return (
     <>
-      <FeaturesListContainer>
-        <InnerContainer>
-          <ImageContainer>
-            <img src={Logo} onClick={getBackToHome} />
-          </ImageContainer>
+      <FeaturesListInnerContainer>
+        <ImageContainer>
+          <img src={Logo} onClick={getBackToHome} />
+        </ImageContainer>
 
-          {options.map((option) => (
-            <RoundedObject key={option.id} {...option} />
-          ))}
+        {options.map((option) => (
+          <RoundedObject key={option.id} {...option} />
+        ))}
 
-          <LineBreak />
+        <LineBreak />
 
-          {rooms?.map((room) => (
-            <RoundedObject
-              key={room.id}
-              id={room.id}
-              content={room.name}
-              background={room.background}
-              type="room"
-              selectedRoomId={selectedRoomId}
-              clickHandler={() => switchRoomHandler(room.id)}
-            />
-          ))}
-        </InnerContainer>
-      </FeaturesListContainer>
+        {rooms?.map((room) => (
+          <RoundedObject
+            key={room.id}
+            id={room.id}
+            content={room.name}
+            background={room.background}
+            type="room"
+            selectedRoomId={selectedRoomId}
+            clickHandler={() => switchRoomHandler(room.id)}
+          />
+        ))}
+      </FeaturesListInnerContainer>
 
       <Modal
         type="create-room"
@@ -92,29 +90,6 @@ const FeaturesList: FC = () => {
 
 export default FeaturesList;
 
-const FeaturesListContainer = styled.div`
-  ${tw`
-  text-white
-    pt-3
-    px-3
-    relative
-    overflow-x-hidden
-    overflow-y-auto
-  `}
-
-  background-color: #202225;
-  scroll-behavior: smooth;
-
-  /* Chrome, Edge, and Safari */
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-
-  /* Firefox */
-  scrollbar-width: none;
-`;
-
 const ImageContainer = styled.div`
   img {
     ${tw`
@@ -125,7 +100,7 @@ const ImageContainer = styled.div`
   }
 `;
 
-const InnerContainer = styled.div`
+const FeaturesListInnerContainer = styled.div`
   ${tw`
     flex
     flex-col

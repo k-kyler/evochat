@@ -32,8 +32,9 @@ const RoundedObject: FC<IRoundedObject> = ({
 
             {/* Display room background if it's existed else display first letter of room name */}
             {background ? (
-              <img src={background} />
+              <BackgroundContainer background={background} />
             ) : (
+              // <img src={background} />
               <Text>{content[0].toUpperCase()}</Text>
             )}
           </>
@@ -56,7 +57,7 @@ const RoundedObject: FC<IRoundedObject> = ({
 
           {/* Display room background if it's existed else display first letter of room name */}
           {background ? (
-            <img src={background} />
+            <BackgroundContainer background={background} />
           ) : (
             <Text>{content[0].toUpperCase()}</Text>
           )}
@@ -90,18 +91,6 @@ const RoundedObjectContainer = styled.div<{
   border-radius: 50%;
   background-color: #36393f;
 
-  img {
-    ${tw`
-      transition-all
-      duration-300
-      ease-in-out
-      h-11
-      w-11
-    `}
-
-    border-radius: 50%;
-  }
-
   span:nth-child(1) {
     color: #3ba55d;
   }
@@ -109,11 +98,11 @@ const RoundedObjectContainer = styled.div<{
   &:hover {
     ${tw`rounded-xl`}
 
-    background-color: #3ba55d;
-
-    img {
-      ${tw`rounded-xl`}
-    }
+    ${({ background }) =>
+      !background &&
+      css`
+        background-color: #3ba55d;
+      `}
 
     span:nth-child(1) {
       color: white;
@@ -132,11 +121,16 @@ const RoundedObjectContainer = styled.div<{
     div:nth-child(1) {
       ${tw`visible`}
     }
+
+    div:nth-child(2) {
+      ${tw`rounded-xl`}
+    }
   }
 
   ${({ background }) => !background && tw`p-3`}
 
-  ${({ type }) => type === "room" && tw`hover:bg-blue-500`}
+  ${({ type, background }) =>
+    type === "room" && !background && tw`hover:bg-blue-500`}
 
   ${({ active, type, background }) =>
     active &&
@@ -148,14 +142,10 @@ const RoundedObjectContainer = styled.div<{
         rounded-xl
       `}
 
-      img {
-        ${tw`
-          transition-all
-          duration-300
-          ease-in-out
-          rounded-xl
-        `}
-      }
+      ${background &&
+      tw`
+        rounded-xl
+      `}
 
       div:nth-child(1) {
         ${tw`
@@ -167,7 +157,32 @@ const RoundedObjectContainer = styled.div<{
 
         height: 2.4rem;
       }
+
+      div:nth-child(2) {
+        ${tw`
+          transition-all
+          duration-300
+          ease-in-out
+          rounded-xl
+        `}
+      }
     `}
+`;
+
+const BackgroundContainer = styled.div<{ background: string }>`
+  ${tw`
+    transition-all
+    duration-300
+    ease-in-out
+    h-11
+    w-11
+    bg-cover
+    bg-center
+    bg-no-repeat
+  `}
+
+  border-radius: 50%;
+  background-image: url(${({ background }) => background});
 `;
 
 const Icon = styled.span`
@@ -182,6 +197,9 @@ const Text = styled.p`
     text-center
     w-5
     h-5
+    flex
+    items-center
+    justify-center
   `}
 `;
 
