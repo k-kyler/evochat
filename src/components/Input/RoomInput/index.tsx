@@ -2,10 +2,10 @@ import { FC, RefObject, ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { BiImage } from "react-icons/bi";
-import Tooltip from "../Tooltip";
-import { useAuth } from "../../contexts/AuthContext";
+import Tooltip from "../../Tooltip";
+import { useAuth } from "../../../contexts/AuthContext";
 
-interface IInputProps {
+interface IRoomInputProps {
   label?: string;
   placeholder?: string;
   type: "create-room-text" | "create-room-upload-background";
@@ -13,7 +13,7 @@ interface IInputProps {
   setInputRoomBackground?: any;
 }
 
-const Input: FC<IInputProps> = ({
+const RoomInput: FC<IRoomInputProps> = ({
   label,
   placeholder,
   type,
@@ -91,7 +91,7 @@ const Input: FC<IInputProps> = ({
   );
 };
 
-export default Input;
+export default RoomInput;
 
 const InputTextContainer = styled.div`
   ${tw`
@@ -181,7 +181,7 @@ const ReviewRoomBackground = styled.div<{ background: any }>`
     items-center
     cursor-pointer
     border-solid
-    border-2
+    border-4
     border-gray-300
     shadow-md
   `}

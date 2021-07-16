@@ -1,5 +1,5 @@
 import { FC } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
@@ -15,6 +15,7 @@ interface IButtonProps {
     | "facebook";
   color?: "red" | "blue" | "dark";
   icon?: any;
+  disabled?: boolean;
   clickHandler?: () => void;
 }
 
@@ -24,6 +25,7 @@ const Button: FC<IButtonProps> = ({
   color,
   icon,
   clickHandler,
+  disabled,
 }) => {
   if (theme === "filled")
     return (
@@ -36,8 +38,18 @@ const Button: FC<IButtonProps> = ({
       <FilledNoOutlinedButton
         color={color}
         onClick={clickHandler && clickHandler}
+        disabled={disabled}
+        isDisabled={disabled}
       >
-        {content}
+        {!disabled ? (
+          content
+        ) : (
+          <DotsContainer>
+            <Dot position="odd" />
+            <Dot position="even" />
+            <Dot position="odd" />
+          </DotsContainer>
+        )}
       </FilledNoOutlinedButton>
     );
   if (theme === "text-icon")
@@ -147,7 +159,10 @@ const FilledButton = styled(BaseButton)<{ color?: string }>`
   `}
 `;
 
-const FilledNoOutlinedButton = styled(BaseButton)<{ color?: string }>`
+const FilledNoOutlinedButton = styled(BaseButton)<{
+  color?: string;
+  isDisabled?: boolean;
+}>`
   ${tw`
     text-white
   `}
@@ -167,6 +182,63 @@ const FilledNoOutlinedButton = styled(BaseButton)<{ color?: string }>`
     bg-red-500
     hover:bg-red-600
   `}
+
+  ${({ isDisabled }) =>
+    isDisabled &&
+    tw`
+    pointer-events-none
+    bg-blue-400
+    hover:bg-blue-400
+  `}
+`;
+
+const DotsContainer = styled.div`
+  ${tw`
+    flex
+    items-center
+  `}
+
+  div:not(:last-child) {
+    ${tw`
+      mr-2
+    `}
+  }
+`;
+
+const Dot = styled.div<{ position: "even" | "odd" }>`
+  ${tw`
+    w-2
+    h-2
+    bg-white
+    m-1
+  `}
+
+  ${({ position }) =>
+    position === "odd"
+      ? css`
+          animation: oddDot 0.5s linear infinite alternate;
+        `
+      : css`
+          animation: evenDot 0.5s linear infinite alternate;
+        `}
+
+  @keyframes oddDot {
+    from {
+      transform: translateY(0.25rem);
+    }
+    to {
+      transform: translateY(-0.25rem);
+    }
+  }
+
+  @keyframes evenDot {
+    from {
+      transform: translateY(-0.25rem);
+    }
+    to {
+      transform: translateY(0.25rem);
+    }
+  }
 `;
 
 const TextButton = styled(BaseButton)<{ color?: string }>`

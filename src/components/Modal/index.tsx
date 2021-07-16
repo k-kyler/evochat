@@ -2,7 +2,7 @@ import { FC, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
-import Input from "../Input";
+import RoomInput from "../Input/RoomInput";
 import Button from "../Button";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
@@ -34,6 +34,8 @@ const Modal: FC<IModalProps> = ({
   closeHandler,
 }) => {
   const [inputRoomBackground, setInputRoomBackground] = useState<any>(null);
+  const [disabledCreateRoomButton, setDisabledCreateRoomButton] =
+    useState(false);
 
   const inputRoomNameRef = useRef<HTMLInputElement>(null);
   const inputRoomBackgroundRef = useRef<HTMLInputElement>(null);
@@ -41,45 +43,51 @@ const Modal: FC<IModalProps> = ({
   const { user } = useAuth();
 
   const createNewRoomHandler = () => {
-    if (inputRoomNameRef.current) {
-      const roomName = inputRoomNameRef.current.value;
+    // Set disabled event
+    setDisabledCreateRoomButton(true);
 
-      // Add new room document to rooms collection handler
-      db.collection("rooms")
-        .add({
-          oid: user?.uid,
-          name: roomName,
-          background: "",
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        })
-        .then((docRef) => {
-          if (inputRoomBackground) {
-            // Upload room background handler
-            const storageRef = storage.ref();
-            const roomBackgroundPath = `room-background/${docRef.id}/${
-              docRef.id + "." + inputRoomBackground.name.split(".")[1]
-            }`;
-            const roomBackgroundRef = storageRef.child(roomBackgroundPath);
+    setTimeout(() => {
+      if (inputRoomNameRef.current) {
+        const roomName = inputRoomNameRef.current.value;
 
-            roomBackgroundRef.put(inputRoomBackground).then(() => {
-              // Retrieve the downloaded URL of room background
-              storage
-                .ref(roomBackgroundPath)
-                .getDownloadURL()
-                .then((url) => {
-                  // Update the room background URL
-                  db.collection("rooms").doc(docRef.id).update({
-                    background: url,
+        // Add new room document to rooms collection handler
+        db.collection("rooms")
+          .add({
+            oid: user?.uid,
+            name: roomName,
+            background: "",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          })
+          .then((docRef) => {
+            if (inputRoomBackground) {
+              // Upload room background handler
+              const storageRef = storage.ref();
+              const roomBackgroundPath = `room-background/${docRef.id}/${
+                docRef.id + "." + inputRoomBackground.name.split(".")[1]
+              }`;
+              const roomBackgroundRef = storageRef.child(roomBackgroundPath);
+
+              roomBackgroundRef.put(inputRoomBackground).then(() => {
+                // Retrieve the downloaded URL of room background
+                storage
+                  .ref(roomBackgroundPath)
+                  .getDownloadURL()
+                  .then((url) => {
+                    // Update the room background URL
+                    db.collection("rooms").doc(docRef.id).update({
+                      background: url,
+                    });
                   });
-                });
-            });
-          }
-        })
-        .catch((error) => console.error(error));
+              });
+            }
+          })
+          .catch((error) => console.error(error));
+      }
 
       // Close create new room modal
+      setDisabledCreateRoomButton(false);
       closeHandler();
-    }
+    }, 2000);
   };
 
   const switchToSearchRoomModal = () => {};
@@ -107,12 +115,12 @@ const Modal: FC<IModalProps> = ({
             <ModalFeature isEmoji={type}>
               {type === "create-room" ? (
                 <CreateRoomFeature>
-                  <Input
+                  <RoomInput
                     type="create-room-upload-background"
                     refValue={inputRoomBackgroundRef}
                     setInputRoomBackground={setInputRoomBackground}
                   />
-                  <Input
+                  <RoomInput
                     label="Room name"
                     type="create-room-text"
                     refValue={inputRoomNameRef}
@@ -140,6 +148,7 @@ const Modal: FC<IModalProps> = ({
                   theme="filled-no-outlined"
                   color="blue"
                   clickHandler={createNewRoomHandler}
+                  disabled={disabledCreateRoomButton}
                 />
               </CreateRoomButtons>
             ) : null}
