@@ -10,6 +10,8 @@ import OptionsList from "../../components/OptionsList";
 import UserSection from "../../components/UserSection";
 import RoomHeader from "../../components/RoomHeader";
 import Messages from "../../components/Messages";
+import BlankOptionsList from "../../components/BlankSection/BlankOptionsList";
+import BlankChatArea from "../../components/BlankSection/BlankChatArea";
 import { RoomType } from "../../typings/RoomType";
 import { MemberItemType } from "../../typings/MemberItemType";
 import { db } from "../../firebase";
@@ -153,13 +155,26 @@ const Chat: FC<IChatProps> = ({ location }) => {
       </FeaturesListContainer>
 
       <RoomOptionContainer>
-        <RoomHeader selectedRoom={selectedRoom} />
-        <OptionsList roomMembers={roomMembers} />
+        <RoomHeader
+          selectedRoom={selectedRoom}
+          isBlank={!selectedRoom ? true : false}
+        />
+
+        {selectedRoom ? (
+          <OptionsList roomMembers={roomMembers} />
+        ) : (
+          <BlankOptionsList />
+        )}
+
         <UserSection />
       </RoomOptionContainer>
 
       <ChatAreaContainer>
-        <Messages selectedRoom={selectedRoom} />
+        {selectedRoom ? (
+          <Messages selectedRoom={selectedRoom} />
+        ) : (
+          <BlankChatArea />
+        )}
       </ChatAreaContainer>
     </ChatContainer>
   );
@@ -179,13 +194,12 @@ const FeaturesListContainer = styled.div`
   ${tw`
   text-white
     pt-3
-    px-3
+    px-4
     relative
     overflow-x-hidden
     overflow-y-auto
   `}
 
-  flex: 0.04;
   background-color: #202225;
   scroll-behavior: smooth;
 
@@ -218,5 +232,5 @@ const ChatAreaContainer = styled.div`
   `}
 
   background-color: #36393f;
-  flex: 0.76;
+  flex: 0.8;
 `;

@@ -7,7 +7,7 @@ import Tooltip from "../Tooltip";
 import OnlineStatus from "../OnlineStatus";
 
 const UserSection: FC = () => {
-  const { user } = useAuth();
+  const { user, logOutHandler } = useAuth();
 
   return (
     <UserSectionContainer>
@@ -19,7 +19,7 @@ const UserSection: FC = () => {
         <Content>{user?.displayName}</Content>
       </UserInfo>
 
-      <Icon>
+      <Icon onClick={logOutHandler}>
         <FaCog />
         <Tooltip content="User setting" arrow="bottom" />
       </Icon>

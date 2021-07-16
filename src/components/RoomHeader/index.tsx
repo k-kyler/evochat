@@ -8,7 +8,7 @@ import {
   FcImport,
   FcDocument,
   FcSupport,
-  FcFlashOn,
+  FcLeave,
 } from "react-icons/fc";
 import Panel from "./Panel";
 import { RoomType } from "../../typings/RoomType";
@@ -17,9 +17,10 @@ import { nanoid } from "nanoid";
 
 interface IRoomHeader {
   selectedRoom?: RoomType;
+  isBlank?: boolean;
 }
 
-const RoomHeader: FC<IRoomHeader> = ({ selectedRoom }) => {
+const RoomHeader: FC<IRoomHeader> = ({ selectedRoom, isBlank }) => {
   const [openPanel, setOpenPanel] = useState(false);
   const [rotateState, setRotateState] = useState(true);
 
@@ -59,7 +60,7 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom }) => {
     {
       id: nanoid(),
       name: "Delete room",
-      icon: <FcFlashOn />,
+      icon: <FcLeave />,
       highlight: "red",
     },
   ];
@@ -100,14 +101,20 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom }) => {
 
   return (
     <RoomHeaderContainer onClick={openPanelHandler}>
-      <RoomName title={selectedRoom?.name}>{selectedRoom?.name}</RoomName>
-      <Icon ref={iconRef}>{openPanel ? <FaTimes /> : <FaAngleDown />}</Icon>
-      <Panel
-        oid={selectedRoom?.oid}
-        generalData={generalPanelData}
-        adminData={adminPanelData}
-        open={openPanel}
-      />
+      {isBlank ? (
+        <RoomName isBlank={isBlank}>⚡ Activity Overview</RoomName>
+      ) : (
+        <>
+          <RoomName title={selectedRoom?.name}>{selectedRoom?.name}</RoomName>
+          <Icon ref={iconRef}>{openPanel ? <FaTimes /> : <FaAngleDown />}</Icon>
+          <Panel
+            oid={selectedRoom?.oid}
+            generalData={generalPanelData}
+            adminData={adminPanelData}
+            open={openPanel}
+          />
+        </>
+      )}
     </RoomHeaderContainer>
   );
 };
@@ -134,7 +141,7 @@ const RoomHeaderContainer = styled.div`
   }
 `;
 
-const RoomName = styled.p`
+const RoomName = styled.p<{ isBlank?: boolean }>`
   ${tw`
     text-base
     overflow-ellipsis
@@ -145,6 +152,12 @@ const RoomName = styled.p`
   `}
 
   max-width: 13em;
+
+  ${({ isBlank }) =>
+    isBlank &&
+    tw`
+    pointer-events-none
+  `}
 `;
 
 const Icon = styled.span`

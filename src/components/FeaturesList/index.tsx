@@ -62,7 +62,7 @@ const FeaturesList: FC = () => {
           <RoundedObject key={option.id} {...option} />
         ))}
 
-        <LineBreak />
+        {rooms?.length ? <LineBreak /> : null}
 
         {rooms?.map((room) => (
           <RoundedObject

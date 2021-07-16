@@ -159,10 +159,7 @@ const IntroIllustration = styled.div`
   height: 10em;
 
   img {
-    ${tw`
-      rounded-full
-    `}
-
+    border-radius: 50%;
     width: auto;
     height: 100%;
     max-width: fit-content;
