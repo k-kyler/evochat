@@ -6,10 +6,11 @@ import LineAlert from "../LineAlert";
 
 interface IntroProps {
   roomName?: string;
+  roomBackground?: string;
   timestamp?: any;
 }
 
-const Intro: FC<IntroProps> = ({ roomName, timestamp }) => {
+const Intro: FC<IntroProps> = ({ roomName, roomBackground, timestamp }) => {
   const convertedTimestamp =
     "Created on " +
     new Date(timestamp?.toDate()).toDateString() +
@@ -19,7 +20,11 @@ const Intro: FC<IntroProps> = ({ roomName, timestamp }) => {
   return (
     <>
       <IntroContainer>
-        <img src={IntroLogo} />
+        {roomBackground ? (
+          <BackgroundContainer background={roomBackground} />
+        ) : (
+          <img src={IntroLogo} />
+        )}
         <Content>Welcome to {roomName}</Content>
       </IntroContainer>
       <LineAlert content={convertedTimestamp} />
@@ -49,10 +54,23 @@ const IntroContainer = styled.div`
 const Content = styled.h3`
   ${tw`
     text-3xl
-    my-4
+    mt-4
     font-semibold
     text-center
   `}
 
   max-width: 23em;
+`;
+
+const BackgroundContainer = styled.div<{ background: string }>`
+  ${tw`
+    h-32
+    w-32
+    bg-cover
+    bg-center
+    bg-no-repeat
+  `}
+
+  border-radius: 50%;
+  background-image: url(${({ background }) => background});
 `;

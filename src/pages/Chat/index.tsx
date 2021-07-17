@@ -24,7 +24,7 @@ interface IChatProps {
 const Chat: FC<IChatProps> = ({ location }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
   const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
-  const [tempUser, setTempUser] = useState<any>([]);
+  const [tempMember, setTempMember] = useState<any>([]);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
@@ -37,10 +37,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
       .onSnapshot((snapshot) => {
         setRooms(
           snapshot.docs.map((doc) => {
-            if (
-              doc.data().oid === user?.uid ||
-              (roomMembers.length && roomMembers.includes(user?.uid as any))
-            ) {
+            if (doc.data().oid === user?.uid) {
               return {
                 id: doc.id,
                 oid: doc.data().oid,
@@ -49,6 +46,13 @@ const Chat: FC<IChatProps> = ({ location }) => {
                 timestamp: doc.data().timestamp,
               };
             }
+            db.collection("rooms")
+              .doc(doc.data().id)
+              .collection("members")
+              .where("uid", "==", user?.uid)
+              .onSnapshot((snapshot) => {
+                snapshot.docs.map((doc) => setRooms(doc));
+              });
           })
         );
       });
@@ -100,7 +104,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
               db.collection("users")
                 .where("uid", "==", doc.data().uid)
                 .onSnapshot((snapshot) => {
-                  setTempUser(
+                  setTempMember(
                     snapshot.docs.map((doc) => ({
                       username: doc.data().username,
                       avatar: doc.data().avatar,
@@ -109,8 +113,8 @@ const Chat: FC<IChatProps> = ({ location }) => {
                 });
 
               return {
-                username: tempUser[0]?.username,
-                avatar: tempUser[0]?.avatar,
+                username: tempMember[0]?.username,
+                avatar: tempMember[0]?.avatar,
                 uid: doc.data().uid,
               };
             }),
@@ -130,7 +134,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
   }, []);
 
   useEffect(() => {
-    if (rooms?.length) getSelectedRoomHandler();
+    // if (rooms?.length) getSelectedRoomHandler();
   }, [rooms, id]);
 
   useEffect(() => {
@@ -139,9 +143,9 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   return (
     <ChatContainer>
-      <FeaturesListContainer>
+      {/* <FeaturesListContainer>
         <FeaturesList />
-      </FeaturesListContainer>
+      </FeaturesListContainer> */}
 
       <RoomOptionContainer>
         <RoomHeader
@@ -176,7 +180,6 @@ const ChatContainer = styled.div`
     w-full
     h-full
     flex
-    overflow-hidden
   `}
 `;
 
@@ -186,9 +189,21 @@ const FeaturesListContainer = styled.div`
     pt-3
     px-4
     relative
+    overflow-x-hidden
+    overflow-y-auto
   `}
 
   background-color: #202225;
+  scroll-behavior: smooth;
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  /* Firefox */
+  scrollbar-width: none;
 `;
 
 const RoomOptionContainer = styled.div`

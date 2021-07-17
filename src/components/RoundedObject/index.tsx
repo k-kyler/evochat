@@ -42,7 +42,7 @@ const RoundedObject: FC<IRoundedObject> = ({
           <Icon>{icon}</Icon>
         )}
 
-        <Tooltip content={content} arrow="left" />
+        {/* <Tooltip content={content} arrow="left" /> */}
       </RoundedObjectContainer>
     );
   return (
@@ -66,7 +66,7 @@ const RoundedObject: FC<IRoundedObject> = ({
         <Icon>{icon}</Icon>
       )}
 
-      <Tooltip content={content} arrow="left" />
+      {/* <Tooltip content={content} arrow="left" /> */}
     </RoundedObjectContainer>
   );
 };
@@ -174,8 +174,8 @@ const BackgroundContainer = styled.div<{ background: string }>`
     transition-all
     duration-300
     ease-in-out
-    h-11
-    w-11
+    h-12
+    w-12
     bg-cover
     bg-center
     bg-no-repeat
@@ -187,7 +187,7 @@ const BackgroundContainer = styled.div<{ background: string }>`
 
 const Icon = styled.span`
   ${tw`
-    text-xl
+    text-2xl
   `}
 `;
 
@@ -195,8 +195,8 @@ const Text = styled.p`
   ${tw`
     text-sm
     text-center
-    w-5
-    h-5
+    w-6
+    h-6
     flex
     items-center
     justify-center

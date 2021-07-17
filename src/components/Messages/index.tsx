@@ -14,7 +14,7 @@ interface IMessagesProps {
 
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const [tempUser, setTempUser] = useState<any>([]);
+  const [tempMember, setTempMember] = useState<any>([]);
 
   const getSelectedRoomMessages = () => {
     db.collection("rooms")
@@ -27,7 +27,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
             db.collection("users")
               .where("uid", "==", doc.data().uid)
               .onSnapshot((snapshot) => {
-                setTempUser(
+                setTempMember(
                   snapshot.docs.map((doc) => ({
                     username: doc.data().username,
                     avatar: doc.data().avatar,
@@ -41,8 +41,8 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
               type: doc.data().type,
               timestamp: doc.data().timestamp,
               message: doc.data().message,
-              username: tempUser[0]?.username,
-              avatar: tempUser[0]?.avatar,
+              username: tempMember[0]?.username,
+              avatar: tempMember[0]?.avatar,
             };
           })
         );
@@ -57,6 +57,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
     <MessagesContainer>
       <Intro
         roomName={selectedRoom?.name}
+        roomBackground={selectedRoom?.background}
         timestamp={selectedRoom?.timestamp}
       />
 

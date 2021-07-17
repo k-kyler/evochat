@@ -95,26 +95,13 @@ const FeaturesListInnerContainer = styled.div`
     flex
     flex-col
     items-center
-    overflow-auto
-    h-full
   `}
-
-  scroll-behavior: smooth;
-
-  /* Chrome, Edge, and Safari */
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-
-  /* Firefox */
-  scrollbar-width: none;
 `;
 
 const ImageContainer = styled.div`
   img {
     ${tw`
-      h-11
+      h-12
       cursor-pointer
       mb-3
     `}
