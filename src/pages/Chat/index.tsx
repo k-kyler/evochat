@@ -4,7 +4,6 @@ import tw from "twin.macro";
 import queryString from "query-string";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRooms } from "../../contexts/RoomsContext";
-import { useUsers } from "../../contexts/UsersContext";
 import FeaturesList from "../../components/FeaturesList";
 import OptionsList from "../../components/OptionsList";
 import UserSection from "../../components/UserSection";
@@ -24,42 +23,35 @@ interface IChatProps {
 
 const Chat: FC<IChatProps> = ({ location }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
-  const [allRooms, setAllRooms] = useState<RoomType[]>([]);
   const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
+  const [tempUser, setTempUser] = useState<any>([]);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
-  const { users, setUsers } = useUsers();
 
   const { id } = queryString.parse(location.search);
 
-  const getAllRoomsHandler = () => {
+  const getJoinedRoomsHandler = () => {
     db.collection("rooms")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        setAllRooms(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            oid: doc.data().oid,
-            name: doc.data().name,
-            background: doc.data().background,
-            timestamp: doc.data().timestamp,
-          }))
+        setRooms(
+          snapshot.docs.map((doc) => {
+            if (
+              doc.data().oid === user?.uid ||
+              (roomMembers.length && roomMembers.includes(user?.uid as any))
+            ) {
+              return {
+                id: doc.id,
+                oid: doc.data().oid,
+                name: doc.data().name,
+                background: doc.data().background,
+                timestamp: doc.data().timestamp,
+              };
+            }
+          })
         );
       });
-  };
-
-  const getAllUsersHandler = () => {
-    db.collection("users").onSnapshot((snapshot) => {
-      setUsers(
-        snapshot.docs.map((doc) => ({
-          uid: doc.data().uid,
-          username: doc.data().username,
-          avatar: doc.data().avatar,
-          email: doc.data().email,
-        }))
-      );
-    });
   };
 
   const getSelectedRoomHandler = () => {
@@ -87,16 +79,15 @@ const Chat: FC<IChatProps> = ({ location }) => {
   };
 
   const getMembersOfSelectedRoom = () => {
-    const owner = users?.map((user) => {
-      if (user.uid === selectedRoom?.oid) {
-        return {
-          username: user.username,
-          avatar: user.avatar,
-          oid: user.uid,
-          uid: user.uid,
-        };
-      }
-    });
+    const owner: MemberItemType =
+      user?.uid === selectedRoom?.oid
+        ? {
+            username: user?.displayName,
+            avatar: user?.photoURL,
+            oid: user?.uid,
+            uid: user?.uid,
+          }
+        : (null as any);
 
     db.collection("rooms")
       .doc(selectedRoom?.id)
@@ -104,41 +95,39 @@ const Chat: FC<IChatProps> = ({ location }) => {
       .onSnapshot(
         (snapshot) => {
           setRoomMembers([
-            ...(owner as any),
-            ...snapshot.docs.map((doc) => ({
-              username: users?.filter((user) => user.uid === doc.data().uid)[0]
-                .username,
-              avatar: users?.filter((user) => user.uid === doc.data().uid)[0]
-                .avatar,
-              uid: doc.data().uid,
-            })),
+            owner,
+            ...snapshot.docs.map((doc) => {
+              db.collection("users")
+                .where("uid", "==", doc.data().uid)
+                .onSnapshot((snapshot) => {
+                  setTempUser(
+                    snapshot.docs.map((doc) => ({
+                      username: doc.data().username,
+                      avatar: doc.data().avatar,
+                    }))
+                  );
+                });
+
+              return {
+                username: tempUser[0]?.username,
+                avatar: tempUser[0]?.avatar,
+                uid: doc.data().uid,
+              };
+            }),
           ]);
         },
         (error) => {
           if (error) {
-            setRoomMembers([...(owner as any)]);
+            setRoomMembers([owner]);
           }
         }
       );
   };
 
-  const setJoinedRooms = () => {
-    const joinedRooms = allRooms?.filter(
-      (room) => room.oid === user?.uid || roomMembers.includes(user?.uid as any)
-    );
-
-    if (joinedRooms?.length) setRooms(joinedRooms);
-  };
-
   useEffect(() => {
-    getAllRoomsHandler();
-    getAllUsersHandler();
+    getJoinedRoomsHandler();
     checkUserHandler();
   }, []);
-
-  useEffect(() => {
-    if (allRooms.length) setJoinedRooms();
-  }, [allRooms]);
 
   useEffect(() => {
     if (rooms?.length) getSelectedRoomHandler();
@@ -187,6 +176,7 @@ const ChatContainer = styled.div`
     w-full
     h-full
     flex
+    overflow-hidden
   `}
 `;
 
@@ -196,21 +186,9 @@ const FeaturesListContainer = styled.div`
     pt-3
     px-4
     relative
-    overflow-x-hidden
-    overflow-y-auto
   `}
 
   background-color: #202225;
-  scroll-behavior: smooth;
-
-  /* Chrome, Edge, and Safari */
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-
-  /* Firefox */
-  scrollbar-width: none;
 `;
 
 const RoomOptionContainer = styled.div`

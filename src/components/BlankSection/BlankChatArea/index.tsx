@@ -9,7 +9,7 @@ const BlankChatArea: FC = () => {
       <InnerContainer>
         <img src={BlankChatAreaImage} />
         <Description>
-          Get awesome experience with your friends for now.
+          Your friends are waiting for you, start your journey with them now!
         </Description>
       </InnerContainer>
     </BlankChatAreaContainer>

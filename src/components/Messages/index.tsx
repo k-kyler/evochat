@@ -5,8 +5,7 @@ import { RoomType } from "../../typings/RoomType";
 import { MessageType } from "../../typings/MessageType";
 import Intro from "./Intro";
 import Message from "./Message";
-import SendingArea from "./SendingArea";
-import { useUsers } from "../../contexts/UsersContext";
+import SendingArea from "../Input/SendingArea";
 import { db } from "../../firebase";
 
 interface IMessagesProps {
@@ -15,8 +14,7 @@ interface IMessagesProps {
 
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
-
-  const { users } = useUsers();
+  const [tempUser, setTempUser] = useState<any>([]);
 
   const getSelectedRoomMessages = () => {
     db.collection("rooms")
@@ -25,17 +23,28 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
       .orderBy("timestamp", "asc")
       .onSnapshot((snapshot) => {
         setMessages(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            uid: doc.data().uid,
-            type: doc.data().type,
-            timestamp: doc.data().timestamp,
-            message: doc.data().message,
-            username: users?.filter((user) => user.uid === doc.data().uid)[0]
-              .username,
-            avatar: users?.filter((user) => user.uid === doc.data().uid)[0]
-              .avatar,
-          }))
+          snapshot.docs.map((doc) => {
+            db.collection("users")
+              .where("uid", "==", doc.data().uid)
+              .onSnapshot((snapshot) => {
+                setTempUser(
+                  snapshot.docs.map((doc) => ({
+                    username: doc.data().username,
+                    avatar: doc.data().avatar,
+                  }))
+                );
+              });
+
+            return {
+              id: doc.id,
+              uid: doc.data().uid,
+              type: doc.data().type,
+              timestamp: doc.data().timestamp,
+              message: doc.data().message,
+              username: tempUser[0]?.username,
+              avatar: tempUser[0]?.avatar,
+            };
+          })
         );
       });
   };

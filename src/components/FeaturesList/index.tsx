@@ -90,6 +90,27 @@ const FeaturesList: FC = () => {
 
 export default FeaturesList;
 
+const FeaturesListInnerContainer = styled.div`
+  ${tw`
+    flex
+    flex-col
+    items-center
+    overflow-auto
+    h-full
+  `}
+
+  scroll-behavior: smooth;
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  /* Firefox */
+  scrollbar-width: none;
+`;
+
 const ImageContainer = styled.div`
   img {
     ${tw`
@@ -98,14 +119,6 @@ const ImageContainer = styled.div`
       mb-3
     `}
   }
-`;
-
-const FeaturesListInnerContainer = styled.div`
-  ${tw`
-    flex
-    flex-col
-    items-center
-  `}
 `;
 
 const LineBreak = styled.div`
