@@ -24,7 +24,8 @@ interface IChatProps {
 const Chat: FC<IChatProps> = ({ location }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
   const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
-  const [tempMember, setTempMember] = useState<any>([]);
+  const [roomOwner, setRoomOwner] = useState<MemberItemType[]>([]);
+  const [roomAllMembers, setRoomAllMembers] = useState<MemberItemType[]>([]);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
@@ -32,30 +33,24 @@ const Chat: FC<IChatProps> = ({ location }) => {
   const { id } = queryString.parse(location.search);
 
   const getJoinedRoomsHandler = () => {
-    db.collection("rooms")
-      .orderBy("timestamp", "desc")
-      .onSnapshot((snapshot) => {
-        setRooms(
-          snapshot.docs.map((doc) => {
-            if (doc.data().oid === user?.uid) {
+    if (user) {
+      db.collection("rooms")
+        .orderBy("timestamp", "desc")
+        .onSnapshot((snapshot) => {
+          setRooms(
+            snapshot.docs.map((doc) => {
               return {
                 id: doc.id,
                 oid: doc.data().oid,
                 name: doc.data().name,
                 background: doc.data().background,
+                members: doc.data().members,
                 timestamp: doc.data().timestamp,
               };
-            }
-            db.collection("rooms")
-              .doc(doc.data().id)
-              .collection("members")
-              .where("uid", "==", user?.uid)
-              .onSnapshot((snapshot) => {
-                snapshot.docs.map((doc) => setRooms(doc));
-              });
-          })
-        );
-      });
+            })
+          );
+        });
+    }
   };
 
   const getSelectedRoomHandler = () => {
@@ -82,51 +77,24 @@ const Chat: FC<IChatProps> = ({ location }) => {
     });
   };
 
-  const getMembersOfSelectedRoom = () => {
-    const owner: MemberItemType =
-      user?.uid === selectedRoom?.oid
-        ? {
-            username: user?.displayName,
-            avatar: user?.photoURL,
-            oid: user?.uid,
-            uid: user?.uid,
-          }
-        : (null as any);
-
-    db.collection("rooms")
-      .doc(selectedRoom?.id)
-      .collection("members")
-      .onSnapshot(
-        (snapshot) => {
-          setRoomMembers([
-            owner,
-            ...snapshot.docs.map((doc) => {
-              db.collection("users")
-                .where("uid", "==", doc.data().uid)
-                .onSnapshot((snapshot) => {
-                  setTempMember(
-                    snapshot.docs.map((doc) => ({
-                      username: doc.data().username,
-                      avatar: doc.data().avatar,
-                    }))
-                  );
-                });
-
-              return {
-                username: tempMember[0]?.username,
-                avatar: tempMember[0]?.avatar,
-                uid: doc.data().uid,
-              };
-            }),
-          ]);
-        },
-        (error) => {
-          if (error) {
-            setRoomMembers([owner]);
-          }
-        }
-      );
+  const getOwnerOfSelectedRoomHandler = () => {
+    if (selectedRoom) {
+      db.collection("users")
+        .where("uid", "==", selectedRoom.oid)
+        .onSnapshot((snapshot) => {
+          setRoomOwner(
+            snapshot.docs.map((doc) => ({
+              username: doc.data().username,
+              avatar: doc.data().avatar,
+              oid: selectedRoom?.oid,
+              uid: doc.data().uid,
+            }))
+          );
+        });
+    }
   };
+
+  const getMembersOfSelectedRoomHandler = () => {};
 
   useEffect(() => {
     getJoinedRoomsHandler();
@@ -134,18 +102,22 @@ const Chat: FC<IChatProps> = ({ location }) => {
   }, []);
 
   useEffect(() => {
-    // if (rooms?.length) getSelectedRoomHandler();
+    if (rooms?.length) getSelectedRoomHandler();
   }, [rooms, id]);
 
   useEffect(() => {
-    getMembersOfSelectedRoom();
+    getOwnerOfSelectedRoomHandler();
   }, [selectedRoom]);
+
+  useEffect(() => {
+    // getMembersOfSelectedRoomHandler();
+  }, [roomOwner]);
 
   return (
     <ChatContainer>
-      {/* <FeaturesListContainer>
+      <FeaturesListContainer>
         <FeaturesList />
-      </FeaturesListContainer> */}
+      </FeaturesListContainer>
 
       <RoomOptionContainer>
         <RoomHeader
@@ -154,7 +126,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
         />
 
         {selectedRoom ? (
-          <OptionsList roomMembers={roomMembers} />
+          <OptionsList roomAllMembers={roomAllMembers} />
         ) : (
           <BlankOptionsList />
         )}

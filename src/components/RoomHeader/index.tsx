@@ -143,7 +143,7 @@ const RoomHeaderContainer = styled.div`
 
 const RoomName = styled.p<{ isBlank?: boolean }>`
   ${tw`
-    text-base
+    text-lg
     overflow-ellipsis
     overflow-x-hidden
     whitespace-nowrap
@@ -151,7 +151,7 @@ const RoomName = styled.p<{ isBlank?: boolean }>`
     cursor-pointer
   `}
 
-  max-width: 13em;
+  max-width: 12em;
 
   ${({ isBlank }) =>
     isBlank &&

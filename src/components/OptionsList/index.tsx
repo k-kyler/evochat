@@ -5,13 +5,17 @@ import { MemberItemType } from "../../typings/MemberItemType";
 import OptionGroup from "./OptionGroup";
 
 interface IOptionsListProps {
-  roomMembers?: MemberItemType[];
+  roomAllMembers?: MemberItemType[];
 }
 
-const OptionsList: FC<IOptionsListProps> = ({ roomMembers }) => {
+const OptionsList: FC<IOptionsListProps> = ({ roomAllMembers }) => {
   return (
     <OptionsListContainer>
-      <OptionGroup type="members" name="Room members" members={roomMembers} />
+      <OptionGroup
+        type="members"
+        name="Room members"
+        members={roomAllMembers}
+      />
       <OptionGroup type="media" name="Shared media" />
       <OptionGroup type="files" name="Shared files" />
     </OptionsListContainer>

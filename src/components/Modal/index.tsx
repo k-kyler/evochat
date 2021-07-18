@@ -2,12 +2,12 @@ import { FC, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
+import { FaSearch } from "react-icons/fa";
 import RoomInput from "../Input/RoomInput";
 import Button from "../Button";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
-import { FaSearch } from "react-icons/fa";
 
 interface IModalProps {
   title?: string;
@@ -36,6 +36,7 @@ const Modal: FC<IModalProps> = ({
   const [inputRoomBackground, setInputRoomBackground] = useState<any>(null);
   const [disabledCreateRoomButton, setDisabledCreateRoomButton] =
     useState(false);
+  const [checkInputRoomName, setCheckInputRoomName] = useState(false);
 
   const inputRoomNameRef = useRef<HTMLInputElement>(null);
   const inputRoomBackgroundRef = useRef<HTMLInputElement>(null);
@@ -43,51 +44,64 @@ const Modal: FC<IModalProps> = ({
   const { user } = useAuth();
 
   const createNewRoomHandler = () => {
-    // Set disabled event
     setDisabledCreateRoomButton(true);
 
     setTimeout(() => {
       if (inputRoomNameRef.current) {
         const roomName = inputRoomNameRef.current.value;
 
-        // Add new room document to rooms collection handler
-        db.collection("rooms")
-          .add({
-            oid: user?.uid,
-            name: roomName,
-            background: "",
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          })
-          .then((docRef) => {
-            if (inputRoomBackground) {
-              // Upload room background handler
-              const storageRef = storage.ref();
-              const roomBackgroundPath = `room-background/${docRef.id}/${
-                docRef.id + "." + inputRoomBackground.name.split(".")[1]
-              }`;
-              const roomBackgroundRef = storageRef.child(roomBackgroundPath);
+        if (roomName) {
+          setCheckInputRoomName(false);
 
-              roomBackgroundRef.put(inputRoomBackground).then(() => {
-                // Retrieve the downloaded URL of room background
-                storage
-                  .ref(roomBackgroundPath)
-                  .getDownloadURL()
-                  .then((url) => {
-                    // Update the room background URL
-                    db.collection("rooms").doc(docRef.id).update({
-                      background: url,
+          // Add new room document to rooms collection handler
+          db.collection("rooms")
+            .add({
+              oid: user?.uid,
+              name: roomName,
+              background: "",
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            })
+            .then((docRef) => {
+              if (inputRoomBackground) {
+                // Upload room background handler
+                const storageRef = storage.ref();
+                const roomBackgroundPath = `room-background/${docRef.id}/${
+                  docRef.id + "." + inputRoomBackground.name.split(".")[1]
+                }`;
+                const roomBackgroundRef = storageRef.child(roomBackgroundPath);
+
+                roomBackgroundRef.put(inputRoomBackground).then(() => {
+                  // Retrieve the downloaded URL of room background
+                  storage
+                    .ref(roomBackgroundPath)
+                    .getDownloadURL()
+                    .then((url) => {
+                      // Update the room background URL
+                      docRef.update({
+                        background: url,
+                      });
+                    })
+                    .then(() => {
+                      // Refresh input room background state
+                      setInputRoomBackground(null);
                     });
-                  });
-              });
-            }
-          })
-          .catch((error) => console.error(error));
-      }
+                });
+              }
+            })
+            .catch((error) => console.error(error));
 
-      // Close create new room modal
-      setDisabledCreateRoomButton(false);
-      closeHandler();
-    }, 2000);
+          // Close create new room modal
+          setDisabledCreateRoomButton(false);
+          closeHandler();
+        }
+
+        setDisabledCreateRoomButton(false);
+        setCheckInputRoomName(true);
+        setTimeout(() => {
+          setCheckInputRoomName(false);
+        }, 3000);
+      }
+    }, 1500);
   };
 
   const switchToSearchRoomModal = () => {};
@@ -114,7 +128,7 @@ const Modal: FC<IModalProps> = ({
 
             <ModalFeature isEmoji={type}>
               {type === "create-room" ? (
-                <CreateRoomFeature>
+                <CreateRoomFeature checkInputRoomName={checkInputRoomName}>
                   <RoomInput
                     type="create-room-upload-background"
                     refValue={inputRoomBackgroundRef}
@@ -276,7 +290,7 @@ const ModalActions = styled.div`
   border-bottom-right-radius: 6px;
 `;
 
-const CreateRoomFeature = styled.div`
+const CreateRoomFeature = styled.div<{ checkInputRoomName?: boolean }>`
   ${tw`
     flex
     flex-col
@@ -287,6 +301,10 @@ const CreateRoomFeature = styled.div`
     ${tw`
       my-2
     `}
+  }
+
+  input:nth-child(2) {
+    ${({ checkInputRoomName }) => checkInputRoomName && tw`border-red-500`}
   }
 `;
 

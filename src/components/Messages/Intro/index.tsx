@@ -36,7 +36,6 @@ export default Intro;
 
 const IntroContainer = styled.div`
   ${tw`
-    py-4
     flex
     flex-col
     items-center
@@ -47,6 +46,7 @@ const IntroContainer = styled.div`
   img {
     ${tw`
       h-32
+      my-5
     `}
   }
 `;
@@ -54,7 +54,7 @@ const IntroContainer = styled.div`
 const Content = styled.h3`
   ${tw`
     text-3xl
-    mt-4
+    mb-4
     font-semibold
     text-center
   `}
@@ -69,6 +69,7 @@ const BackgroundContainer = styled.div<{ background: string }>`
     bg-cover
     bg-center
     bg-no-repeat
+    my-5
   `}
 
   border-radius: 50%;
