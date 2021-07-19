@@ -54,7 +54,7 @@ const IntroContainer = styled.div`
 const Content = styled.h3`
   ${tw`
     text-3xl
-    mb-4
+    mb-5
     font-semibold
     text-center
   `}

@@ -22,38 +22,49 @@ interface IChatProps {
 }
 
 const Chat: FC<IChatProps> = ({ location }) => {
+  const [joinedRoomIds, setJoinedRoomIds] = useState<string[]>([]);
+  const [joinedMemberIds, setJoinedMemberIds] = useState<string[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
   const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
-  const [roomOwner, setRoomOwner] = useState<MemberItemType[]>([]);
-  const [roomAllMembers, setRoomAllMembers] = useState<MemberItemType[]>([]);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
 
   const { id } = queryString.parse(location.search);
 
-  const getJoinedRoomsHandler = () => {
+  const getJoinedRoomIds = () => {
     if (user) {
-      db.collection("rooms")
-        .orderBy("timestamp", "desc")
+      db.collectionGroup("members")
+        .where("uid", "==", user.uid)
         .onSnapshot((snapshot) => {
-          setRooms(
-            snapshot.docs.map((doc) => {
-              return {
-                id: doc.id,
-                oid: doc.data().oid,
-                name: doc.data().name,
-                background: doc.data().background,
-                members: doc.data().members,
-                timestamp: doc.data().timestamp,
-              };
-            })
-          );
+          const roomIds = snapshot.docs.map((doc) => doc.ref.parent.parent?.id);
+
+          setJoinedRoomIds(roomIds as string[]);
         });
     }
   };
 
-  const getSelectedRoomHandler = () => {
+  const getJoinedRooms = () => {
+    if (joinedRoomIds.length) {
+      db.collection("rooms")
+        .orderBy("timestamp", "desc")
+        .onSnapshot((snapshot) => {
+          const joinedRooms = snapshot.docs
+            .map((doc) => ({
+              id: doc.id,
+              oid: doc.data().oid,
+              timestamp: doc.data().timestamp,
+              name: doc.data().name,
+              background: doc.data().background,
+            }))
+            .filter((room) => joinedRoomIds.includes(room.id));
+
+          setRooms(joinedRooms);
+        });
+    }
+  };
+
+  const getSelectedRoom = () => {
     const room = rooms?.filter((r) => r.id === id)[0];
 
     setSelectedRoom(room);
@@ -77,46 +88,62 @@ const Chat: FC<IChatProps> = ({ location }) => {
     });
   };
 
-  const getOwnerOfSelectedRoomHandler = () => {
-    if (selectedRoom) {
-      db.collection("users")
-        .where("uid", "==", selectedRoom.oid)
-        .onSnapshot((snapshot) => {
-          setRoomOwner(
-            snapshot.docs.map((doc) => ({
-              username: doc.data().username,
-              avatar: doc.data().avatar,
-              oid: selectedRoom?.oid,
-              uid: doc.data().uid,
-            }))
-          );
-        });
-    }
+  const getMemberIdsOfSelectedRoom = () => {
+    db.collection("rooms")
+      .doc(selectedRoom?.id)
+      .collection("members")
+      .onSnapshot((snapshot) => {
+        const memberIds = snapshot.docs.map((doc) => doc.data().uid);
+
+        setJoinedMemberIds(memberIds as any);
+      });
   };
 
-  const getMembersOfSelectedRoomHandler = () => {};
+  const getMembersOfSelectedRoom = () => {
+    db.collection("users").onSnapshot((snapshot) => {
+      const joinedRoomMembers = snapshot.docs
+        .map((doc) => ({
+          uid: doc.data().uid,
+          username: doc.data().username,
+          avatar: doc.data().avatar,
+        }))
+        .filter((member) => joinedMemberIds.includes(member.uid));
+      const owner = joinedRoomMembers
+        .filter((member) => member.uid === selectedRoom?.oid)
+        .map((member) => ({ ...member, oid: selectedRoom?.oid }));
+      const normalMembers = joinedRoomMembers.filter(
+        (member) => member.uid !== selectedRoom?.oid
+      );
+
+      setRoomMembers([...owner, ...normalMembers]);
+    });
+  };
 
   useEffect(() => {
-    getJoinedRoomsHandler();
+    getJoinedRoomIds();
     checkUserHandler();
   }, []);
 
   useEffect(() => {
-    if (rooms?.length) getSelectedRoomHandler();
+    getJoinedRooms();
+  }, [joinedRoomIds]);
+
+  useEffect(() => {
+    if (rooms?.length) getSelectedRoom();
   }, [rooms, id]);
 
   useEffect(() => {
-    getOwnerOfSelectedRoomHandler();
+    getMemberIdsOfSelectedRoom();
   }, [selectedRoom]);
 
   useEffect(() => {
-    // getMembersOfSelectedRoomHandler();
-  }, [roomOwner]);
+    getMembersOfSelectedRoom();
+  }, [joinedMemberIds]);
 
   return (
     <ChatContainer>
       <FeaturesListContainer>
-        <FeaturesList />
+        <FeaturesList joinedRoomIds={joinedRoomIds} />
       </FeaturesListContainer>
 
       <RoomOptionContainer>
@@ -126,7 +153,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
         />
 
         {selectedRoom ? (
-          <OptionsList roomAllMembers={roomAllMembers} />
+          <OptionsList roomMembers={roomMembers} />
         ) : (
           <BlankOptionsList />
         )}

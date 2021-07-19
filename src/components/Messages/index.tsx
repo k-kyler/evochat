@@ -14,7 +14,6 @@ interface IMessagesProps {
 
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const [tempMember, setTempMember] = useState<any>([]);
 
   const getSelectedRoomMessages = () => {
     db.collection("rooms")
@@ -22,30 +21,17 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
       .collection("messages")
       .orderBy("timestamp", "asc")
       .onSnapshot((snapshot) => {
-        setMessages(
-          snapshot.docs.map((doc) => {
-            db.collection("users")
-              .where("uid", "==", doc.data().uid)
-              .onSnapshot((snapshot) => {
-                setTempMember(
-                  snapshot.docs.map((doc) => ({
-                    username: doc.data().username,
-                    avatar: doc.data().avatar,
-                  }))
-                );
-              });
+        const roomMessages = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          uid: doc.data().uid,
+          type: doc.data().type,
+          timestamp: doc.data().timestamp,
+          message: doc.data().message,
+          username: doc.data().username,
+          avatar: doc.data().avatar,
+        }));
 
-            return {
-              id: doc.id,
-              uid: doc.data().uid,
-              type: doc.data().type,
-              timestamp: doc.data().timestamp,
-              message: doc.data().message,
-              username: tempMember[0]?.username,
-              avatar: tempMember[0]?.avatar,
-            };
-          })
-        );
+        setMessages(roomMessages);
       });
   };
 
@@ -110,7 +96,7 @@ const MessagesContainer = styled.div`
 
 const Marginer = styled.div`
   ${tw`
-    pb-10
+    pb-8
   `}
 `;
 

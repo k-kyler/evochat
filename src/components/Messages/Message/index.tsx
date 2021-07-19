@@ -39,7 +39,10 @@ const Message: FC<IMessageProps> = ({
 
   if (type === "text")
     return (
-      <MessageContainer isUser={uid === user?.uid ? true : false}>
+      <MessageContainer
+        isUser={uid === user?.uid ? true : false}
+        showMessageTimestamp={showMessageTimestamp}
+      >
         <AvatarContainer>
           <img src={avatar} />
           {active && <OnlineStatus effect="none" />}
@@ -66,11 +69,14 @@ const Message: FC<IMessageProps> = ({
 
 export default Message;
 
-const MessageContainer = styled.div<{ isUser?: boolean }>`
+const MessageContainer = styled.div<{
+  isUser?: boolean;
+  showMessageTimestamp?: boolean;
+}>`
   ${tw`
     flex
     items-end
-    my-3
+    my-5
   `}
 
   ${({ isUser }) =>
@@ -91,6 +97,8 @@ const MessageContainer = styled.div<{ isUser?: boolean }>`
         background-color: #2c9984;
       }
     `}
+
+  ${({ showMessageTimestamp }) => !showMessageTimestamp && tw`mb-8`}
 `;
 
 const AvatarContainer = styled.div`
@@ -112,6 +120,7 @@ const MessageInfo = styled.div`
   ${tw`
     flex
     flex-col
+    relative
   `}
 `;
 
@@ -142,8 +151,11 @@ const MessageTimestamp = styled.span`
     text-xs
     text-gray-400
     mt-1
+    absolute
+    top-full
   `}
 
+  width: max-content;
   display: none;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out forwards;

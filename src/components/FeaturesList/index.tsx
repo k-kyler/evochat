@@ -10,7 +10,11 @@ import { RoundedObjectType } from "../../typings/RoundedObjectType";
 import { useRooms } from "../../contexts/RoomsContext";
 import { nanoid } from "nanoid";
 
-const FeaturesList: FC = () => {
+interface IFeaturesListProps {
+  joinedRoomIds: string[];
+}
+
+const FeaturesList: FC<IFeaturesListProps> = ({ joinedRoomIds }) => {
   const [selectedRoomId, setSelectedRoomId] = useState("");
   const [openCreateNewRoomModal, setOpenCreateNewRoomModal] = useState(false);
 
@@ -45,11 +49,11 @@ const FeaturesList: FC = () => {
   ];
 
   useEffect(() => {
-    if (rooms?.length) {
-      setSelectedRoomId(rooms[0].id);
-      history.push(`/chat?id=${rooms[0].id}`);
+    if (joinedRoomIds.length) {
+      setSelectedRoomId(joinedRoomIds[0]);
+      history.push(`/chat?id=${joinedRoomIds[0]}`);
     }
-  }, [rooms]);
+  }, [joinedRoomIds]);
 
   return (
     <>

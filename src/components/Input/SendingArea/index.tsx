@@ -65,6 +65,8 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
       if (user && textAreaRef.current) {
         const messageObject: MessageType = {
           uid: user.uid,
+          username: user.displayName as string,
+          avatar: user.photoURL as string,
           message: textAreaRef.current.value,
           type: "text",
           timestamp: new Date(),

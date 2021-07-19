@@ -102,7 +102,7 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom, isBlank }) => {
   return (
     <RoomHeaderContainer onClick={openPanelHandler}>
       {isBlank ? (
-        <RoomName isBlank={isBlank}>⚡ Activity Overview</RoomName>
+        <RoomName isBlank={isBlank}>⚡ Activity overview</RoomName>
       ) : (
         <>
           <RoomName title={selectedRoom?.name}>{selectedRoom?.name}</RoomName>
