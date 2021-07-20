@@ -61,7 +61,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
       />
 
       <MessagesWrapper>
-        <FlipMove>
+        <FlipMove leaveAnimation="fade">
           {messages.map((message) => (
             <Message key={message.id} {...message} />
           ))}

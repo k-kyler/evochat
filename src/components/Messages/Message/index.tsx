@@ -1,6 +1,7 @@
 import { useRef, useState, forwardRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
+import Emoji from "react-emoji-render";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
@@ -43,12 +44,14 @@ const Message = forwardRef<any, IMessageProps>(
           </AvatarContainer>
 
           <MessageInfo>
-            <SenderName>{username}</SenderName>
+            <SenderName isUser={uid === user?.uid ? true : false}>
+              {username}
+            </SenderName>
             <MessageContent
               ref={messageContentRef}
               onClick={showMessageTimestampHandler}
             >
-              {message}
+              <Emoji text={message} />
             </MessageContent>
             <MessageTimestamp ref={messageTimestampRef}>
               {new Date(timestamp.toDate()).toDateString() +
@@ -79,7 +82,7 @@ const MessageContainer = styled.div<{
     css`
       ${tw`justify-end`}
 
-      div:nth-child(1), span:nth-child(1) {
+      div:nth-child(1) {
         display: none;
       }
 
@@ -119,13 +122,19 @@ const MessageInfo = styled.div`
   `}
 `;
 
-const SenderName = styled.span`
+const SenderName = styled.span<{ isUser?: boolean }>`
   ${tw`
     text-gray-400
     text-xs
     mb-1
     max-w-xs
   `}
+
+  ${({ isUser }) =>
+    isUser &&
+    css`
+      display: none;
+    `}
 `;
 
 const MessageContent = styled.p`
