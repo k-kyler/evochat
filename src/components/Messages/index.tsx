@@ -1,6 +1,7 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
+import FlipMove from "react-flip-move";
 import { RoomType } from "../../typings/RoomType";
 import { MessageType } from "../../typings/MessageType";
 import Intro from "./Intro";
@@ -14,6 +15,8 @@ interface IMessagesProps {
 
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const getSelectedRoomMessages = () => {
     db.collection("rooms")
@@ -35,9 +38,19 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
       });
   };
 
+  const scrollToBottom = () => {
+    if (messages.length && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   useEffect(() => {
     getSelectedRoomMessages();
   }, [selectedRoom]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <MessagesContainer>
@@ -48,12 +61,14 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
       />
 
       <MessagesWrapper>
-        {messages.map((message) => (
-          <Message key={message.id} {...message} />
-        ))}
+        <FlipMove>
+          {messages.map((message) => (
+            <Message key={message.id} {...message} />
+          ))}
+        </FlipMove>
       </MessagesWrapper>
 
-      <Marginer />
+      <Marginer ref={messagesEndRef} />
 
       <SendingArea roomId={selectedRoom?.id} />
     </MessagesContainer>
@@ -70,8 +85,11 @@ const MessagesContainer = styled.div`
     h-full
     px-4
     relative
+    overflow-x-hidden
     overflow-y-auto
   `}
+
+  scroll-behavior: smooth;
 
   /* Chrome, Edge, and Safari */
   &::-webkit-scrollbar {

@@ -79,6 +79,7 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
           .add(messageObject);
 
         textAreaRef.current.value = "";
+        textAreaRef.current.style.cssText = "height: auto";
       }
     }
   };
@@ -158,7 +159,7 @@ const SendingAreaContainer = styled.div`
     bg-gray-600
     p-3
     rounded-3xl
-    opacity-80
+    opacity-90
   `}
 `;
 

@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { useRef, useState, forwardRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -7,65 +7,60 @@ import OnlineStatus from "../../OnlineStatus";
 
 interface IMessageProps extends MessageType {}
 
-const Message: FC<IMessageProps> = ({
-  uid,
-  message,
-  avatar,
-  username,
-  timestamp,
-  active,
-  type,
-}) => {
-  const [showMessageTimestamp, setShowMessageTimestamp] = useState(true);
+const Message = forwardRef<any, IMessageProps>(
+  ({ uid, message, avatar, username, timestamp, active, type }, ref) => {
+    const [showMessageTimestamp, setShowMessageTimestamp] = useState(true);
 
-  const messageTimestampRef = useRef<HTMLSpanElement>(null);
-  const messageContentRef = useRef<HTMLParagraphElement>(null);
+    const messageTimestampRef = useRef<HTMLSpanElement>(null);
+    const messageContentRef = useRef<HTMLParagraphElement>(null);
 
-  const { user } = useAuth();
+    const { user } = useAuth();
 
-  const showMessageTimestampHandler = () => {
-    if (messageTimestampRef.current && messageContentRef.current) {
-      setShowMessageTimestamp(!showMessageTimestamp);
+    const showMessageTimestampHandler = () => {
+      if (messageTimestampRef.current && messageContentRef.current) {
+        setShowMessageTimestamp(!showMessageTimestamp);
 
-      messageTimestampRef.current.style.display = `${
-        showMessageTimestamp ? "block" : "none"
-      }`;
-      messageContentRef.current.style.opacity = `${
-        showMessageTimestamp ? "0.8" : "1"
-      }`;
-      messageContentRef.current.style.transition = "all 0.3s ease-in-out";
-    }
-  };
+        messageTimestampRef.current.style.display = `${
+          showMessageTimestamp ? "block" : "none"
+        }`;
+        messageContentRef.current.style.opacity = `${
+          showMessageTimestamp ? "0.8" : "1"
+        }`;
+        messageContentRef.current.style.transition = "all 0.3s ease-in-out";
+      }
+    };
 
-  if (type === "text")
-    return (
-      <MessageContainer
-        isUser={uid === user?.uid ? true : false}
-        showMessageTimestamp={showMessageTimestamp}
-      >
-        <AvatarContainer>
-          <img src={avatar} />
-          {active && <OnlineStatus effect="none" />}
-        </AvatarContainer>
+    if (type === "text")
+      return (
+        <MessageContainer
+          ref={ref}
+          isUser={uid === user?.uid ? true : false}
+          showMessageTimestamp={showMessageTimestamp}
+        >
+          <AvatarContainer>
+            <img src={avatar} />
+            {active && <OnlineStatus effect="none" />}
+          </AvatarContainer>
 
-        <MessageInfo>
-          <SenderName>{username}</SenderName>
-          <MessageContent
-            ref={messageContentRef}
-            onClick={showMessageTimestampHandler}
-          >
-            {message}
-          </MessageContent>
-          <MessageTimestamp ref={messageTimestampRef}>
-            {new Date(timestamp.toDate()).toDateString() +
-              ", " +
-              new Date(timestamp.toDate()).toLocaleTimeString()}
-          </MessageTimestamp>
-        </MessageInfo>
-      </MessageContainer>
-    );
-  return null;
-};
+          <MessageInfo>
+            <SenderName>{username}</SenderName>
+            <MessageContent
+              ref={messageContentRef}
+              onClick={showMessageTimestampHandler}
+            >
+              {message}
+            </MessageContent>
+            <MessageTimestamp ref={messageTimestampRef}>
+              {new Date(timestamp.toDate()).toDateString() +
+                ", " +
+                new Date(timestamp.toDate()).toLocaleTimeString()}
+            </MessageTimestamp>
+          </MessageInfo>
+        </MessageContainer>
+      );
+    return null;
+  }
+);
 
 export default Message;
 
@@ -141,6 +136,7 @@ const MessageContent = styled.p`
     max-w-md
     bg-white
     cursor-pointer
+    break-words
   `}
 
   width: fit-content;
