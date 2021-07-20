@@ -137,7 +137,7 @@ const MessageContent = styled.p`
   ${tw`
     text-black
     p-2
-    rounded-lg
+    rounded-xl
     max-w-md
     bg-white
     cursor-pointer

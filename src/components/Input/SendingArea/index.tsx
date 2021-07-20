@@ -27,20 +27,21 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const textAreaIconRef = useRef<HTMLSpanElement>(null);
+  const sendingAreaContainerRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
 
   const textAreaFocusHandler = () => {
-    if (textAreaRef.current && textAreaIconRef.current) {
-      textAreaIconRef.current.style.display = "none";
-      textAreaRef.current.focus();
-    }
+    // if (textAreaRef.current && textAreaIconRef.current) {
+    //   textAreaIconRef.current.style.display = "none";
+    //   textAreaRef.current.focus();
+    // }
   };
 
   const textAreaBlurHandler = () => {
-    if (textAreaIconRef.current) {
-      textAreaIconRef.current.style.display = "block";
-    }
+    // if (textAreaIconRef.current) {
+    //   textAreaIconRef.current.style.display = "block";
+    // }
   };
 
   const textAreaOnChangeHandler = () => {
@@ -62,7 +63,7 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
 
-      if (user && textAreaRef.current) {
+      if (user && textAreaRef.current && textAreaRef.current.value) {
         const messageObject: MessageType = {
           uid: user.uid,
           username: user.displayName as string,
@@ -77,7 +78,7 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
           .collection("messages")
           .add(messageObject);
 
-        if (textAreaRef.current) textAreaRef.current.value = "";
+        textAreaRef.current.value = "";
       }
     }
   };
@@ -89,7 +90,7 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
 
   return (
     <>
-      <SendingAreaContainer>
+      <SendingAreaContainer ref={sendingAreaContainerRef}>
         <TextAreaContainer>
           <Icon onClick={textAreaFocusHandler} ref={textAreaIconRef}>
             <BiMessageDetail />
@@ -156,7 +157,8 @@ const SendingAreaContainer = styled.div`
     right-6
     bg-gray-600
     p-3
-    rounded-lg
+    rounded-3xl
+    opacity-80
   `}
 `;
 

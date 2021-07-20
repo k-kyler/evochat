@@ -36,6 +36,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
     if (user) {
       db.collectionGroup("members")
         .where("uid", "==", user.uid)
+        .orderBy("timestamp", "desc")
         .onSnapshot((snapshot) => {
           const roomIds = snapshot.docs.map((doc) => doc.ref.parent.parent?.id);
 
@@ -71,21 +72,23 @@ const Chat: FC<IChatProps> = ({ location }) => {
   };
 
   const checkUserHandler = () => {
-    db.collection("users").onSnapshot((snapshot) => {
-      const existedUser = snapshot.docs.filter(
-        (doc) => doc.data().uid === user?.uid
-      );
+    if (user) {
+      db.collection("users").onSnapshot((snapshot) => {
+        const existedUser = snapshot.docs.filter(
+          (doc) => doc.data().uid === user.uid
+        );
 
-      if (!existedUser.length) {
-        db.collection("users").add({
-          uid: user?.uid,
-          avatar: user?.photoURL,
-          email: user?.email,
-          username: user?.displayName,
-          timestamp: new Date(),
-        });
-      }
-    });
+        if (!existedUser.length) {
+          db.collection("users").add({
+            uid: user?.uid,
+            avatar: user?.photoURL,
+            email: user?.email,
+            username: user?.displayName,
+            timestamp: new Date(),
+          });
+        }
+      });
+    }
   };
 
   const getMemberIdsOfSelectedRoom = () => {
@@ -120,8 +123,8 @@ const Chat: FC<IChatProps> = ({ location }) => {
   };
 
   useEffect(() => {
-    getJoinedRoomIds();
     checkUserHandler();
+    getJoinedRoomIds();
   }, []);
 
   useEffect(() => {

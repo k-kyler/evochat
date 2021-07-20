@@ -53,7 +53,7 @@ const Modal: FC<IModalProps> = ({
         if (roomName) {
           setCheckInputRoomName(false);
 
-          // Add new room document to rooms collection handler
+          // Add new room document to rooms collection
           db.collection("rooms")
             .add({
               oid: user?.uid,
@@ -62,6 +62,12 @@ const Modal: FC<IModalProps> = ({
               timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             })
             .then((docRef) => {
+              // Add new member to members subcollection of rooms collection
+              db.collection("rooms").doc(docRef.id).collection("members").add({
+                uid: user?.uid,
+                timestamp: new Date(),
+              });
+
               if (inputRoomBackground) {
                 // Upload room background handler
                 const storageRef = storage.ref();
