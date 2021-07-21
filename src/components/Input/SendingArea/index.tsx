@@ -6,9 +6,14 @@ import {
   MouseEvent,
   KeyboardEvent,
 } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import tw from "twin.macro";
-import { BiMessageDetail, BiGhost, BiImages } from "react-icons/bi";
+import {
+  BiMessageDetail,
+  BiGhost,
+  BiImages,
+  BiChevronRight,
+} from "react-icons/bi";
 import { RiFileGifLine } from "react-icons/ri";
 import Tooltip from "../../Tooltip";
 import Modal from "../../Modal";
@@ -24,18 +29,16 @@ interface ISendingArea {
 const SendingArea: FC<ISendingArea> = ({ roomId }) => {
   const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const textAreaIconRef = useRef<HTMLSpanElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
   const sendingAreaContainerRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
 
-  const textAreaFocusHandler = () => {
-    // if (textAreaRef.current && textAreaIconRef.current) {
-    //   textAreaIconRef.current.style.display = "none";
-    //   textAreaRef.current.focus();
-    // }
+  const stretchOutTextAreaHandler = () => {
+    setIsOpen(!isOpen);
   };
 
   const textAreaBlurHandler = () => {
@@ -91,38 +94,40 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
 
   return (
     <>
-      <SendingAreaContainer ref={sendingAreaContainerRef}>
-        <TextAreaContainer>
-          <Icon onClick={textAreaFocusHandler} ref={textAreaIconRef}>
-            <BiMessageDetail />
-          </Icon>
+      <SendingAreaContainer ref={sendingAreaContainerRef} isOpen={isOpen}>
+        {isOpen ? (
+          <>
+            <Options ref={optionsRef}>
+              <Icon isOpen={isOpen} onClick={() => setOpenEmojiModal(true)}>
+                <BiGhost />
+                <Tooltip content="Emoji" arrow="bottom" />
+              </Icon>
+              <Icon isOpen={isOpen}>
+                <BiImages />
+                <Tooltip content="Image & Video" arrow="bottom" />
+              </Icon>
+              <Icon isOpen={isOpen}>
+                <RiFileGifLine />
+                <Tooltip content="Giphy" arrow="bottom" />
+              </Icon>
+            </Options>
 
-          <TextArea
-            onChange={textAreaOnChangeHandler}
-            onKeyDown={(event) => sendMessageHandler(event)}
-            onFocus={textAreaFocusHandler}
-            onBlur={textAreaBlurHandler}
-            ref={textAreaRef}
-            spellCheck="false"
-            placeholder="Type a message..."
-            rows={1}
-          />
-        </TextAreaContainer>
+            <TextArea
+              onChange={textAreaOnChangeHandler}
+              onKeyDown={(event) => sendMessageHandler(event)}
+              onBlur={textAreaBlurHandler}
+              ref={textAreaRef}
+              spellCheck="false"
+              placeholder="Type a message..."
+              autoFocus
+              rows={1}
+            />
+          </>
+        ) : null}
 
-        <Options>
-          <Icon onClick={() => setOpenEmojiModal(true)}>
-            <BiGhost />
-            <Tooltip content="Emoji" arrow="bottom" />
-          </Icon>
-          <Icon>
-            <BiImages />
-            <Tooltip content="Image & Video" arrow="bottom" />
-          </Icon>
-          <Icon>
-            <RiFileGifLine />
-            <Tooltip content="Giphy" arrow="bottom" />
-          </Icon>
-        </Options>
+        <Icon onClick={stretchOutTextAreaHandler} isOpen={isOpen}>
+          {isOpen ? <BiChevronRight /> : <BiMessageDetail />}
+        </Icon>
       </SendingAreaContainer>
 
       <Modal
@@ -148,33 +153,55 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
 
 export default SendingArea;
 
-const SendingAreaContainer = styled.div`
+const SendingAreaContainer = styled.div<{ isOpen?: boolean }>`
   ${tw`
     flex
     justify-between
     sticky
     bottom-6
-    left-6
-    right-6
-    bg-gray-600
     p-3
     rounded-3xl
-    opacity-90
+    ml-auto
   `}
-`;
 
-const TextAreaContainer = styled.div`
-  ${tw`
-    flex
-    w-full
-  `}
+  ${({ isOpen }) =>
+    isOpen
+      ? css`
+          ${tw`
+            bg-gray-600
+          `}
+
+          animation: stretchIn 0.3s ease-in-out forwards;
+
+          @keyframes stretchIn {
+            from {
+              width: 20%;
+            }
+            to {
+              width: 100%;
+            }
+          }
+        `
+      : css`
+          animation: stretchOut 0.3s ease-in-out forwards;
+
+          @keyframes stretchOut {
+            to {
+              ${tw`
+                bg-white
+              `}
+
+              width: fit-content;
+            }
+          }
+        `}
 `;
 
 const TextArea = styled.textarea`
   ${tw`
     w-full
     text-white
-    mx-2
+    mx-4
     bg-transparent
     outline-none
     resize-none
@@ -189,7 +216,6 @@ const Options = styled.div`
 
   span {
     ${tw`
-      cursor-pointer
       hover:text-blue-500
     `}
 
@@ -199,10 +225,11 @@ const Options = styled.div`
   }
 `;
 
-const Icon = styled.span`
+const Icon = styled.span<{ isOpen?: boolean }>`
   ${tw`
     relative
     text-2xl
+    cursor-pointer
   `}
 
   color: #9ca3af;
@@ -228,4 +255,13 @@ const Icon = styled.span`
       `}
     }
   }
+
+  ${({ isOpen }) =>
+    isOpen
+      ? css`
+          color: #9ca3af;
+        `
+      : css`
+          color: #2c9984;
+        `}
 `;
