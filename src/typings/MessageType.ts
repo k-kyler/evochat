@@ -8,5 +8,5 @@ export type MessageType = {
   image?: string;
   timestamp?: any;
   active?: boolean;
-  type: "text" | "video" | "image";
+  type: "text" | "video" | "image" | "file";
 };

@@ -89,8 +89,6 @@ const MessagesContainer = styled.div`
     overflow-y-auto
   `}
 
-  scroll-behavior: smooth;
-
   /* Chrome, Edge, and Safari */
   &::-webkit-scrollbar {
     width: 0.5rem;

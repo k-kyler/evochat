@@ -31,37 +31,47 @@ const Message = forwardRef<any, IMessageProps>(
       }
     };
 
-    if (type === "text")
-      return (
-        <MessageContainer
-          ref={ref}
-          isUser={uid === user?.uid ? true : false}
-          showMessageTimestamp={showMessageTimestamp}
-        >
-          <AvatarContainer>
-            <img src={avatar} />
-            {active && <OnlineStatus effect="none" />}
-          </AvatarContainer>
+    return (
+      <MessageContainer
+        ref={ref}
+        isUser={uid === user?.uid ? true : false}
+        showMessageTimestamp={showMessageTimestamp}
+      >
+        <AvatarContainer>
+          <img src={avatar} />
+          {active && <OnlineStatus effect="none" />}
+        </AvatarContainer>
 
-          <MessageInfo>
-            <SenderName isUser={uid === user?.uid ? true : false}>
-              {username}
-            </SenderName>
+        <MessageInfo>
+          <SenderName isUser={uid === user?.uid ? true : false}>
+            {username}
+          </SenderName>
+
+          {type === "text" ? (
             <MessageContent
               ref={messageContentRef}
               onClick={showMessageTimestampHandler}
             >
               <Emoji text={message} />
             </MessageContent>
-            <MessageTimestamp ref={messageTimestampRef}>
-              {new Date(timestamp.toDate()).toDateString() +
-                ", " +
-                new Date(timestamp.toDate()).toLocaleTimeString()}
-            </MessageTimestamp>
-          </MessageInfo>
-        </MessageContainer>
-      );
-    return null;
+          ) : (
+            <ImageContent>
+              <img
+                src={
+                  "https://firebasestorage.googleapis.com/v0/b/evochat-56ff6.appspot.com/o/room-background%2FdqfeWsI8fVVTXthJNa6L%2FdqfeWsI8fVVTXthJNa6L.jpg?alt=media&token=ab1f04cf-4896-4de4-a622-9613bd032f96"
+                }
+              />
+            </ImageContent>
+          )}
+
+          <MessageTimestamp ref={messageTimestampRef}>
+            {new Date(timestamp.toDate()).toDateString() +
+              ", " +
+              new Date(timestamp.toDate()).toLocaleTimeString()}
+          </MessageTimestamp>
+        </MessageInfo>
+      </MessageContainer>
+    );
   }
 );
 
@@ -169,5 +179,19 @@ const MessageTimestamp = styled.span`
     to {
       opacity: 1;
     }
+  }
+`;
+
+const ImageContent = styled.div`
+  ${tw`
+    p-2
+    rounded-xl
+    max-w-md
+    cursor-pointer
+  `}
+
+  width: fit-content;
+
+  img {
   }
 `;

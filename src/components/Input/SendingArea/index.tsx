@@ -154,6 +154,7 @@ const SendingAreaContainer = styled.div<{ isOpen?: boolean }>`
     bottom-6
     p-3
     rounded-3xl
+    opacity-90
     ml-auto
   `}
 
@@ -164,7 +165,7 @@ const SendingAreaContainer = styled.div<{ isOpen?: boolean }>`
             bg-gray-600
           `}
 
-          animation: stretchIn 0.3s ease-in-out forwards;
+          animation: stretchIn 0.2s ease-in-out forwards;
 
           @keyframes stretchIn {
             from {
