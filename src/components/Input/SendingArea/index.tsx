@@ -41,12 +41,6 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
     setIsOpen(!isOpen);
   };
 
-  const textAreaBlurHandler = () => {
-    // if (textAreaIconRef.current) {
-    //   textAreaIconRef.current.style.display = "block";
-    // }
-  };
-
   const textAreaOnChangeHandler = () => {
     if (textAreaRef.current) {
       textAreaRef.current.style.cssText = "height: auto";
@@ -115,7 +109,6 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
             <TextArea
               onChange={textAreaOnChangeHandler}
               onKeyDown={(event) => sendMessageHandler(event)}
-              onBlur={textAreaBlurHandler}
               ref={textAreaRef}
               spellCheck="false"
               placeholder="Type a message..."
