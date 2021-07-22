@@ -6,6 +6,7 @@ export type MessageType = {
   message: string;
   video?: string;
   image?: string;
+  file?: string;
   timestamp?: any;
   active?: boolean;
   type: "text" | "video" | "image" | "file";

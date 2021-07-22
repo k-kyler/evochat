@@ -27,11 +27,14 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         const roomMessages = snapshot.docs.map((doc) => ({
           id: doc.id,
           uid: doc.data().uid,
-          type: doc.data().type,
-          timestamp: doc.data().timestamp,
-          message: doc.data().message,
           username: doc.data().username,
           avatar: doc.data().avatar,
+          timestamp: doc.data().timestamp,
+          type: doc.data().type,
+          message: doc.data().message,
+          image: doc.data().image,
+          video: doc.data().video,
+          file: doc.data().file,
         }));
 
         setMessages(roomMessages);

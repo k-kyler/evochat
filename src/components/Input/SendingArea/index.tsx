@@ -169,7 +169,7 @@ const SendingAreaContainer = styled.div<{ isOpen?: boolean }>`
 
           @keyframes stretchIn {
             from {
-              width: 20%;
+              width: 50%;
             }
             to {
               width: 100%;

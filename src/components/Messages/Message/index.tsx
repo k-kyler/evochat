@@ -2,6 +2,8 @@ import { useRef, useState, forwardRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import Emoji from "react-emoji-render";
+import PreloadImage from "react-preload-image";
+import ReactPlayer from "react-player";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
@@ -9,7 +11,21 @@ import OnlineStatus from "../../OnlineStatus";
 interface IMessageProps extends MessageType {}
 
 const Message = forwardRef<any, IMessageProps>(
-  ({ uid, message, avatar, username, timestamp, active, type }, ref) => {
+  (
+    {
+      uid,
+      avatar,
+      username,
+      message,
+      image,
+      video,
+      file,
+      timestamp,
+      active,
+      type,
+    },
+    ref
+  ) => {
     const [showMessageTimestamp, setShowMessageTimestamp] = useState(true);
 
     const messageTimestampRef = useRef<HTMLSpanElement>(null);
@@ -37,7 +53,7 @@ const Message = forwardRef<any, IMessageProps>(
         isUser={uid === user?.uid ? true : false}
         showMessageTimestamp={showMessageTimestamp}
       >
-        <AvatarContainer>
+        <AvatarContainer isUser={uid === user?.uid ? true : false}>
           <img src={avatar} />
           {active && <OnlineStatus effect="none" />}
         </AvatarContainer>
@@ -54,15 +70,17 @@ const Message = forwardRef<any, IMessageProps>(
             >
               <Emoji text={message} />
             </MessageContent>
-          ) : (
+          ) : type === "image" ? (
             <ImageContent>
-              <img
-                src={
-                  "https://firebasestorage.googleapis.com/v0/b/evochat-56ff6.appspot.com/o/room-background%2FdqfeWsI8fVVTXthJNa6L%2FdqfeWsI8fVVTXthJNa6L.jpg?alt=media&token=ab1f04cf-4896-4de4-a622-9613bd032f96"
-                }
-              />
+              <PreloadImage src={image} lazy />
             </ImageContent>
-          )}
+          ) : type === "video" ? (
+            <VideoContent>
+              <ReactPlayer url={video} />
+            </VideoContent>
+          ) : type === "file" ? (
+            <FileContent></FileContent>
+          ) : null}
 
           <MessageTimestamp ref={messageTimestampRef}>
             {new Date(timestamp.toDate()).toDateString() +
@@ -92,10 +110,6 @@ const MessageContainer = styled.div<{
     css`
       ${tw`justify-end`}
 
-      div:nth-child(1) {
-        display: none;
-      }
-
       div:nth-child(2) {
         ${tw`items-end`}
       }
@@ -109,7 +123,7 @@ const MessageContainer = styled.div<{
   ${({ showMessageTimestamp }) => !showMessageTimestamp && tw`mb-8`}
 `;
 
-const AvatarContainer = styled.div`
+const AvatarContainer = styled.div<{ isUser?: boolean }>`
   ${tw`
     relative
     mr-2  
@@ -122,6 +136,12 @@ const AvatarContainer = styled.div`
       rounded-full
     `}
   }
+
+  ${({ isUser }) =>
+    isUser &&
+    css`
+      display: none;
+    `}
 `;
 
 const MessageInfo = styled.div`
@@ -184,14 +204,27 @@ const MessageTimestamp = styled.span`
 
 const ImageContent = styled.div`
   ${tw`
-    p-2
-    rounded-xl
-    max-w-md
     cursor-pointer
+    max-w-md
+    max-h-80
+    w-96
+    h-60
+    relative
   `}
 
-  width: fit-content;
-
-  img {
+  div {
+    ${tw`rounded-xl`}
   }
+`;
+
+const VideoContent = styled.div`
+  ${tw`
+    max-w-md
+  `}
+`;
+
+const FileContent = styled.div`
+  ${tw`
+    max-w-md
+  `}
 `;
