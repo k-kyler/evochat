@@ -13,8 +13,8 @@ import {
   BiGhost,
   BiImages,
   BiChevronRight,
+  BiFile,
 } from "react-icons/bi";
-import { RiFileGifLine } from "react-icons/ri";
 import Tooltip from "../../Tooltip";
 import Modal from "../../Modal";
 import Picker, { IEmojiData } from "emoji-picker-react";
@@ -101,8 +101,8 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
                 <Tooltip content="Image & Video" arrow="bottom" />
               </Icon>
               <Icon isOpen={isOpen}>
-                <RiFileGifLine />
-                <Tooltip content="Giphy" arrow="bottom" />
+                <BiFile />
+                <Tooltip content="Attachment" arrow="bottom" />
               </Icon>
             </Options>
 

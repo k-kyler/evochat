@@ -13,7 +13,7 @@ import BlankOptionsList from "../../components/BlankSection/BlankOptionsList";
 import BlankChatArea from "../../components/BlankSection/BlankChatArea";
 import { RoomType } from "../../typings/RoomType";
 import { MemberItemType } from "../../typings/MemberItemType";
-import { db } from "../../firebase";
+import { db, storage } from "../../firebase";
 
 interface IChatProps {
   location: {
@@ -122,6 +122,10 @@ const Chat: FC<IChatProps> = ({ location }) => {
     });
   };
 
+  const getMediaOfSelectedRoom = () => {};
+
+  const getFilesOfSelectedRoom = () => {};
+
   useEffect(() => {
     checkUserHandler();
     getJoinedRoomIds();
@@ -137,6 +141,8 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   useEffect(() => {
     getMemberIdsOfSelectedRoom();
+    getMediaOfSelectedRoom();
+    getFilesOfSelectedRoom();
   }, [selectedRoom]);
 
   useEffect(() => {

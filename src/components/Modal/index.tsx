@@ -19,7 +19,7 @@ interface IModalProps {
     | "user-setting"
     | "room-panel"
     | "image-video"
-    | "giphy"
+    | "attachment"
     | "emoji";
   open: boolean;
   closeHandler: () => void;

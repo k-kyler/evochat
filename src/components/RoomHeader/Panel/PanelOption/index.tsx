@@ -44,7 +44,6 @@ const PanelOptionName = styled.p<{ highlight?: string }>`
     text-xs
     text-gray-400
     font-semibold
-    capitalize
   `}
 
   ${({ highlight }) =>

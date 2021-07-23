@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import Emoji from "react-emoji-render";
 import PreloadImage from "react-preload-image";
-import ReactPlayer from "react-player";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
@@ -75,11 +74,9 @@ const Message = forwardRef<any, IMessageProps>(
               <PreloadImage src={image} lazy />
             </ImageContent>
           ) : type === "video" ? (
-            <VideoContent>
-              <ReactPlayer url={video} />
+            <VideoContent url={video}>
+              <video src={video} controls preload="metadata"></video>
             </VideoContent>
-          ) : type === "file" ? (
-            <FileContent></FileContent>
           ) : null}
 
           <MessageTimestamp ref={messageTimestampRef}>
@@ -205,26 +202,25 @@ const MessageTimestamp = styled.span`
 const ImageContent = styled.div`
   ${tw`
     cursor-pointer
-    max-w-md
-    max-h-80
-    w-96
-    h-60
+    h-64
     relative
   `}
+
+  width: 28rem;
 
   div {
     ${tw`rounded-xl`}
   }
 `;
 
-const VideoContent = styled.div`
+const VideoContent = styled.div<{ url?: string }>`
   ${tw`
-    max-w-md
+    h-auto
   `}
-`;
 
-const FileContent = styled.div`
-  ${tw`
-    max-w-md
-  `}
+  width: 28rem;
+
+  video {
+    ${tw`rounded-xl`}
+  }
 `;
