@@ -16,7 +16,7 @@ interface IMessagesProps {
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const getSelectedRoomMessages = () => {
     db.collection("rooms")
@@ -35,6 +35,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
           image: doc.data().image,
           video: doc.data().video,
           file: doc.data().file,
+          fileName: doc.data().fileName,
         }));
 
         setMessages(roomMessages);
@@ -42,8 +43,9 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   };
 
   const scrollToBottom = () => {
-    if (messages.length && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   };
 
@@ -53,10 +55,10 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages.length]);
 
   return (
-    <MessagesContainer>
+    <MessagesContainer ref={messagesContainerRef}>
       <Intro
         roomName={selectedRoom?.name}
         roomBackground={selectedRoom?.background}
@@ -71,7 +73,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         </FlipMove>
       </MessagesWrapper>
 
-      <Marginer ref={messagesEndRef} />
+      <Marginer />
 
       <SendingArea roomId={selectedRoom?.id} />
     </MessagesContainer>
@@ -91,6 +93,8 @@ const MessagesContainer = styled.div`
     overflow-x-hidden
     overflow-y-auto
   `}
+
+  scroll-behavior: smooth;
 
   /* Chrome, Edge, and Safari */
   &::-webkit-scrollbar {

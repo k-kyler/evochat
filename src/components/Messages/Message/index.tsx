@@ -2,7 +2,7 @@ import { useRef, useState, forwardRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import Emoji from "react-emoji-render";
-import PreloadImage from "react-preload-image";
+// import { lazyload } from "react-lazyload";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
@@ -19,6 +19,7 @@ const Message = forwardRef<any, IMessageProps>(
       image,
       video,
       file,
+      fileName,
       timestamp,
       active,
       type,
@@ -71,12 +72,24 @@ const Message = forwardRef<any, IMessageProps>(
             </MessageContent>
           ) : type === "image" ? (
             <ImageContent>
-              <PreloadImage src={image} lazy />
+              <img loading="lazy" src={image} />
             </ImageContent>
           ) : type === "video" ? (
-            <VideoContent url={video}>
-              <video src={video} controls preload="metadata"></video>
+            <VideoContent>
+              <iframe
+                src={video}
+                loading="lazy"
+                allowFullScreen={true}
+                width="448"
+                height="250"
+              ></iframe>
             </VideoContent>
+          ) : type === "file" ? (
+            <MessageContent>
+              <a href={file} download target="__blank">
+                {fileName}
+              </a>
+            </MessageContent>
           ) : null}
 
           <MessageTimestamp ref={messageTimestampRef}>
@@ -176,6 +189,12 @@ const MessageContent = styled.p`
   `}
 
   width: fit-content;
+
+  a {
+    ${tw`
+      underline
+    `}
+  }
 `;
 
 const MessageTimestamp = styled.span`
@@ -202,25 +221,22 @@ const MessageTimestamp = styled.span`
 const ImageContent = styled.div`
   ${tw`
     cursor-pointer
-    h-64
-    relative
+    max-w-md
   `}
 
-  width: 28rem;
-
-  div {
-    ${tw`rounded-xl`}
+  img {
+    ${tw`
+      rounded-xl
+      w-full
+      h-full
+    `}
   }
 `;
 
-const VideoContent = styled.div<{ url?: string }>`
-  ${tw`
-    h-auto
-  `}
-
-  width: 28rem;
-
-  video {
-    ${tw`rounded-xl`}
+const VideoContent = styled.div`
+  iframe {
+    ${tw`
+      rounded-xl
+    `}
   }
 `;
