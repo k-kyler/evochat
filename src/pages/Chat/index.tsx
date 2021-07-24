@@ -13,7 +13,8 @@ import BlankOptionsList from "../../components/BlankSection/BlankOptionsList";
 import BlankChatArea from "../../components/BlankSection/BlankChatArea";
 import { RoomType } from "../../typings/RoomType";
 import { MemberItemType } from "../../typings/MemberItemType";
-import { db, storage } from "../../firebase";
+import { SharedMediaType, SharedFilesType } from "../../typings/Shared";
+import { db } from "../../firebase";
 
 interface IChatProps {
   location: {
@@ -26,6 +27,8 @@ const Chat: FC<IChatProps> = ({ location }) => {
   const [joinedMemberIds, setJoinedMemberIds] = useState<string[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
   const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
+  const [roomMedia, setRoomMedia] = useState<SharedMediaType[]>([]);
+  const [roomFiles, setRoomFiles] = useState<SharedFilesType[]>([]);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
@@ -122,9 +125,36 @@ const Chat: FC<IChatProps> = ({ location }) => {
     });
   };
 
-  const getMediaOfSelectedRoom = () => {};
+  const getMediaOfSelectedRoom = () => {
+    db.collection("rooms")
+      .doc(selectedRoom?.id)
+      .collection("messages")
+      .where("type", "in", ["image", "video"])
+      .onSnapshot((snapshot) => {
+        const sharedMedia = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          media: doc.data().media,
+        }));
 
-  const getFilesOfSelectedRoom = () => {};
+        setRoomMedia(sharedMedia);
+      });
+  };
+
+  const getFilesOfSelectedRoom = () => {
+    db.collection("rooms")
+      .doc(selectedRoom?.id)
+      .collection("messages")
+      .where("type", "==", "file")
+      .onSnapshot((snapshot) => {
+        const sharedFiles = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          file: doc.data().file,
+          fileName: doc.data().fileName,
+        }));
+
+        setRoomFiles(sharedFiles);
+      });
+  };
 
   useEffect(() => {
     checkUserHandler();
@@ -162,7 +192,11 @@ const Chat: FC<IChatProps> = ({ location }) => {
         />
 
         {selectedRoom ? (
-          <OptionsList roomMembers={roomMembers} />
+          <OptionsList
+            roomMembers={roomMembers}
+            roomMedia={roomMedia}
+            roomFiles={roomFiles}
+          />
         ) : (
           <BlankOptionsList />
         )}

@@ -15,8 +15,7 @@ const Message = forwardRef<any, IMessageProps>(
       avatar,
       username,
       message,
-      image,
-      video,
+      media,
       file,
       fileName,
       timestamp,
@@ -71,12 +70,12 @@ const Message = forwardRef<any, IMessageProps>(
             </MessageContent>
           ) : type === "image" ? (
             <ImageContent>
-              <img loading="lazy" src={image} />
+              <img loading="lazy" src={media} />
             </ImageContent>
           ) : type === "video" ? (
             <VideoContent>
               <iframe
-                src={video}
+                src={media}
                 loading="lazy"
                 allowFullScreen={true}
               ></iframe>

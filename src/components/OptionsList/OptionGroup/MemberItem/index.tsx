@@ -21,7 +21,7 @@ const MemberItem: FC<IMemberItemProps> = ({
       <InfoContainer>
         {avatar ? (
           <AvatarContainer>
-            <img src={avatar} />
+            <img loading="lazy" src={avatar} />
             <OnlineStatus effect="none" />
           </AvatarContainer>
         ) : (
@@ -33,7 +33,7 @@ const MemberItem: FC<IMemberItemProps> = ({
         <Content title={username}>{username}</Content>
 
         {uid === oid && (
-          <SmallIcon title="Room's admin">
+          <SmallIcon title="Admin">
             <RiVipCrownFill />
           </SmallIcon>
         )}

@@ -4,8 +4,7 @@ export type MessageType = {
   username?: string;
   avatar?: string;
   message: string;
-  video?: string;
-  image?: string;
+  media?: string;
   file?: string;
   fileName?: string;
   timestamp?: any;

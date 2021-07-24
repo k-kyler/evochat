@@ -32,8 +32,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
           timestamp: doc.data().timestamp,
           type: doc.data().type,
           message: doc.data().message,
-          image: doc.data().image,
-          video: doc.data().video,
+          media: doc.data().media,
           file: doc.data().file,
           fileName: doc.data().fileName,
         }));

@@ -3,15 +3,26 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { FaAngleRight } from "react-icons/fa";
 import MemberItem from "./MemberItem";
+import FileItem from "./FileItem";
+import MediaItem from "./MediaItem";
 import { MemberItemType } from "../../../typings/MemberItemType";
+import { SharedMediaType, SharedFilesType } from "../../../typings/Shared";
 
 interface IOptionGroupProps {
   name: string;
   type: "members" | "media" | "files";
   members?: MemberItemType[];
+  media?: SharedMediaType[];
+  files?: SharedFilesType[];
 }
 
-const OptionGroup: FC<IOptionGroupProps> = ({ name, type, members }) => {
+const OptionGroup: FC<IOptionGroupProps> = ({
+  name,
+  type,
+  members,
+  media,
+  files,
+}) => {
   const [checkDropDownGroup, setCheckDropDownGroup] = useState(false);
   const [rotateState, setRotateState] = useState(true);
 
@@ -39,7 +50,7 @@ const OptionGroup: FC<IOptionGroupProps> = ({ name, type, members }) => {
       </OptionGroupInfo>
 
       {type === "members" && checkDropDownGroup ? (
-        <MembersContainer>
+        <OptionItemsContainer>
           {members?.map((member) => (
             <MemberItem
               key={member.uid}
@@ -50,7 +61,15 @@ const OptionGroup: FC<IOptionGroupProps> = ({ name, type, members }) => {
               active={true}
             />
           ))}
-        </MembersContainer>
+        </OptionItemsContainer>
+      ) : type === "media" && checkDropDownGroup ? (
+        <></>
+      ) : type === "files" && checkDropDownGroup ? (
+        <OptionItemsContainer>
+          {files?.map((file) => (
+            <FileItem key={file.id} {...file} />
+          ))}
+        </OptionItemsContainer>
       ) : null}
     </OptionGroupContainer>
   );
@@ -108,7 +127,7 @@ const OptionGroupName = styled.p`
   `}
 `;
 
-const MembersContainer = styled.div`
+const OptionItemsContainer = styled.div`
   ${tw`
     flex
     flex-col
