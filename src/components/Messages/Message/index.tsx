@@ -2,7 +2,6 @@ import { useRef, useState, forwardRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import Emoji from "react-emoji-render";
-// import { lazyload } from "react-lazyload";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
@@ -80,8 +79,6 @@ const Message = forwardRef<any, IMessageProps>(
                 src={video}
                 loading="lazy"
                 allowFullScreen={true}
-                width="448"
-                height="250"
               ></iframe>
             </VideoContent>
           ) : type === "file" ? (
@@ -221,7 +218,8 @@ const MessageTimestamp = styled.span`
 const ImageContent = styled.div`
   ${tw`
     cursor-pointer
-    max-w-md
+    max-w-sm
+    h-auto
   `}
 
   img {
