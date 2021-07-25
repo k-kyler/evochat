@@ -130,6 +130,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
       .doc(selectedRoom?.id)
       .collection("messages")
       .where("type", "in", ["image", "video"])
+      .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         const sharedMedia = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -146,6 +147,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
       .doc(selectedRoom?.id)
       .collection("messages")
       .where("type", "==", "file")
+      .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         const sharedFiles = snapshot.docs.map((doc) => ({
           id: doc.id,

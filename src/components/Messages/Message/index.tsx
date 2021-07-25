@@ -2,6 +2,12 @@ import { useRef, useState, forwardRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import Emoji from "react-emoji-render";
+import {
+  FaRegPlayCircle,
+  FaRegPauseCircle,
+  FaVolumeDown,
+  FaVolumeMute,
+} from "react-icons/fa";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
@@ -25,9 +31,12 @@ const Message = forwardRef<any, IMessageProps>(
     ref
   ) => {
     const [showMessageTimestamp, setShowMessageTimestamp] = useState(true);
+    const [isVideoPlay, setIsVideoPlay] = useState(false);
 
     const messageTimestampRef = useRef<HTMLSpanElement>(null);
     const messageContentRef = useRef<HTMLParagraphElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const videoProgressRef = useRef<HTMLDivElement>(null);
 
     const { user } = useAuth();
 
@@ -74,11 +83,34 @@ const Message = forwardRef<any, IMessageProps>(
             </ImageContent>
           ) : type === "video" ? (
             <VideoContent>
-              <iframe
+              {/* <iframe
                 src={media}
                 loading="lazy"
                 allowFullScreen={true}
-              ></iframe>
+              ></iframe> */}
+              <video src={media}></video>
+
+              {/* <VideoOverlay>
+                <LargeIcon>
+                  <FaRegPlayCircle />
+                </LargeIcon>
+              </VideoOverlay> */}
+
+              <VideoController>
+                <VideoButtons>
+                  <SmallIcon>
+                    <FaRegPauseCircle />
+                  </SmallIcon>
+
+                  <VideoProgress>
+                    <div></div>
+                  </VideoProgress>
+
+                  <SmallIcon>
+                    <FaVolumeDown />
+                  </SmallIcon>
+                </VideoButtons>
+              </VideoController>
             </VideoContent>
           ) : type === "file" ? (
             <MessageContent>
@@ -231,9 +263,95 @@ const ImageContent = styled.div`
 `;
 
 const VideoContent = styled.div`
-  iframe {
+  /* iframe {
+    ${tw`
+      rounded-xl
+    `}
+  } */
+
+  ${tw`
+    max-w-sm
+    w-full
+    relative
+  `}
+
+  video {
     ${tw`
       rounded-xl
     `}
   }
+`;
+
+const VideoController = styled.div`
+  ${tw`
+    flex
+    flex-wrap
+    absolute
+    bottom-0
+    w-full
+    rounded-b-xl
+  `}
+
+  background: rgba(0, 0, 0, 0.7);
+`;
+
+const VideoProgress = styled.div`
+  ${tw`
+    mx-3
+    w-full
+    h-1
+    flex-1
+    bg-gray-500
+  `}
+
+  div {
+    ${tw`
+      bg-white
+      h-1
+      w-2
+    `}
+  }
+`;
+
+const VideoButtons = styled.div`
+  ${tw`
+    flex
+    items-center
+    w-full
+    p-2
+  `}
+`;
+
+const SmallIcon = styled.span`
+  ${tw`
+    text-xl
+    text-white
+    cursor-pointer
+  `}
+`;
+
+const VideoOverlay = styled.div`
+  ${tw`
+    absolute
+    top-0
+    left-0
+    bottom-0
+    right-0
+    rounded-xl
+  `}
+
+  background: rgba(0, 0, 0, 0.7);
+`;
+
+const LargeIcon = styled.span`
+  ${tw`
+    text-6xl
+    text-white
+    cursor-pointer
+    absolute
+    top-1/2
+    left-1/2
+  `}
+
+  transform: translate(-50%, -50%);
 `;
