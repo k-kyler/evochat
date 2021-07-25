@@ -4,9 +4,11 @@ import tw from "twin.macro";
 import Emoji from "react-emoji-render";
 import {
   FaRegPlayCircle,
-  FaRegPauseCircle,
+  FaPause,
   FaVolumeDown,
   FaVolumeMute,
+  FaExpand,
+  FaPlay,
 } from "react-icons/fa";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
@@ -31,10 +33,13 @@ const Message = forwardRef<any, IMessageProps>(
     ref
   ) => {
     const [showMessageTimestamp, setShowMessageTimestamp] = useState(true);
-    const [isVideoPlay, setIsVideoPlay] = useState(false);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+    const [isVideoEnded, setIsVideoEnded] = useState(false);
+    const [isVideoMuted, setIsVideoMuted] = useState(false);
 
     const messageTimestampRef = useRef<HTMLSpanElement>(null);
     const messageContentRef = useRef<HTMLParagraphElement>(null);
+    const videoControllerRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const videoProgressRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +56,64 @@ const Message = forwardRef<any, IMessageProps>(
           showMessageTimestamp ? "0.8" : "1"
         }`;
         messageContentRef.current.style.transition = "all 0.3s ease-in-out";
+      }
+    };
+
+    const playVideoHandler = () => {
+      setIsVideoPlaying(true);
+
+      if (videoRef.current && videoControllerRef.current) {
+        videoControllerRef.current.style.transform = "translateY(0)";
+        videoControllerRef.current.style.transition = "all 0.3s ease-in-out";
+        videoRef.current.play();
+        videoDurationHandler();
+      }
+    };
+
+    const pauseVideoHandler = () => {
+      setIsVideoPlaying(false);
+
+      if (videoRef.current && videoControllerRef.current) {
+        videoControllerRef.current.style.transform = "translateY(100%)";
+        videoControllerRef.current.style.transition = "all 0.3s ease-in-out";
+        videoRef.current.pause();
+      }
+    };
+
+    const replayVideoHandler = () => {
+      setIsVideoEnded(false);
+
+      if (videoRef.current) {
+        videoRef.current.play();
+      }
+    };
+
+    const videoFullscreenHandler = () => {
+      if (videoRef.current) {
+        videoRef.current.requestFullscreen();
+      }
+    };
+
+    const videoMutedHandler = () => {
+      setIsVideoMuted(!isVideoMuted);
+
+      if (videoRef.current) {
+        videoRef.current.muted = isVideoMuted;
+      }
+    };
+
+    const videoDurationHandler = () => {
+      if (videoRef.current) {
+        videoRef.current.addEventListener("timeupdate", () => {
+          if (videoRef.current && videoProgressRef.current) {
+            let progress =
+              videoRef.current.currentTime / videoRef.current.duration;
+
+            videoProgressRef.current.style.width = progress * 100 + "%";
+
+            if (videoRef.current.ended) setIsVideoEnded(true);
+          }
+        });
       }
     };
 
@@ -83,31 +146,36 @@ const Message = forwardRef<any, IMessageProps>(
             </ImageContent>
           ) : type === "video" ? (
             <VideoContent>
-              {/* <iframe
-                src={media}
-                loading="lazy"
-                allowFullScreen={true}
-              ></iframe> */}
-              <video src={media}></video>
+              <video src={media} ref={videoRef}></video>
 
-              {/* <VideoOverlay>
-                <LargeIcon>
-                  <FaRegPlayCircle />
-                </LargeIcon>
-              </VideoOverlay> */}
+              {!isVideoPlaying ? (
+                <VideoOverlay onClick={playVideoHandler}>
+                  <LargeIcon>
+                    <FaRegPlayCircle />
+                  </LargeIcon>
+                </VideoOverlay>
+              ) : null}
 
-              <VideoController>
+              <VideoController ref={videoControllerRef}>
                 <VideoButtons>
-                  <SmallIcon>
-                    <FaRegPauseCircle />
+                  <SmallIcon
+                    onClick={
+                      !isVideoEnded ? pauseVideoHandler : replayVideoHandler
+                    }
+                  >
+                    {!isVideoEnded ? <FaPause /> : <FaPlay />}
                   </SmallIcon>
 
                   <VideoProgress>
-                    <div></div>
+                    <div ref={videoProgressRef}></div>
                   </VideoProgress>
 
-                  <SmallIcon>
-                    <FaVolumeDown />
+                  <SmallIcon onClick={videoMutedHandler}>
+                    {!isVideoMuted ? <FaVolumeDown /> : <FaVolumeMute />}
+                  </SmallIcon>
+
+                  <SmallIcon onClick={videoFullscreenHandler}>
+                    <FaExpand />
                   </SmallIcon>
                 </VideoButtons>
               </VideoController>
@@ -263,16 +331,11 @@ const ImageContent = styled.div`
 `;
 
 const VideoContent = styled.div`
-  /* iframe {
-    ${tw`
-      rounded-xl
-    `}
-  } */
-
   ${tw`
     max-w-sm
     w-full
     relative
+    overflow-hidden
   `}
 
   video {
@@ -292,12 +355,13 @@ const VideoController = styled.div`
     rounded-b-xl
   `}
 
-  background: rgba(0, 0, 0, 0.7);
+  transform: translateY(100%);
+  background: rgba(0, 0, 0, 0.6);
 `;
 
 const VideoProgress = styled.div`
   ${tw`
-    mx-3
+    mr-3
     w-full
     h-1
     flex-1
@@ -308,7 +372,6 @@ const VideoProgress = styled.div`
     ${tw`
       bg-white
       h-1
-      w-2
     `}
   }
 `;
@@ -320,13 +383,18 @@ const VideoButtons = styled.div`
     w-full
     p-2
   `}
+
+  span:last-child {
+    margin-right: 0;
+  }
 `;
 
 const SmallIcon = styled.span`
   ${tw`
-    text-xl
+    text-lg
     text-white
     cursor-pointer
+    mr-3
   `}
 `;
 
@@ -338,9 +406,10 @@ const VideoOverlay = styled.div`
     bottom-0
     right-0
     rounded-xl
+    cursor-pointer
   `}
 
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
 `;
 
 const LargeIcon = styled.span`
