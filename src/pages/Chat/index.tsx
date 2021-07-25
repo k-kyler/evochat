@@ -134,6 +134,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
         const sharedMedia = snapshot.docs.map((doc) => ({
           id: doc.id,
           media: doc.data().media,
+          type: doc.data().type,
         }));
 
         setRoomMedia(sharedMedia);

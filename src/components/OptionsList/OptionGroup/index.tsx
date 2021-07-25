@@ -50,7 +50,7 @@ const OptionGroup: FC<IOptionGroupProps> = ({
       </OptionGroupInfo>
 
       {type === "members" && checkDropDownGroup ? (
-        <OptionItemsContainer>
+        <MemberItemsContainer>
           {members?.map((member) => (
             <MemberItem
               key={member.uid}
@@ -61,15 +61,19 @@ const OptionGroup: FC<IOptionGroupProps> = ({
               active={true}
             />
           ))}
-        </OptionItemsContainer>
+        </MemberItemsContainer>
       ) : type === "media" && checkDropDownGroup ? (
-        <></>
+        <MediaItemsContainer isMedia={media?.length}>
+          {media?.map((m) => (
+            <MediaItem key={m.id} {...m} />
+          ))}
+        </MediaItemsContainer>
       ) : type === "files" && checkDropDownGroup ? (
-        <OptionItemsContainer>
+        <FileItemsContainer>
           {files?.map((file) => (
             <FileItem key={file.id} {...file} />
           ))}
-        </OptionItemsContainer>
+        </FileItemsContainer>
       ) : null}
     </OptionGroupContainer>
   );
@@ -127,7 +131,24 @@ const OptionGroupName = styled.p`
   `}
 `;
 
-const OptionItemsContainer = styled.div`
+const MemberItemsContainer = styled.div`
+  ${tw`
+    flex
+    flex-col
+  `}
+`;
+
+const MediaItemsContainer = styled.div<{ isMedia?: number }>`
+  ${tw`
+    grid
+    grid-cols-3
+    gap-2
+  `}
+
+  ${({ isMedia }) => isMedia && tw`p-2`}
+`;
+
+const FileItemsContainer = styled.div`
   ${tw`
     flex
     flex-col
