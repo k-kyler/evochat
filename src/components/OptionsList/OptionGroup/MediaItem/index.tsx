@@ -1,47 +1,54 @@
-import { FC } from "react";
-import styled from "styled-components";
+import { FC, useRef } from "react";
+import styled, { css } from "styled-components";
 import tw from "twin.macro";
+import { FaRegPlayCircle } from "react-icons/fa";
 import { SharedMediaType } from "../../../../typings/Shared";
 
 interface IMediaItemProps extends SharedMediaType {}
 
 const MediaItem: FC<IMediaItemProps> = ({ media, type }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const videoFullscreenHandler = () => {
+    if (videoRef.current) {
+      videoRef.current.requestFullscreen();
+    }
+  };
+
   return (
-    <MediaItemContainer>
+    <>
       {type === "image" ? (
-        <img loading="lazy" src={media} />
+        <MediaItemContainer src={media} type={type} />
       ) : type === "video" ? (
-        <video src={media} preload="metadata" controls></video>
+        <MediaItemContainer type={type}>
+          <video src={media} ref={videoRef}></video>
+
+          <VideoOverlay onClick={videoFullscreenHandler}>
+            <Icon>
+              <FaRegPlayCircle />
+            </Icon>
+          </VideoOverlay>
+        </MediaItemContainer>
       ) : null}
-    </MediaItemContainer>
+    </>
   );
 };
 
 export default MediaItem;
 
-const MediaItemContainer = styled.div`
+const MediaItemContainer = styled.div<{
+  src?: string;
+  type: "image" | "video";
+}>`
   ${tw`
     transition-all
     duration-300
     ease-in-out
-    h-auto
-    w-16
+    h-14
+    w-14
+    cursor-pointer
+    rounded-md
   `}
-
-  img {
-    ${tw`
-      cursor-pointer
-    `}
-  }
-
-  img,
-  video {
-    ${tw`
-      w-full
-      h-full
-      rounded-md
-    `}
-  }
 
   opacity: 0;
   animation: fadeIn 0.2s ease-in-out forwards;
@@ -51,4 +58,55 @@ const MediaItemContainer = styled.div`
       opacity: 1;
     }
   }
+
+  ${({ src, type }) =>
+    type === "image"
+      ? css`
+          ${tw`
+            bg-cover
+            bg-center
+            bg-no-repeat
+          `}
+
+          background-image: url(${src});
+        `
+      : type === "video"
+      ? css`
+          ${tw`
+            relative
+          `}
+
+          video {
+            ${tw`
+              rounded-md
+            `}
+          }
+        `
+      : null}
+`;
+
+const VideoOverlay = styled.div`
+  ${tw`
+    absolute
+    top-0
+    left-0
+    bottom-0
+    right-0
+    rounded-md
+  `}
+
+  background: rgba(0, 0, 0, 0.6);
+`;
+
+const Icon = styled.span`
+  ${tw`
+    text-2xl
+    text-white
+    cursor-pointer
+    absolute
+    top-1/2
+    left-1/2
+  `}
+
+  transform: translate(-50%, -50%);
 `;
