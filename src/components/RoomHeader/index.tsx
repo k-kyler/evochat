@@ -7,7 +7,7 @@ import {
   FcLandscape,
   FcImport,
   FcDocument,
-  FcSupport,
+  FcBarChart,
   FcLeave,
 } from "react-icons/fc";
 import Panel from "./Panel";
@@ -29,8 +29,8 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom, isBlank }) => {
   const adminPanelData: PanelOptionType[] = [
     {
       id: nanoid(),
-      name: "Room setting",
-      icon: <FcSupport />,
+      name: "Room Info",
+      icon: <FcBarChart />,
       bottomDivider: true,
     },
     {
@@ -68,8 +68,8 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom, isBlank }) => {
   const generalPanelData: PanelOptionType[] = [
     {
       id: nanoid(),
-      name: "Room setting",
-      icon: <FcSupport />,
+      name: "Room Info",
+      icon: <FcBarChart />,
       bottomDivider: true,
     },
     {

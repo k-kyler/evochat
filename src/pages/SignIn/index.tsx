@@ -1,12 +1,12 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import Button from "../../components/Button";
-import WebLogoImage from "../../assets/web-logo.svg";
-import { SCREENS } from "../../screens";
-import { useAuth } from "../../contexts/AuthContext";
 import { Link, Redirect } from "react-router-dom";
 import { IoReturnUpBackSharp } from "react-icons/io5";
+import Button from "../../components/Button";
+import WebLogoImage from "../../assets/web-logo-light.svg";
+import { SCREENS } from "../../screens";
+import { useAuth } from "../../contexts/AuthContext";
 
 const SignIn: FC = () => {
   const { user, googleSignInHandler, facebookSignInHandler } = useAuth();
@@ -59,7 +59,6 @@ const SignInContainer = styled.div`
 
 const InnerContainer = styled.div`
   ${tw`
-    bg-gray-600
     h-full
     w-full
     flex
@@ -68,19 +67,21 @@ const InnerContainer = styled.div`
     justify-center
   `}
 
+  background-color: #f1f2f5;
+
   img {
-    height: 5rem;
+    height: 6rem;
 
     @media (min-width: ${SCREENS.md}) {
-      height: 6rem;
-    }
-
-    @media (min-width: ${SCREENS.lg}) {
       height: 7rem;
     }
 
-    @media (min-width: ${SCREENS["2xl"]}) {
+    @media (min-width: ${SCREENS.lg}) {
       height: 8rem;
+    }
+
+    @media (min-width: ${SCREENS["2xl"]}) {
+      height: 9rem;
     }
   }
 
@@ -91,11 +92,12 @@ const InnerContainer = styled.div`
 
 const SignInTitle = styled.h1`
   ${tw`
-    mt-2
-    mb-6
-    text-3xl
-    text-white
+    mb-4
+    text-center
+    text-black
     font-black
+    text-2xl
+    md:text-3xl
     lg:text-4xl
   `}
 `;
@@ -134,4 +136,10 @@ const Buttons = styled.div`
     flex
     flex-col
   `}
+
+  button {
+    ${tw`
+      shadow-md
+    `}
+  }
 `;

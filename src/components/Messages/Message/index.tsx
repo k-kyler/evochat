@@ -271,7 +271,7 @@ const MessageContent = styled.p`
     text-black
     p-2
     rounded-xl
-    max-w-md
+    max-w-sm
     bg-white
     cursor-pointer
     break-words
@@ -311,6 +311,7 @@ const ImageContent = styled.div`
   ${tw`
     cursor-pointer
     max-w-sm
+    w-full
     h-auto
   `}
 
@@ -407,7 +408,7 @@ const VideoOverlay = styled.div`
 
 const LargeIcon = styled.span`
   ${tw`
-    text-6xl
+    text-7xl
     text-white
     cursor-pointer
     absolute

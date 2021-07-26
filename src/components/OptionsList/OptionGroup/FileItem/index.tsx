@@ -48,7 +48,7 @@ const FileItemContainer = styled.div`
     transition-all
     duration-300
     ease-in-out
-    p-2
+    py-2
   `}
 
   opacity: 0;
