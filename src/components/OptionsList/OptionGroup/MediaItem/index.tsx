@@ -44,8 +44,8 @@ const MediaItemContainer = styled.div<{
     transition-all
     duration-300
     ease-in-out
-    h-14
-    w-14
+    h-16
+    w-16
     cursor-pointer
     rounded-md
   `}
@@ -100,7 +100,7 @@ const VideoOverlay = styled.div`
 
 const Icon = styled.span`
   ${tw`
-    text-2xl
+    text-3xl
     text-white
     cursor-pointer
     absolute
