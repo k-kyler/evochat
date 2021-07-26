@@ -2,7 +2,6 @@ import { FC } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
-import Tooltip from "../Tooltip";
 
 interface IRoundedObject extends RoundedObjectType {
   selectedRoomId?: string;
@@ -41,8 +40,6 @@ const RoundedObject: FC<IRoundedObject> = ({
         ) : (
           <Icon>{icon}</Icon>
         )}
-
-        {/* <Tooltip content={content} arrow="left" /> */}
       </RoundedObjectContainer>
     );
   return (
@@ -65,8 +62,6 @@ const RoundedObject: FC<IRoundedObject> = ({
       ) : (
         <Icon>{icon}</Icon>
       )}
-
-      {/* <Tooltip content={content} arrow="left" /> */}
     </RoundedObjectContainer>
   );
 };

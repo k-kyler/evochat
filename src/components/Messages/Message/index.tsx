@@ -34,7 +34,6 @@ const Message = forwardRef<any, IMessageProps>(
   ) => {
     const [showMessageTimestamp, setShowMessageTimestamp] = useState(true);
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-    const [isVideoEnded, setIsVideoEnded] = useState(false);
     const [isVideoMuted, setIsVideoMuted] = useState(false);
 
     const messageTimestampRef = useRef<HTMLSpanElement>(null);
@@ -80,14 +79,6 @@ const Message = forwardRef<any, IMessageProps>(
       }
     };
 
-    const replayVideoHandler = () => {
-      setIsVideoEnded(false);
-
-      if (videoRef.current) {
-        videoRef.current.play();
-      }
-    };
-
     const videoFullscreenHandler = () => {
       if (videoRef.current) {
         videoRef.current.requestFullscreen();
@@ -111,7 +102,13 @@ const Message = forwardRef<any, IMessageProps>(
 
             videoProgressRef.current.style.width = progress * 100 + "%";
 
-            if (videoRef.current.ended) setIsVideoEnded(true);
+            if (videoRef.current.ended && videoControllerRef.current) {
+              setIsVideoPlaying(false);
+
+              videoControllerRef.current.style.transform = "translateY(100%)";
+              videoControllerRef.current.style.transition =
+                "all 0.3s ease-in-out";
+            }
           }
         });
       }
@@ -158,12 +155,8 @@ const Message = forwardRef<any, IMessageProps>(
 
               <VideoController ref={videoControllerRef}>
                 <VideoButtons>
-                  <SmallIcon
-                    onClick={
-                      !isVideoEnded ? pauseVideoHandler : replayVideoHandler
-                    }
-                  >
-                    {!isVideoEnded ? <FaPause /> : <FaPlay />}
+                  <SmallIcon onClick={pauseVideoHandler}>
+                    <FaPause />
                   </SmallIcon>
 
                   <VideoProgress>
