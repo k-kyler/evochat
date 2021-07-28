@@ -2,7 +2,7 @@ import { FC, useRef } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { FaRegPlayCircle } from "react-icons/fa";
-import { SharedMediaType } from "../../../../typings/Shared";
+import { SharedMediaType } from "../../../../typings/SharedType";
 
 interface IMediaItemProps extends SharedMediaType {}
 

@@ -13,7 +13,7 @@ import BlankOptionsList from "../../components/BlankSection/BlankOptionsList";
 import BlankChatArea from "../../components/BlankSection/BlankChatArea";
 import { RoomType } from "../../typings/RoomType";
 import { MemberItemType } from "../../typings/MemberItemType";
-import { SharedMediaType, SharedFilesType } from "../../typings/Shared";
+import { SharedMediaType, SharedFileType } from "../../typings/SharedType";
 import { db } from "../../firebase";
 
 interface IChatProps {
@@ -28,7 +28,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
   const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
   const [roomMedia, setRoomMedia] = useState<SharedMediaType[]>([]);
-  const [roomFiles, setRoomFiles] = useState<SharedFilesType[]>([]);
+  const [roomFiles, setRoomFiles] = useState<SharedFileType[]>([]);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
@@ -191,10 +191,10 @@ const Chat: FC<IChatProps> = ({ location }) => {
       <RoomOptionContainer>
         <RoomHeader
           selectedRoom={selectedRoom}
-          isBlank={!selectedRoom ? true : false}
+          isBlank={!joinedRoomIds.length ? true : false}
         />
 
-        {selectedRoom ? (
+        {joinedRoomIds.length ? (
           <OptionsList
             roomMembers={roomMembers}
             roomMedia={roomMedia}
@@ -208,7 +208,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
       </RoomOptionContainer>
 
       <ChatAreaContainer>
-        {selectedRoom ? (
+        {joinedRoomIds.length ? (
           <Messages selectedRoom={selectedRoom} />
         ) : (
           <BlankChatArea />

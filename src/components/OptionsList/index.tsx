@@ -2,13 +2,13 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { MemberItemType } from "../../typings/MemberItemType";
-import { SharedMediaType, SharedFilesType } from "../../typings/Shared";
+import { SharedMediaType, SharedFileType } from "../../typings/SharedType";
 import OptionGroup from "./OptionGroup";
 
 interface IOptionsListProps {
   roomMembers?: MemberItemType[];
   roomMedia?: SharedMediaType[];
-  roomFiles?: SharedFilesType[];
+  roomFiles?: SharedFileType[];
 }
 
 const OptionsList: FC<IOptionsListProps> = ({

@@ -1,13 +1,13 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { SharedFilesType } from "../../../../typings/Shared";
+import { SharedFileType } from "../../../../typings/SharedType";
 import DocumentImage from "../../../../assets/document.svg";
 import SheetImage from "../../../../assets/sheet.svg";
 import PDFImage from "../../../../assets/pdf.svg";
 import ArchiveImage from "../../../../assets/archive.svg";
 
-interface IFileItemProps extends SharedFilesType {}
+interface IFileItemProps extends SharedFileType {}
 
 const FileItem: FC<IFileItemProps> = ({ fileName, file }) => {
   return (

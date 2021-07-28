@@ -15,10 +15,12 @@ import {
   BiChevronRight,
   BiFile,
 } from "react-icons/bi";
+import Picker, { IEmojiData } from "emoji-picker-react";
 import Tooltip from "../../Tooltip";
 import Modal from "../../Modal";
-import Picker, { IEmojiData } from "emoji-picker-react";
+import UploadingList from "./UploadingList";
 import { MessageType } from "../../../typings/MessageType";
+import { SharedMediaType, SharedFileType } from "../../../typings/SharedType";
 import { useAuth } from "../../../contexts/AuthContext";
 import { db } from "../../../firebase";
 
@@ -81,6 +83,26 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
     }
   };
 
+  const testUploadingMediaList: SharedMediaType[] = [
+    {
+      media:
+        "https://firebasestorage.googleapis.com/v0/b/evochat-56ff6.appspot.com/o/shared-media%2FdqfeWsI8fVVTXthJNa6L%2FwjiDjXLuqXfYXMtfGSeO.jpg?alt=media&token=ff802a0e-2190-487e-8be9-c5195d54c734",
+      type: "image",
+    },
+    // {
+    //   media:
+    //     "https://firebasestorage.googleapis.com/v0/b/evochat-56ff6.appspot.com/o/shared-media%2FdqfeWsI8fVVTXthJNa6L%2Fqpes22Aku7ywjp1eyYke.mp4?alt=media&token=a14acbea-0321-4925-a871-2f76c5780842",
+    //   type: "video",
+    // },
+  ];
+
+  const testUploadingFile: SharedFileType = {
+    // file: "https://firebasestorage.googleapis.com/v0/b/evochat-56ff6.appspot.com/o/shared-media%2FdqfeWsI8fVVTXthJNa6L%2FwjiDjXLuqXfYXMtfGSeO.jpg?alt=media&token=ff802a0e-2190-487e-8be9-c5195d54c734",
+    // fileName: "document.pdf",
+    file: "",
+    fileName: "",
+  };
+
   useEffect(() => {
     if (chosenEmoji && textAreaRef.current)
       textAreaRef.current.value += chosenEmoji.emoji;
@@ -92,6 +114,11 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
         {isOpen ? (
           <>
             <Options ref={optionsRef}>
+              <UploadingList
+                uploadingMediaList={testUploadingMediaList}
+                uploadingFile={testUploadingFile}
+              />
+
               <Icon isOpen={isOpen} onClick={() => setOpenEmojiModal(true)}>
                 <BiGhost />
                 <Tooltip content="Emoji" arrow="bottom" />
@@ -206,6 +233,7 @@ const TextArea = styled.textarea`
 const Options = styled.div`
   ${tw`
     flex
+    relative
   `}
 
   span {

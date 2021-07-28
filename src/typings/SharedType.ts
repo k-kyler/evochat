@@ -1,11 +1,11 @@
 export type SharedMediaType = {
-  id: string;
+  id?: string;
   media: string;
   type: "image" | "video";
 };
 
-export type SharedFilesType = {
-  id: string;
+export type SharedFileType = {
+  id?: string;
   file: string;
   fileName: string;
 };

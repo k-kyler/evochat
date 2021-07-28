@@ -6,14 +6,14 @@ import MemberItem from "./MemberItem";
 import FileItem from "./FileItem";
 import MediaItem from "./MediaItem";
 import { MemberItemType } from "../../../typings/MemberItemType";
-import { SharedMediaType, SharedFilesType } from "../../../typings/Shared";
+import { SharedMediaType, SharedFileType } from "../../../typings/SharedType";
 
 interface IOptionGroupProps {
   name: string;
   type: "members" | "media" | "files";
   members?: MemberItemType[];
   media?: SharedMediaType[];
-  files?: SharedFilesType[];
+  files?: SharedFileType[];
 }
 
 const OptionGroup: FC<IOptionGroupProps> = ({
@@ -144,6 +144,7 @@ const MediaItemsContainer = styled.div`
     grid-cols-3
     gap-3
     place-items-center
+    py-2
   `}
 `;
 
