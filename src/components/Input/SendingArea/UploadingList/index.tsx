@@ -63,9 +63,9 @@ const UploadingListContainer = styled.div<{ src?: string }>`
 
     left: 45%;
     content: "";
-    border-width: 10px;
+    border-width: 7px;
     border-style: solid;
-    border-color: rgba(75, 85, 99) transparent transparent;
+    border-color: rgba(75, 85, 99) transparent transparent rgba(75, 85, 99);
   }
 `;
 
