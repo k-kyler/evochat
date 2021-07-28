@@ -1,6 +1,9 @@
 # Evochat
 
-This project was developed by React.js, TypeScript, Tailwind CSS, Styled Components and Firebase.
+Powered by React.js, TypeScript, Tailwind CSS, Styled Components and Firebase.
+
+## Description
+Evochat is my pet project in creating a realtime messaging network by ReactJS and Firebase features such as Firestore and Storage. Firestore is a realtime database which will create a realtime communicating between users in their joined rooms and Storage will store all of the uploaded media and file of users. Evochat's room provides users with basic types of sending message such as text, image, video and file. Besides, it also provides members information, shared media, shared files, room owner options and member options. Currently, Evochat is still under development.
 
 ## Available Scripts
 
