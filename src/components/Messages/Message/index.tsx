@@ -8,7 +8,6 @@ import {
   FaVolumeDown,
   FaVolumeMute,
   FaExpand,
-  FaPlay,
 } from "react-icons/fa";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";

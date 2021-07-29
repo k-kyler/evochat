@@ -1,7 +1,8 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { FaCheckCircle, FaBan } from "react-icons/fa";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import { CgSpinner } from "react-icons/cg";
 import {
   SharedMediaType,
   SharedFileType,
@@ -10,36 +11,53 @@ import MediaItem from "../../../OptionsList/OptionGroup/MediaItem";
 import FileItem from "../../../OptionsList/OptionGroup/FileItem";
 
 interface IUploadingListProps {
-  uploadingMediaList?: SharedMediaType[];
+  uploadingMedia?: SharedMediaType;
   uploadingFile?: SharedFileType;
+  uploadLoading: boolean;
+  uploadHandler: () => void;
+  clearUploadingListHandler: () => void;
 }
 
 const UploadingList: FC<IUploadingListProps> = ({
-  uploadingMediaList,
+  uploadingMedia,
   uploadingFile,
+  uploadLoading,
+  uploadHandler,
+  clearUploadingListHandler,
 }) => {
-  return (
-    <UploadingListContainer>
-      <UploadingMediaContainer>
-        {uploadingMediaList?.map((object, index) => (
-          <MediaItem key={index} {...object} />
-        ))}
-      </UploadingMediaContainer>
+  if (uploadingMedia?.media || uploadingFile?.file)
+    return (
+      <UploadingListContainer>
+        <UploadingObjectsContainer>
+          {uploadingMedia?.media ? (
+            <UploadingMediaContainer>
+              <MediaItem {...uploadingMedia} />
+            </UploadingMediaContainer>
+          ) : null}
 
-      <UploadingFileContainer>
-        {uploadingFile?.file && <FileItem {...uploadingFile} />}
-      </UploadingFileContainer>
+          {uploadingFile?.fileName ? (
+            <UploadingFileContainer>
+              <FileItem {...uploadingFile} />
+            </UploadingFileContainer>
+          ) : null}
+        </UploadingObjectsContainer>
 
-      <UploadingListOptions>
-        <Icon type="upload">
-          <FaCheckCircle />
-        </Icon>
-        <Icon type="clear">
-          <FaBan />
-        </Icon>
-      </UploadingListOptions>
-    </UploadingListContainer>
-  );
+        <UploadingListOptions>
+          <Icon
+            type="upload"
+            uploadLoading={uploadLoading}
+            onClick={uploadHandler}
+            title="Upload"
+          >
+            {uploadLoading ? <CgSpinner /> : <FaCheck />}
+          </Icon>
+          <Icon type="clear" onClick={clearUploadingListHandler} title="Clear">
+            <FaTimes />
+          </Icon>
+        </UploadingListOptions>
+      </UploadingListContainer>
+    );
+  return null;
 };
 
 export default UploadingList;
@@ -52,27 +70,36 @@ const UploadingListContainer = styled.div<{ src?: string }>`
     bottom-14
     bg-gray-600
     rounded-xl
-    p-2
+    px-3
+    py-2
   `}
 
   &::after {
     ${tw`
       absolute
       top-full
+      left-16
     `}
 
-    left: 45%;
     content: "";
-    border-width: 7px;
+    border-width: 5px;
     border-style: solid;
     border-color: rgba(75, 85, 99) transparent transparent rgba(75, 85, 99);
   }
+`;
+
+const UploadingObjectsContainer = styled.div`
+  ${tw`
+    flex
+    items-center
+  `}
 `;
 
 const UploadingMediaContainer = styled.div`
   ${tw`
     flex
     items-center
+    mr-3
   `}
 
   div {
@@ -80,16 +107,14 @@ const UploadingMediaContainer = styled.div`
       h-12
       w-12
     `}
-
-    &:not(:last-child) {
-      ${tw`
-        mr-4
-      `}
-    }
   }
 `;
 
 const UploadingFileContainer = styled.div`
+  ${tw`
+    mr-3
+  `}
+
   a {
     div {
       ${tw`
@@ -99,6 +124,7 @@ const UploadingFileContainer = styled.div`
       p {
         ${tw`
           ml-1
+          max-w-max
         `}
       }
     }
@@ -110,16 +136,23 @@ const UploadingListOptions = styled.div`
     flex
     items-center
   `}
+
+  div {
+    &:not(:last-child) {
+      ${tw`
+        mr-3
+      `}
+    }
+  }
 `;
 
-const Icon = styled.div<{ type: "upload" | "clear" }>`
+const Icon = styled.div<{ type: "upload" | "clear"; uploadLoading?: boolean }>`
   ${tw`
     text-xl
     cursor-pointer
-    ml-3
-    grid
-    place-items-center
   `}
 
   ${({ type }) => (type === "upload" ? tw`text-green-500` : tw`text-red-500`)}
+
+  ${({ uploadLoading }) => uploadLoading && tw`animate-spin`}
 `;

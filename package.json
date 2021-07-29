@@ -21,6 +21,7 @@
     "react-emoji-render": "^1.2.4",
     "react-flip-move": "^3.0.4",
     "react-icons": "^4.2.0",
+    "react-lazyload": "^3.2.0",
     "react-responsive": "^8.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@types/react-burger-menu": "^2.8.0",
+    "@types/react-lazyload": "^3.1.1",
     "@types/react-responsive": "^8.0.2",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.10",

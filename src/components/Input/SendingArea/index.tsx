@@ -5,6 +5,7 @@ import {
   useEffect,
   MouseEvent,
   KeyboardEvent,
+  ChangeEvent,
 } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
@@ -32,10 +33,19 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
   const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [uploadingMediaPreview, setUploadingMediaPreview] =
+    useState<SharedMediaType>();
+  const [uploadingFilePreview, setUploadingFilePreview] =
+    useState<SharedFileType>();
+  const [inputMedia, setInputMedia] = useState<any>(null);
+  const [inputFile, setInputFile] = useState<any>(null);
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
   const sendingAreaContainerRef = useRef<HTMLDivElement>(null);
+  const inputMediaRef = useRef<HTMLInputElement>(null);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
 
@@ -83,24 +93,49 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
     }
   };
 
-  const testUploadingMediaList: SharedMediaType[] = [
-    {
-      media:
-        "https://firebasestorage.googleapis.com/v0/b/evochat-56ff6.appspot.com/o/shared-media%2FdqfeWsI8fVVTXthJNa6L%2FwjiDjXLuqXfYXMtfGSeO.jpg?alt=media&token=ff802a0e-2190-487e-8be9-c5195d54c734",
-      type: "image",
-    },
-    // {
-    //   media:
-    //     "https://firebasestorage.googleapis.com/v0/b/evochat-56ff6.appspot.com/o/shared-media%2FdqfeWsI8fVVTXthJNa6L%2Fqpes22Aku7ywjp1eyYke.mp4?alt=media&token=a14acbea-0321-4925-a871-2f76c5780842",
-    //   type: "video",
-    // },
-  ];
+  const showHiddenInputMediaHandler = () => {
+    if (inputMediaRef.current) inputMediaRef.current.click();
+  };
 
-  const testUploadingFile: SharedFileType = {
-    // file: "https://firebasestorage.googleapis.com/v0/b/evochat-56ff6.appspot.com/o/shared-media%2FdqfeWsI8fVVTXthJNa6L%2FwjiDjXLuqXfYXMtfGSeO.jpg?alt=media&token=ff802a0e-2190-487e-8be9-c5195d54c734",
-    // fileName: "document.pdf",
-    file: "",
-    fileName: "",
+  const showHiddenInputFileHandler = () => {
+    if (inputFileRef.current) inputFileRef.current.click();
+  };
+
+  const inputMediaOnChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setInputMedia(event.target.files[0]);
+      setUploadingMediaPreview({
+        media: URL.createObjectURL(event.target.files[0]),
+        type: event.target.files[0].type.includes("video") ? "video" : "image",
+      });
+    }
+  };
+
+  const inputFileOnChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setInputFile(event.target.files[0]);
+      setUploadingFilePreview({
+        file: URL.createObjectURL(event.target.files[0]),
+        fileName: event.target.files[0].name,
+      });
+    }
+  };
+
+  const uploadHandler = () => {
+    setUploadLoading(true);
+  };
+
+  const clearUploadingListHandler = () => {
+    setUploadLoading(false);
+    setInputMedia(null);
+    setUploadingMediaPreview(null as any);
+    setInputFile(null);
+    setUploadingFilePreview(null as any);
+
+    if (inputMediaRef.current && inputFileRef.current) {
+      inputMediaRef.current.value = "";
+      inputFileRef.current.value = "";
+    }
   };
 
   useEffect(() => {
@@ -115,19 +150,34 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
           <>
             <Options ref={optionsRef}>
               <UploadingList
-                uploadingMediaList={testUploadingMediaList}
-                uploadingFile={testUploadingFile}
+                uploadingMedia={uploadingMediaPreview}
+                uploadingFile={uploadingFilePreview}
+                uploadLoading={uploadLoading}
+                uploadHandler={uploadHandler}
+                clearUploadingListHandler={clearUploadingListHandler}
+              />
+              <input
+                type="file"
+                accept="image/*, video/*"
+                ref={inputMediaRef}
+                onChange={inputMediaOnChangeHandler}
+              />
+              <input
+                type="file"
+                accept=".pdf, doc, .docx, xls, .xlsx, .rar, .zip"
+                ref={inputFileRef}
+                onChange={inputFileOnChangeHandler}
               />
 
               <Icon isOpen={isOpen} onClick={() => setOpenEmojiModal(true)}>
                 <BiGhost />
                 <Tooltip content="Emoji" arrow="bottom" />
               </Icon>
-              <Icon isOpen={isOpen}>
+              <Icon isOpen={isOpen} onClick={showHiddenInputMediaHandler}>
                 <BiImages />
                 <Tooltip content="Image & Video" arrow="bottom" />
               </Icon>
-              <Icon isOpen={isOpen}>
+              <Icon isOpen={isOpen} onClick={showHiddenInputFileHandler}>
                 <BiFile />
                 <Tooltip content="Attachment" arrow="bottom" />
               </Icon>
@@ -244,6 +294,10 @@ const Options = styled.div`
     &:not(:last-child) {
       margin-right: 1rem;
     }
+  }
+
+  input {
+    display: none;
   }
 `;
 

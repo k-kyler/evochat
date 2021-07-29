@@ -63,7 +63,7 @@ const OptionGroup: FC<IOptionGroupProps> = ({
           ))}
         </MemberItemsContainer>
       ) : type === "media" && checkDropDownGroup ? (
-        <MediaItemsContainer>
+        <MediaItemsContainer isMedia={media}>
           {media?.map((m) => (
             <MediaItem key={m.id} {...m} />
           ))}
@@ -138,14 +138,15 @@ const MemberItemsContainer = styled.div`
   `}
 `;
 
-const MediaItemsContainer = styled.div`
+const MediaItemsContainer = styled.div<{ isMedia?: SharedMediaType[] }>`
   ${tw`
     grid
     grid-cols-3
     gap-3
     place-items-center
-    py-2
   `}
+
+  ${({ isMedia }) => isMedia?.length && tw`py-2`}
 `;
 
 const FileItemsContainer = styled.div`
