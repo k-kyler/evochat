@@ -27,6 +27,9 @@ const Chat: FC<IChatProps> = ({ location }) => {
   const [joinedMemberIds, setJoinedMemberIds] = useState<string[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
   const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
+  const [roomBlockMessagesIds, setRoomBlockMessagesIds] = useState<string[]>(
+    []
+  );
   const [roomMedia, setRoomMedia] = useState<SharedMediaType[]>([]);
   const [roomFiles, setRoomFiles] = useState<SharedFileType[]>([]);
 
@@ -125,35 +128,49 @@ const Chat: FC<IChatProps> = ({ location }) => {
     });
   };
 
+  const getRoomBlockMessagesIds = () => {
+    if (selectedRoom) {
+      db.collection("roomMessages")
+        .where("roomId", "==", selectedRoom.id)
+        .onSnapshot((snapshot) => {
+          const blockMessagesIds = snapshot.docs.map((doc) => doc.id);
+
+          setRoomBlockMessagesIds(blockMessagesIds as string[]);
+        });
+    }
+  };
+
   const getMediaOfSelectedRoom = () => {
-    db.collection("rooms")
-      .doc(selectedRoom?.id)
-      .collection("messages")
+    db.collectionGroup("dateMessages")
       .where("type", "in", ["image", "video"])
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        const sharedMedia = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          media: doc.data().media,
-          type: doc.data().type,
-        }));
+        const sharedMedia = snapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            media: doc.data().media,
+            type: doc.data().type,
+            roomId: doc.ref.parent.parent?.id as string,
+          }))
+          .filter((media) => roomBlockMessagesIds.includes(media.roomId));
 
         setRoomMedia(sharedMedia);
       });
   };
 
   const getFilesOfSelectedRoom = () => {
-    db.collection("rooms")
-      .doc(selectedRoom?.id)
-      .collection("messages")
+    db.collectionGroup("dateMessages")
       .where("type", "==", "file")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        const sharedFiles = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          file: doc.data().file,
-          fileName: doc.data().fileName,
-        }));
+        const sharedFiles = snapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            file: doc.data().file,
+            fileName: doc.data().fileName,
+            roomId: doc.ref.parent.parent?.id as string,
+          }))
+          .filter((media) => roomBlockMessagesIds.includes(media.roomId));
 
         setRoomFiles(sharedFiles);
       });
@@ -174,13 +191,17 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   useEffect(() => {
     getMemberIdsOfSelectedRoom();
-    getMediaOfSelectedRoom();
-    getFilesOfSelectedRoom();
+    getRoomBlockMessagesIds();
   }, [selectedRoom]);
 
   useEffect(() => {
     getMembersOfSelectedRoom();
   }, [joinedMemberIds]);
+
+  useEffect(() => {
+    getMediaOfSelectedRoom();
+    getFilesOfSelectedRoom();
+  }, [roomBlockMessagesIds]);
 
   return (
     <ChatContainer>

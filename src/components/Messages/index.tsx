@@ -43,10 +43,11 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
       ).toDateString();
       const currentTimestamp = new Date().toDateString();
 
-      if (latestBlockMessagesTimestamp === currentTimestamp)
+      if (latestBlockMessagesTimestamp === currentTimestamp) {
         setCurrentBlockMessagesId(roomMessages[roomMessages.length - 1].id);
-    } else {
-      setCurrentBlockMessagesId("");
+      } else if (latestBlockMessagesTimestamp !== currentTimestamp) {
+        setCurrentBlockMessagesId("");
+      }
     }
   };
 
@@ -77,6 +78,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
           {roomMessages.map((roomMessage) => (
             <BlockMessages
               selectedRoomTimestamp={selectedRoom?.timestamp}
+              scrollToBottom={scrollToBottom}
               key={roomMessage.id}
               {...roomMessage}
             />
@@ -87,7 +89,6 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
       <Marginer />
 
       <SendingArea
-        scrollToBottom={scrollToBottom}
         roomId={selectedRoom?.id}
         blockMessagesId={currentBlockMessagesId}
       />

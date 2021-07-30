@@ -7,10 +7,12 @@ import Message from "../Message";
 import LineAlert from "../LineAlert";
 import { db } from "../../../firebase";
 
-interface IBlockMessagesProps extends BlockMessagesType {}
+interface IBlockMessagesProps extends BlockMessagesType {
+  scrollToBottom: () => void;
+}
 
 const BlockMessages = forwardRef<any, IBlockMessagesProps>(
-  ({ timestamp, id, selectedRoomTimestamp }, ref) => {
+  ({ timestamp, id, selectedRoomTimestamp, scrollToBottom }, ref) => {
     const [dateMessages, setDateMessages] = useState<MessageType[]>([]);
 
     const convertedTimestamp =
@@ -45,9 +47,13 @@ const BlockMessages = forwardRef<any, IBlockMessagesProps>(
       getDateMessages();
     }, []);
 
+    useEffect(() => {
+      scrollToBottom();
+    }, [dateMessages.length]);
+
     return (
       <BlockMessagesContainer ref={ref}>
-        {new Date(selectedRoomTimestamp.toDate()).toDateString() +
+        {new Date(selectedRoomTimestamp?.toDate()).toDateString() +
           ", " +
           new Date(timestamp?.toDate()).toLocaleTimeString() !==
         convertedTimestamp ? (

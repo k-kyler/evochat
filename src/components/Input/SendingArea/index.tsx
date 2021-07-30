@@ -28,14 +28,9 @@ import { db } from "../../../firebase";
 interface ISendingArea {
   roomId?: string;
   blockMessagesId: string;
-  scrollToBottom: () => void;
 }
 
-const SendingArea: FC<ISendingArea> = ({
-  blockMessagesId,
-  roomId,
-  scrollToBottom,
-}) => {
+const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
   const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -92,15 +87,10 @@ const SendingArea: FC<ISendingArea> = ({
           db.collection("roomMessages")
             .doc(blockMessagesId)
             .collection("dateMessages")
-            .add(messageObject)
-            .then((docRef) => {
-              if (docRef.id && textAreaRef.current) {
-                textAreaRef.current.value = "";
-                textAreaRef.current.style.cssText = "height: auto";
+            .add(messageObject);
 
-                scrollToBottom();
-              }
-            });
+          textAreaRef.current.value = "";
+          textAreaRef.current.style.cssText = "height: auto";
         } else {
           db.collection("roomMessages")
             .add({
@@ -112,15 +102,12 @@ const SendingArea: FC<ISendingArea> = ({
                 db.collection("roomMessages")
                   .doc(docRef.id)
                   .collection("dateMessages")
-                  .add(messageObject)
-                  .then((docRef) => {
-                    if (docRef.id && textAreaRef.current) {
-                      textAreaRef.current.value = "";
-                      textAreaRef.current.style.cssText = "height: auto";
+                  .add(messageObject);
 
-                      scrollToBottom();
-                    }
-                  });
+                if (textAreaRef.current) {
+                  textAreaRef.current.value = "";
+                  textAreaRef.current.style.cssText = "height: auto";
+                }
               }
             });
         }
