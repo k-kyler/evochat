@@ -200,7 +200,7 @@ const MessageContainer = styled.div<{
   ${tw`
     flex
     items-end
-    my-5
+    my-2
   `}
 
   ${({ isUser }) =>

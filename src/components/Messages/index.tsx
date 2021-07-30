@@ -15,6 +15,7 @@ interface IMessagesProps {
 
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [roomMessages, setRoomMessages] = useState<BlockMessagesType[]>([]);
+  const [currentBlockMessagesId, setCurrentBlockMessagesId] = useState("");
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -24,46 +25,35 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         .where("roomId", "==", selectedRoom.id)
         .orderBy("timestamp", "asc")
         .onSnapshot((snapshot) => {
-          const roomMessages = snapshot.docs.map(async (doc) => {
-            const dateMessages = await doc.ref
-              .collection("dateMessages")
-              .orderBy("timestamp", "asc")
-              .get()
-              .then((snapshot) => {
-                return snapshot.docs.map((doc) => ({
-                  id: doc.id,
-                  uid: doc.data().uid,
-                  username: doc.data().username,
-                  avatar: doc.data().avatar,
-                  timestamp: doc.data().timestamp,
-                  type: doc.data().type,
-                  message: doc.data().message,
-                  media: doc.data().media,
-                  file: doc.data().file,
-                  fileName: doc.data().fileName,
-                }));
-              });
+          const blockMessages = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            roomId: doc.data().roomId,
+            timestamp: doc.data().timestamp,
+          }));
 
-            return {
-              id: doc.id,
-              roomId: doc.data().roomId,
-              timestamp: doc.data().timestamp,
-              dateMessages,
-            };
-          });
-
-          Promise.all(roomMessages)
-            .then((result) => setRoomMessages(result))
-            .catch((error) => console.error(error));
+          setRoomMessages(blockMessages);
         });
     }
   };
 
+  const getCurrentBlockMessagesId = () => {
+    if (roomMessages.length) {
+      const latestBlockMessagesTimestamp = new Date(
+        roomMessages[roomMessages.length - 1].timestamp.toDate()
+      ).toDateString();
+      const currentTimestamp = new Date().toDateString();
+
+      if (latestBlockMessagesTimestamp === currentTimestamp)
+        setCurrentBlockMessagesId(roomMessages[roomMessages.length - 1].id);
+    } else {
+      setCurrentBlockMessagesId("");
+    }
+  };
+
   const scrollToBottom = () => {
-    if (messagesContainerRef.current) {
+    if (messagesContainerRef.current)
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
-    }
   };
 
   useEffect(() => {
@@ -71,8 +61,8 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   }, [selectedRoom]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [roomMessages.length]);
+    getCurrentBlockMessagesId();
+  }, [roomMessages]);
 
   return (
     <MessagesContainer ref={messagesContainerRef}>
@@ -96,7 +86,11 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
 
       <Marginer />
 
-      <SendingArea roomId={selectedRoom?.id} />
+      <SendingArea
+        scrollToBottom={scrollToBottom}
+        roomId={selectedRoom?.id}
+        blockMessagesId={currentBlockMessagesId}
+      />
     </MessagesContainer>
   );
 };
@@ -110,7 +104,6 @@ const MessagesContainer = styled.div`
     w-full
     h-full
     px-4
-    relative
     overflow-x-hidden
     overflow-y-auto
   `}
@@ -140,7 +133,7 @@ const MessagesContainer = styled.div`
 
 const Marginer = styled.div`
   ${tw`
-    pb-8
+    pb-10
   `}
 `;
 

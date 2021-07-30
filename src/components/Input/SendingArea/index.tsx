@@ -27,9 +27,15 @@ import { db } from "../../../firebase";
 
 interface ISendingArea {
   roomId?: string;
+  blockMessagesId: string;
+  scrollToBottom: () => void;
 }
 
-const SendingArea: FC<ISendingArea> = ({ roomId }) => {
+const SendingArea: FC<ISendingArea> = ({
+  blockMessagesId,
+  roomId,
+  scrollToBottom,
+}) => {
   const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -82,13 +88,42 @@ const SendingArea: FC<ISendingArea> = ({ roomId }) => {
           timestamp: new Date(),
         };
 
-        db.collection("rooms")
-          .doc(roomId)
-          .collection("messages")
-          .add(messageObject);
+        if (blockMessagesId) {
+          db.collection("roomMessages")
+            .doc(blockMessagesId)
+            .collection("dateMessages")
+            .add(messageObject)
+            .then((docRef) => {
+              if (docRef.id && textAreaRef.current) {
+                textAreaRef.current.value = "";
+                textAreaRef.current.style.cssText = "height: auto";
 
-        textAreaRef.current.value = "";
-        textAreaRef.current.style.cssText = "height: auto";
+                scrollToBottom();
+              }
+            });
+        } else {
+          db.collection("roomMessages")
+            .add({
+              roomId,
+              timestamp: new Date(),
+            })
+            .then((docRef) => {
+              if (docRef.id) {
+                db.collection("roomMessages")
+                  .doc(docRef.id)
+                  .collection("dateMessages")
+                  .add(messageObject)
+                  .then((docRef) => {
+                    if (docRef.id && textAreaRef.current) {
+                      textAreaRef.current.value = "";
+                      textAreaRef.current.style.cssText = "height: auto";
+
+                      scrollToBottom();
+                    }
+                  });
+              }
+            });
+        }
       }
     }
   };

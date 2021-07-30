@@ -1,5 +1,5 @@
 import { FC } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import tw from "twin.macro";
 
 interface ILineAlertProps {
@@ -22,15 +22,15 @@ const LineAlertContainer = styled.div`
     text-center
     text-xs
     border-b
-    border-gray-500
     border-solid
-    my-3
+    my-4
     text-gray-500
     pointer-events-none
     select-none
   `}
 
   line-height: 0.1em;
+  border-color: #42454a;
 `;
 
 const Content = styled.span`
