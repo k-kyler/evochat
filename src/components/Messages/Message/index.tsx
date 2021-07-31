@@ -139,69 +139,51 @@ const Message = forwardRef<any, IMessageProps>(
             </MessageContent>
           ) : type === "image" ? (
             <ImageContent>
-              {!media ? (
-                <MediaLoading isUser={uid === user?.uid ? true : false}>
-                  <CgSpinner />
-                </MediaLoading>
-              ) : (
-                <img loading="lazy" src={media} />
-              )}
+              <img loading="lazy" src={media} />
             </ImageContent>
           ) : type === "video" ? (
             <VideoContent>
-              {!media ? (
-                <MediaLoading isUser={uid === user?.uid ? true : false}>
-                  <CgSpinner />
-                </MediaLoading>
-              ) : (
-                <>
-                  <video src={media} ref={videoRef}></video>
+              <video src={media} ref={videoRef}></video>
 
-                  {!isVideoPlaying ? (
-                    <VideoOverlay onClick={playVideoHandler}>
-                      <LargeIcon>
-                        <FaRegPlayCircle />
-                      </LargeIcon>
-                    </VideoOverlay>
-                  ) : null}
+              {!isVideoPlaying ? (
+                <VideoOverlay onClick={playVideoHandler}>
+                  <LargeIcon>
+                    <FaRegPlayCircle />
+                  </LargeIcon>
+                </VideoOverlay>
+              ) : null}
 
-                  <VideoController ref={videoControllerRef}>
-                    <VideoButtons>
-                      <SmallIcon onClick={pauseVideoHandler}>
-                        <FaPause />
-                      </SmallIcon>
+              <VideoController ref={videoControllerRef}>
+                <VideoButtons>
+                  <SmallIcon onClick={pauseVideoHandler}>
+                    <FaPause />
+                  </SmallIcon>
 
-                      <VideoProgress>
-                        <div ref={videoProgressRef}></div>
-                      </VideoProgress>
+                  <VideoProgress>
+                    <div ref={videoProgressRef}></div>
+                  </VideoProgress>
 
-                      <SmallIcon onClick={videoMutedHandler}>
-                        {!isVideoMuted ? <FaVolumeDown /> : <FaVolumeMute />}
-                      </SmallIcon>
+                  <SmallIcon onClick={videoMutedHandler}>
+                    {!isVideoMuted ? <FaVolumeDown /> : <FaVolumeMute />}
+                  </SmallIcon>
 
-                      <SmallIcon onClick={videoFullscreenHandler}>
-                        <FaExpand />
-                      </SmallIcon>
-                    </VideoButtons>
-                  </VideoController>
-                </>
-              )}
+                  <SmallIcon onClick={videoFullscreenHandler}>
+                    <FaExpand />
+                  </SmallIcon>
+                </VideoButtons>
+              </VideoController>
             </VideoContent>
           ) : type === "file" ? (
-            <>
-              {!file ? (
-                <MediaLoading isUser={uid === user?.uid ? true : false}>
-                  <CgSpinner />
-                </MediaLoading>
-              ) : (
-                <MessageContent>
-                  <a href={file} download target="__blank">
-                    {fileName}
-                  </a>
-                </MessageContent>
-              )}
-            </>
-          ) : null}
+            <MessageContent>
+              <a href={file} download target="__blank">
+                {fileName}
+              </a>
+            </MessageContent>
+          ) : (
+            <MediaLoading isUser={uid === user?.uid ? true : false}>
+              <CgSpinner />
+            </MediaLoading>
+          )}
 
           <MessageTimestamp ref={messageTimestampRef}>
             {new Date(timestamp.toDate()).toDateString() +

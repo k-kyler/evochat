@@ -164,7 +164,7 @@ const SendingArea: FC<ISendingArea> = ({
         uid: user.uid,
         username: user.displayName as string,
         avatar: user.photoURL as string,
-        type: inputMedia.type.includes("video") ? "video" : "image",
+        type: "",
         timestamp: new Date(),
         media: "",
       };
@@ -191,6 +191,7 @@ const SendingArea: FC<ISendingArea> = ({
                   // Update the input media URL
                   docRef.update({
                     media: url,
+                    type: inputMedia.type.includes("video") ? "video" : "image",
                   });
                 })
                 .then(() => {
@@ -203,7 +204,7 @@ const SendingArea: FC<ISendingArea> = ({
                   }
 
                   // Refresh upload loading
-                  setUploadLoading(false);
+                  if (!inputFile) setUploadLoading(false);
                 });
             });
           });
@@ -238,6 +239,9 @@ const SendingArea: FC<ISendingArea> = ({
                         // Update the input media URL
                         docRef.update({
                           media: url,
+                          type: inputMedia.type.includes("video")
+                            ? "video"
+                            : "image",
                         });
                       })
                       .then(() => {
@@ -266,7 +270,7 @@ const SendingArea: FC<ISendingArea> = ({
           uid: user.uid,
           username: user.displayName as string,
           avatar: user.photoURL as string,
-          type: "file",
+          type: "",
           timestamp: new Date(),
           file: "",
           fileName: "",
@@ -295,6 +299,7 @@ const SendingArea: FC<ISendingArea> = ({
                     docRef.update({
                       file: url,
                       fileName: inputFile.name,
+                      type: "file",
                     });
                   })
                   .then(() => {
@@ -343,6 +348,7 @@ const SendingArea: FC<ISendingArea> = ({
                           docRef.update({
                             file: url,
                             fileName: inputFile.name,
+                            type: "file",
                           });
                         })
                         .then(() => {
