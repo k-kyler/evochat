@@ -23,7 +23,7 @@ import UploadingList from "./UploadingList";
 import { MessageType } from "../../../typings/MessageType";
 import { SharedMediaType, SharedFileType } from "../../../typings/SharedType";
 import { useAuth } from "../../../contexts/AuthContext";
-import { db } from "../../../firebase";
+import { db, storage } from "../../../firebase";
 
 interface ISendingArea {
   roomId?: string;
@@ -145,6 +145,213 @@ const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
 
   const uploadHandler = () => {
     setUploadLoading(true);
+
+    const storageRef = storage.ref();
+
+    // Single media upload handler
+    if (inputMedia && user) {
+      const messageObject: MessageType = {
+        uid: user.uid,
+        username: user.displayName as string,
+        avatar: user.photoURL as string,
+        type: inputMedia.type.includes("video") ? "video" : "image",
+        timestamp: new Date(),
+        media: "",
+      };
+
+      if (blockMessagesId) {
+        db.collection("roomMessages")
+          .doc(blockMessagesId)
+          .collection("dateMessages")
+          .add(messageObject)
+          .then((docRef) => {
+            const mediaPath = `shared-media/${roomId}/${
+              docRef.id +
+              "." +
+              inputMedia.name.split(".")[inputMedia.name.split(".").length - 1]
+            }`;
+            const mediaRef = storageRef.child(mediaPath);
+
+            mediaRef.put(inputMedia).then(() => {
+              // Retrieve the downloaded URL of input media
+              storage
+                .ref(mediaPath)
+                .getDownloadURL()
+                .then((url) => {
+                  // Update the input media URL
+                  docRef.update({
+                    media: url,
+                  });
+                })
+                .then(() => {
+                  // Refresh input media
+                  setInputMedia(null);
+                  setUploadingMediaPreview(null as any);
+
+                  if (inputMediaRef.current) {
+                    inputMediaRef.current.value = "";
+                  }
+
+                  // Refresh upload loading
+                  setUploadLoading(false);
+                });
+            });
+          });
+      } else {
+        db.collection("roomMessages")
+          .add({
+            roomId,
+            timestamp: new Date(),
+          })
+          .then((docRef) => {
+            if (docRef.id) {
+              db.collection("roomMessages")
+                .doc(docRef.id)
+                .collection("dateMessages")
+                .add(messageObject)
+                .then((docRef) => {
+                  const mediaPath = `shared-media/${roomId}/${
+                    docRef.id +
+                    "." +
+                    inputMedia.name.split(".")[
+                      inputMedia.name.split(".").length - 1
+                    ]
+                  }`;
+                  const mediaRef = storageRef.child(mediaPath);
+
+                  mediaRef.put(inputMedia).then(() => {
+                    // Retrieve the downloaded URL of input media
+                    storage
+                      .ref(mediaPath)
+                      .getDownloadURL()
+                      .then((url) => {
+                        // Update the input media URL
+                        docRef.update({
+                          media: url,
+                        });
+                      })
+                      .then(() => {
+                        // Refresh input media
+                        setInputMedia(null);
+                        setUploadingMediaPreview(null as any);
+
+                        if (inputMediaRef.current) {
+                          inputMediaRef.current.value = "";
+                        }
+
+                        // Refresh upload loading
+                        setUploadLoading(false);
+                      });
+                  });
+                });
+            }
+          });
+      }
+    }
+
+    // Single file upload handler
+    setTimeout(() => {
+      if (inputFile && user) {
+        const messageObject: MessageType = {
+          uid: user.uid,
+          username: user.displayName as string,
+          avatar: user.photoURL as string,
+          type: "file",
+          timestamp: new Date(),
+          file: "",
+          fileName: inputFile.name,
+        };
+
+        if (blockMessagesId) {
+          db.collection("roomMessages")
+            .doc(blockMessagesId)
+            .collection("dateMessages")
+            .add(messageObject)
+            .then((docRef) => {
+              const filePath = `shared-file/${roomId}/${
+                docRef.id +
+                "." +
+                inputFile.name.split(".")[inputFile.name.split(".").length - 1]
+              }`;
+              const fileRef = storageRef.child(filePath);
+
+              fileRef.put(inputFile).then(() => {
+                // Retrieve the downloaded URL of input file
+                storage
+                  .ref(filePath)
+                  .getDownloadURL()
+                  .then((url) => {
+                    // Update the input file URL
+                    docRef.update({
+                      file: url,
+                    });
+                  })
+                  .then(() => {
+                    // Refresh input file
+                    setInputFile(null);
+                    setUploadingFilePreview(null as any);
+
+                    if (inputFileRef.current) {
+                      inputFileRef.current.value = "";
+                    }
+
+                    // Refresh upload loading
+                    setUploadLoading(false);
+                  });
+              });
+            });
+        } else {
+          db.collection("roomMessages")
+            .add({
+              roomId,
+              timestamp: new Date(),
+            })
+            .then((docRef) => {
+              if (docRef.id) {
+                db.collection("roomMessages")
+                  .doc(docRef.id)
+                  .collection("dateMessages")
+                  .add(messageObject)
+                  .then((docRef) => {
+                    const filePath = `shared-media/${roomId}/${
+                      docRef.id +
+                      "." +
+                      inputFile.name.split(".")[
+                        inputFile.name.split(".").length - 1
+                      ]
+                    }`;
+                    const fileRef = storageRef.child(filePath);
+
+                    fileRef.put(inputFile).then(() => {
+                      // Retrieve the downloaded URL of input file
+                      storage
+                        .ref(filePath)
+                        .getDownloadURL()
+                        .then((url) => {
+                          // Update the input file URL
+                          docRef.update({
+                            file: url,
+                          });
+                        })
+                        .then(() => {
+                          // Refresh input file
+                          setInputFile(null);
+                          setUploadingFilePreview(null as any);
+
+                          if (inputFileRef.current) {
+                            inputFileRef.current.value = "";
+                          }
+
+                          // Refresh upload loading
+                          setUploadLoading(false);
+                        });
+                    });
+                  });
+              }
+            });
+        }
+      }
+    }, 2000);
   };
 
   const clearUploadingListHandler = () => {

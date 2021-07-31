@@ -98,14 +98,16 @@ const Chat: FC<IChatProps> = ({ location }) => {
   };
 
   const getMemberIdsOfSelectedRoom = () => {
-    db.collection("rooms")
-      .doc(selectedRoom?.id)
-      .collection("members")
-      .onSnapshot((snapshot) => {
-        const memberIds = snapshot.docs.map((doc) => doc.data().uid);
+    if (selectedRoom) {
+      db.collection("rooms")
+        .doc(selectedRoom.id)
+        .collection("members")
+        .onSnapshot((snapshot) => {
+          const memberIds = snapshot.docs.map((doc) => doc.data().uid);
 
-        setJoinedMemberIds(memberIds as any);
-      });
+          setJoinedMemberIds(memberIds as any);
+        });
+    }
   };
 
   const getMembersOfSelectedRoom = () => {

@@ -46,14 +46,16 @@ const UploadingList: FC<IUploadingListProps> = ({
           <Icon
             type="upload"
             uploadLoading={uploadLoading}
-            onClick={uploadHandler}
-            title="Upload"
+            onClick={!uploadLoading ? uploadHandler : () => {}}
           >
             {uploadLoading ? <CgSpinner /> : <FaCheck />}
           </Icon>
-          <Icon type="clear" onClick={clearUploadingListHandler} title="Clear">
-            <FaTimes />
-          </Icon>
+
+          {!uploadLoading ? (
+            <Icon type="clear" onClick={clearUploadingListHandler}>
+              <FaTimes />
+            </Icon>
+          ) : null}
         </UploadingListOptions>
       </UploadingListContainer>
     );
@@ -149,10 +151,16 @@ const UploadingListOptions = styled.div`
 const Icon = styled.div<{ type: "upload" | "clear"; uploadLoading?: boolean }>`
   ${tw`
     text-xl
-    cursor-pointer
   `}
 
   ${({ type }) => (type === "upload" ? tw`text-green-500` : tw`text-red-500`)}
 
-  ${({ uploadLoading }) => uploadLoading && tw`animate-spin`}
+  ${({ uploadLoading }) =>
+    uploadLoading
+      ? tw`
+    animate-spin
+  `
+      : tw`
+    cursor-pointer
+  `}
 `;

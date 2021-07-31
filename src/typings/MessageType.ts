@@ -3,7 +3,7 @@ export type MessageType = {
   uid: string;
   username?: string;
   avatar?: string;
-  message: string;
+  message?: string;
   media?: string;
   file?: string;
   fileName?: string;

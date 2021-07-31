@@ -72,7 +72,11 @@ const Modal: FC<IModalProps> = ({
                 // Upload room background handler
                 const storageRef = storage.ref();
                 const roomBackgroundPath = `room-background/${docRef.id}/${
-                  docRef.id + "." + inputRoomBackground.name.split(".")[1]
+                  docRef.id +
+                  "." +
+                  inputRoomBackground.name.split(".")[
+                    inputRoomBackground.name.split(".").length - 1
+                  ]
                 }`;
                 const roomBackgroundRef = storageRef.child(roomBackgroundPath);
 

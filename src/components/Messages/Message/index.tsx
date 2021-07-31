@@ -9,6 +9,7 @@ import {
   FaVolumeMute,
   FaExpand,
 } from "react-icons/fa";
+import { CgSpinner } from "react-icons/cg";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
@@ -138,46 +139,64 @@ const Message = forwardRef<any, IMessageProps>(
             </MessageContent>
           ) : type === "image" ? (
             <ImageContent>
-              <img loading="lazy" src={media} />
+              {!media ? (
+                <MediaLoading isUser={uid === user?.uid ? true : false}>
+                  <CgSpinner />
+                </MediaLoading>
+              ) : (
+                <img loading="lazy" src={media} />
+              )}
             </ImageContent>
           ) : type === "video" ? (
             <VideoContent>
-              <video src={media} ref={videoRef}></video>
+              {!media ? (
+                <MediaLoading isUser={uid === user?.uid ? true : false}>
+                  <CgSpinner />
+                </MediaLoading>
+              ) : (
+                <>
+                  <video src={media} ref={videoRef}></video>
 
-              {!isVideoPlaying ? (
-                <VideoOverlay onClick={playVideoHandler}>
-                  <LargeIcon>
-                    <FaRegPlayCircle />
-                  </LargeIcon>
-                </VideoOverlay>
-              ) : null}
+                  {!isVideoPlaying ? (
+                    <VideoOverlay onClick={playVideoHandler}>
+                      <LargeIcon>
+                        <FaRegPlayCircle />
+                      </LargeIcon>
+                    </VideoOverlay>
+                  ) : null}
 
-              <VideoController ref={videoControllerRef}>
-                <VideoButtons>
-                  <SmallIcon onClick={pauseVideoHandler}>
-                    <FaPause />
-                  </SmallIcon>
+                  <VideoController ref={videoControllerRef}>
+                    <VideoButtons>
+                      <SmallIcon onClick={pauseVideoHandler}>
+                        <FaPause />
+                      </SmallIcon>
 
-                  <VideoProgress>
-                    <div ref={videoProgressRef}></div>
-                  </VideoProgress>
+                      <VideoProgress>
+                        <div ref={videoProgressRef}></div>
+                      </VideoProgress>
 
-                  <SmallIcon onClick={videoMutedHandler}>
-                    {!isVideoMuted ? <FaVolumeDown /> : <FaVolumeMute />}
-                  </SmallIcon>
+                      <SmallIcon onClick={videoMutedHandler}>
+                        {!isVideoMuted ? <FaVolumeDown /> : <FaVolumeMute />}
+                      </SmallIcon>
 
-                  <SmallIcon onClick={videoFullscreenHandler}>
-                    <FaExpand />
-                  </SmallIcon>
-                </VideoButtons>
-              </VideoController>
+                      <SmallIcon onClick={videoFullscreenHandler}>
+                        <FaExpand />
+                      </SmallIcon>
+                    </VideoButtons>
+                  </VideoController>
+                </>
+              )}
             </VideoContent>
           ) : type === "file" ? (
-            <MessageContent>
-              <a href={file} download target="__blank">
-                {fileName}
-              </a>
-            </MessageContent>
+            <>
+              {!file ? null : (
+                <MessageContent>
+                  <a href={file} download target="__blank">
+                    {fileName}
+                  </a>
+                </MessageContent>
+              )}
+            </>
           ) : null}
 
           <MessageTimestamp ref={messageTimestampRef}>
@@ -270,7 +289,7 @@ const MessageContent = styled.p`
     text-black
     p-2
     rounded-xl
-    max-w-sm
+    max-w-md
     bg-white
     cursor-pointer
     break-words
@@ -416,4 +435,18 @@ const LargeIcon = styled.span`
   `}
 
   transform: translate(-50%, -50%);
+`;
+
+const MediaLoading = styled.span<{ isUser?: boolean }>`
+  ${tw`
+    text-3xl
+  `}
+
+  svg {
+    ${tw`
+      animate-spin
+    `}
+  }
+
+  ${({ isUser }) => (isUser ? tw`text-white` : tw`text-green-500`)}
 `;
