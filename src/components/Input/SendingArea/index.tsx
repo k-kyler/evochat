@@ -6,6 +6,7 @@ import {
   MouseEvent,
   KeyboardEvent,
   ChangeEvent,
+  Dispatch,
 } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
@@ -28,9 +29,20 @@ import { db, storage } from "../../../firebase";
 interface ISendingArea {
   roomId?: string;
   blockMessagesId: string;
+  inputMedia: any;
+  setInputMedia: Dispatch<any>;
+  inputFile: any;
+  setInputFile: Dispatch<any>;
 }
 
-const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
+const SendingArea: FC<ISendingArea> = ({
+  blockMessagesId,
+  roomId,
+  inputFile,
+  inputMedia,
+  setInputFile,
+  setInputMedia,
+}) => {
   const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -38,8 +50,6 @@ const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
     useState<SharedMediaType>();
   const [uploadingFilePreview, setUploadingFilePreview] =
     useState<SharedFileType>();
-  const [inputMedia, setInputMedia] = useState<any>(null);
-  const [inputFile, setInputFile] = useState<any>(null);
   const [uploadLoading, setUploadLoading] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -240,7 +250,7 @@ const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
                         }
 
                         // Refresh upload loading
-                        setUploadLoading(false);
+                        if (!inputFile) setUploadLoading(false);
                       });
                   });
                 });
@@ -259,7 +269,7 @@ const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
           type: "file",
           timestamp: new Date(),
           file: "",
-          fileName: inputFile.name,
+          fileName: "",
         };
 
         if (blockMessagesId) {
@@ -284,6 +294,7 @@ const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
                     // Update the input file URL
                     docRef.update({
                       file: url,
+                      fileName: inputFile.name,
                     });
                   })
                   .then(() => {
@@ -331,6 +342,7 @@ const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
                           // Update the input file URL
                           docRef.update({
                             file: url,
+                            fileName: inputFile.name,
                           });
                         })
                         .then(() => {
@@ -351,7 +363,7 @@ const SendingArea: FC<ISendingArea> = ({ blockMessagesId, roomId }) => {
             });
         }
       }
-    }, 2000);
+    }, 1500);
   };
 
   const clearUploadingListHandler = () => {
@@ -475,10 +487,12 @@ const SendingAreaContainer = styled.div<{ isOpen?: boolean }>`
 
           @keyframes stretchIn {
             from {
-              width: 50%;
+              width: 20%;
+              opacity: 0;
             }
             to {
               width: 100%;
+              opacity: 0.9;
             }
           }
         `

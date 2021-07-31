@@ -15,23 +15,25 @@ const MediaItem: FC<IMediaItemProps> = ({ media, type }) => {
     }
   };
 
-  return (
-    <>
-      {type === "image" ? (
-        <MediaItemContainer src={media} type={type} />
-      ) : type === "video" ? (
-        <MediaItemContainer type={type}>
-          <video src={media} ref={videoRef}></video>
+  if (media && type)
+    return (
+      <>
+        {type === "image" ? (
+          <MediaItemContainer src={media} type={type} />
+        ) : type === "video" ? (
+          <MediaItemContainer type={type}>
+            <video src={media} ref={videoRef}></video>
 
-          <VideoOverlay onClick={videoFullscreenHandler}>
-            <Icon>
-              <FaRegPlayCircle />
-            </Icon>
-          </VideoOverlay>
-        </MediaItemContainer>
-      ) : null}
-    </>
-  );
+            <VideoOverlay onClick={videoFullscreenHandler}>
+              <Icon>
+                <FaRegPlayCircle />
+              </Icon>
+            </VideoOverlay>
+          </MediaItemContainer>
+        ) : null}
+      </>
+    );
+  return null;
 };
 
 export default MediaItem;

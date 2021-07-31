@@ -189,7 +189,11 @@ const Message = forwardRef<any, IMessageProps>(
             </VideoContent>
           ) : type === "file" ? (
             <>
-              {!file ? null : (
+              {!file ? (
+                <MediaLoading isUser={uid === user?.uid ? true : false}>
+                  <CgSpinner />
+                </MediaLoading>
+              ) : (
                 <MessageContent>
                   <a href={file} download target="__blank">
                     {fileName}

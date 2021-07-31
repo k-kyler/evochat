@@ -6,9 +6,9 @@ import { SharedMediaType, SharedFileType } from "../../typings/SharedType";
 import OptionGroup from "./OptionGroup";
 
 interface IOptionsListProps {
-  roomMembers?: MemberItemType[];
-  roomMedia?: SharedMediaType[];
-  roomFiles?: SharedFileType[];
+  roomMembers: MemberItemType[];
+  roomMedia: SharedMediaType[];
+  roomFiles: SharedFileType[];
 }
 
 const OptionsList: FC<IOptionsListProps> = ({

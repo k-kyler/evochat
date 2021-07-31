@@ -16,8 +16,11 @@ interface IMessagesProps {
 const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [roomMessages, setRoomMessages] = useState<BlockMessagesType[]>([]);
   const [currentBlockMessagesId, setCurrentBlockMessagesId] = useState("");
+  const [inputMedia, setInputMedia] = useState<any>(null);
+  const [inputFile, setInputFile] = useState<any>(null);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const marginerRef = useRef<HTMLDivElement>(null);
 
   const getSelectedRoomMessages = () => {
     if (selectedRoom) {
@@ -57,6 +60,15 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         messagesContainerRef.current.scrollHeight;
   };
 
+  const scaleMarginerHandler = () => {
+    if (marginerRef.current) {
+      marginerRef.current.style.paddingBottom = `${
+        inputMedia || inputFile ? "7.5rem" : "2.5rem"
+      }`;
+      marginerRef.current.style.transition = "all 0.3s ease-in-out";
+    }
+  };
+
   useEffect(() => {
     getSelectedRoomMessages();
   }, [selectedRoom]);
@@ -64,6 +76,11 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   useEffect(() => {
     getCurrentBlockMessagesId();
   }, [roomMessages]);
+
+  useEffect(() => {
+    scaleMarginerHandler();
+    scrollToBottom();
+  }, [inputFile, inputMedia]);
 
   return (
     <MessagesContainer ref={messagesContainerRef}>
@@ -86,9 +103,13 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         </FlipMove>
       </BlockMessagesWrapper>
 
-      <Marginer />
+      <Marginer ref={marginerRef} />
 
       <SendingArea
+        inputFile={inputFile}
+        setInputFile={setInputFile}
+        inputMedia={inputMedia}
+        setInputMedia={setInputMedia}
         roomId={selectedRoom?.id}
         blockMessagesId={currentBlockMessagesId}
       />

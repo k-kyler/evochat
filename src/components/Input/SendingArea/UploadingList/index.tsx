@@ -72,8 +72,7 @@ const UploadingListContainer = styled.div<{ src?: string }>`
     bottom-14
     bg-gray-600
     rounded-xl
-    px-3
-    py-2
+    p-2
   `}
 
   &::after {

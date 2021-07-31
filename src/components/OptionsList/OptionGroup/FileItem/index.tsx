@@ -10,33 +10,35 @@ import ArchiveImage from "../../../../assets/archive.svg";
 interface IFileItemProps extends SharedFileType {}
 
 const FileItem: FC<IFileItemProps> = ({ fileName, file }) => {
-  return (
-    <a href={file} download target="__blank">
-      <FileItemContainer title={fileName}>
-        <ImageTypeContainer>
-          {["doc", "docx"].includes(
-            fileName.split(".")[fileName.split(".").length - 1]
-          ) ? (
-            <img loading="lazy" src={DocumentImage} />
-          ) : ["xls", "xlsx"].includes(
+  if (file && fileName)
+    return (
+      <a href={file} download target="__blank">
+        <FileItemContainer title={fileName}>
+          <ImageTypeContainer>
+            {["doc", "docx"].includes(
               fileName.split(".")[fileName.split(".").length - 1]
             ) ? (
-            <img loading="lazy" src={SheetImage} />
-          ) : ["rar", "zip"].includes(
-              fileName.split(".")[fileName.split(".").length - 1]
-            ) ? (
-            <img loading="lazy" src={ArchiveImage} />
-          ) : ["pdf"].includes(
-              fileName.split(".")[fileName.split(".").length - 1]
-            ) ? (
-            <img loading="lazy" src={PDFImage} />
-          ) : null}
-        </ImageTypeContainer>
+              <img loading="lazy" src={DocumentImage} />
+            ) : ["xls", "xlsx"].includes(
+                fileName.split(".")[fileName.split(".").length - 1]
+              ) ? (
+              <img loading="lazy" src={SheetImage} />
+            ) : ["rar", "zip"].includes(
+                fileName.split(".")[fileName.split(".").length - 1]
+              ) ? (
+              <img loading="lazy" src={ArchiveImage} />
+            ) : ["pdf"].includes(
+                fileName.split(".")[fileName.split(".").length - 1]
+              ) ? (
+              <img loading="lazy" src={PDFImage} />
+            ) : null}
+          </ImageTypeContainer>
 
-        <FileName>{fileName}</FileName>
-      </FileItemContainer>
-    </a>
-  );
+          <FileName>{fileName}</FileName>
+        </FileItemContainer>
+      </a>
+    );
+  return null;
 };
 
 export default FileItem;
