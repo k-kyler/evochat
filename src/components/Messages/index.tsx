@@ -60,12 +60,25 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         messagesContainerRef.current.scrollHeight;
   };
 
-  const scaleMarginerHandler = () => {
+  const scaleMarginerHandlerByInputMedia = () => {
     if (marginerRef.current) {
       marginerRef.current.style.paddingBottom = `${
-        inputMedia || inputFile ? "7.5rem" : "2.5rem"
+        inputMedia ? "7.5rem" : "2.5rem"
       }`;
       marginerRef.current.style.transition = "all 0.3s ease-in-out";
+
+      if (inputMedia) scrollToBottom();
+    }
+  };
+
+  const scaleMarginerHandlerByInputFile = () => {
+    if (marginerRef.current) {
+      marginerRef.current.style.paddingBottom = `${
+        inputFile ? "7.5rem" : "2.5rem"
+      }`;
+      marginerRef.current.style.transition = "all 0.3s ease-in-out";
+
+      if (inputFile) scrollToBottom();
     }
   };
 
@@ -78,9 +91,12 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   }, [roomMessages]);
 
   useEffect(() => {
-    scaleMarginerHandler();
-    scrollToBottom();
-  }, [inputFile, inputMedia]);
+    scaleMarginerHandlerByInputMedia();
+  }, [inputMedia]);
+
+  useEffect(() => {
+    scaleMarginerHandlerByInputFile();
+  }, [inputFile]);
 
   return (
     <MessagesContainer ref={messagesContainerRef}>
