@@ -51,6 +51,7 @@ const SendingArea: FC<ISendingArea> = ({
   const [uploadingFilePreview, setUploadingFilePreview] =
     useState<SharedFileType>();
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [checkUploadProcess, setCheckUploadProcess] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
@@ -140,6 +141,7 @@ const SendingArea: FC<ISendingArea> = ({
         media: URL.createObjectURL(event.target.files[0]),
         type: event.target.files[0].type.includes("video") ? "video" : "image",
       });
+      setCheckUploadProcess(false);
     }
   };
 
@@ -150,7 +152,16 @@ const SendingArea: FC<ISendingArea> = ({
         file: URL.createObjectURL(event.target.files[0]),
         fileName: event.target.files[0].name,
       });
+      setCheckUploadProcess(false);
     }
+  };
+
+  const calculateUploadSize = () => {
+    const uploadMediaSize = inputMedia ? inputMedia.size : 0;
+    const uploadFileSize = inputFile ? inputFile.size : 0;
+
+    if (uploadMediaSize + uploadFileSize > 2 * 1024 * 1024)
+      setCheckUploadProcess(true);
   };
 
   const uploadHandler = () => {
@@ -390,6 +401,10 @@ const SendingArea: FC<ISendingArea> = ({
       textAreaRef.current.value += chosenEmoji.emoji;
   }, [chosenEmoji]);
 
+  useEffect(() => {
+    calculateUploadSize();
+  }, [inputMedia, inputFile]);
+
   return (
     <>
       <SendingAreaContainer ref={sendingAreaContainerRef} isOpen={isOpen}>
@@ -402,6 +417,7 @@ const SendingArea: FC<ISendingArea> = ({
                 uploadLoading={uploadLoading}
                 uploadHandler={uploadHandler}
                 clearUploadingListHandler={clearUploadingListHandler}
+                checkUploadProcess={checkUploadProcess}
               />
               <input
                 type="file"
@@ -411,7 +427,7 @@ const SendingArea: FC<ISendingArea> = ({
               />
               <input
                 type="file"
-                accept=".pdf, doc, .docx, xls, .xlsx, .rar, .zip"
+                accept=".pdf, .doc, .docx, .xls, .xlsx, .rar, .zip"
                 ref={inputFileRef}
                 onChange={inputFileOnChangeHandler}
               />

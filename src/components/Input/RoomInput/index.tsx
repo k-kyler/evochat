@@ -11,6 +11,8 @@ interface IRoomInputProps {
   type: "create-room-text" | "create-room-upload-background";
   refValue: RefObject<HTMLInputElement>;
   setInputRoomBackground?: any;
+  checkUploadBackground?: boolean;
+  setCheckUploadBackground?: any;
 }
 
 const RoomInput: FC<IRoomInputProps> = ({
@@ -19,6 +21,8 @@ const RoomInput: FC<IRoomInputProps> = ({
   type,
   refValue,
   setInputRoomBackground,
+  checkUploadBackground,
+  setCheckUploadBackground,
 }) => {
   const [roomBackgroundPreview, setRoomBackgroundPreview] = useState<
     string | ArrayBuffer | null
@@ -38,6 +42,7 @@ const RoomInput: FC<IRoomInputProps> = ({
     if (event.target.files && event.target.files[0]) {
       setInputRoomBackground(event.target.files[0]);
       setRoomBackgroundPreview(URL.createObjectURL(event.target.files[0]));
+      setCheckUploadBackground(false);
     }
   };
 
@@ -61,7 +66,15 @@ const RoomInput: FC<IRoomInputProps> = ({
               background={roomBackgroundPreview}
               onClick={showHiddenInputHandler}
             >
-              <Tooltip content="Click to change" arrow="left" />
+              <Tooltip
+                content={
+                  checkUploadBackground
+                    ? "Background is over 10 MB"
+                    : "Click to change"
+                }
+                arrow="left"
+                errorStyle={checkUploadBackground}
+              />
 
               <input
                 type="file"

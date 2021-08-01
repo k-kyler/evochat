@@ -5,30 +5,49 @@ import tw from "twin.macro";
 interface ITooltipProps {
   content: string;
   arrow: "left" | "top" | "bottom";
+  errorStyle?: boolean;
 }
 
-const Tooltip: FC<ITooltipProps> = ({ content, arrow }) => {
-  return <TooltipContainer arrow={arrow}>{content}</TooltipContainer>;
+const Tooltip: FC<ITooltipProps> = ({ content, arrow, errorStyle }) => {
+  return (
+    <TooltipContainer arrow={arrow} errorStyle={errorStyle}>
+      {content}
+    </TooltipContainer>
+  );
 };
 
 export default Tooltip;
 
 const TooltipContainer = styled.span<{
   arrow: string;
+  errorStyle?: boolean;
 }>`
   ${tw`
     absolute
     text-center
     text-sm
     rounded-md
-    invisible
     p-2
-    bg-black
   `}
+
+  ${({ errorStyle }) =>
+    errorStyle
+      ? tw`
+        text-white
+      bg-red-500
+        shadow-md
+      `
+      : css`
+          ${tw`
+            invisible
+          bg-black
+          `}
+
+          box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2), 2px 5px 7px rgba(0, 0, 0, 0.4);
+        `}
 
   width: max-content;
   z-index: 1;
-  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2), 2px 5px 7px rgba(0, 0, 0, 0.4);
 
   &::after {
     ${tw`absolute`}
@@ -38,38 +57,60 @@ const TooltipContainer = styled.span<{
     border-style: solid;
 
     /* Left arrow */
-    ${({ arrow }) =>
+    ${({ arrow, errorStyle }) =>
       arrow === "left" &&
       css`
         ${tw`
-          right-full
           top-1/2
         `}
 
+        right: 99.5%;
         margin-top: -7px;
-        border-color: transparent black transparent transparent;
+
+        ${errorStyle
+          ? css`
+              border-color: transparent rgba(239, 68, 68) transparent
+                transparent;
+            `
+          : css`
+              border-color: transparent black transparent transparent;
+            `}
       `}
 
     /* Top arrow */
-    ${({ arrow }) =>
+    ${({ arrow, errorStyle }) =>
       arrow === "top" &&
       css`
         ${tw`left-1/2`}
 
         top: -17%;
         transform: translate(-50%, -50%);
-        border-color: transparent transparent black;
+
+        ${errorStyle
+          ? css`
+              border-color: transparent transparent rgba(239, 68, 68);
+            `
+          : css`
+              border-color: transparent transparent black;
+            `}
       `}
 
     /* Bottom arrow */
-    ${({ arrow }) =>
+    ${({ arrow, errorStyle }) =>
       arrow === "bottom" &&
       css`
         ${tw`left-1/2`}
 
         top: 117%;
         transform: translate(-50%, -50%);
-        border-color: black transparent transparent;
+
+        ${errorStyle
+          ? css`
+              border-color: rgba(239, 68, 68) transparent transparent;
+            `
+          : css`
+              border-color: black transparent transparent;
+            `}
       `}
   }
 `;

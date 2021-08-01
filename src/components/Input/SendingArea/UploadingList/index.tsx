@@ -16,6 +16,7 @@ interface IUploadingListProps {
   uploadLoading: boolean;
   uploadHandler: () => void;
   clearUploadingListHandler: () => void;
+  checkUploadProcess: boolean;
 }
 
 const UploadingList: FC<IUploadingListProps> = ({
@@ -24,6 +25,7 @@ const UploadingList: FC<IUploadingListProps> = ({
   uploadLoading,
   uploadHandler,
   clearUploadingListHandler,
+  checkUploadProcess,
 }) => {
   if (uploadingMedia?.media || uploadingFile?.file)
     return (
@@ -46,9 +48,16 @@ const UploadingList: FC<IUploadingListProps> = ({
           <Icon
             type="upload"
             uploadLoading={uploadLoading}
-            onClick={!uploadLoading ? uploadHandler : () => {}}
+            checkUploadProcess={checkUploadProcess}
+            onClick={
+              !uploadLoading && !checkUploadProcess ? uploadHandler : () => {}
+            }
           >
-            {uploadLoading ? <CgSpinner /> : <FaCheck />}
+            {uploadLoading ? (
+              <CgSpinner />
+            ) : checkUploadProcess ? null : (
+              <FaCheck />
+            )}
           </Icon>
 
           {!uploadLoading ? (
@@ -72,7 +81,7 @@ const UploadingListContainer = styled.div<{ src?: string }>`
     bottom-14
     bg-gray-600
     rounded-xl
-    p-2
+    p-1
   `}
 
   &::after {
@@ -100,7 +109,7 @@ const UploadingMediaContainer = styled.div`
   ${tw`
     flex
     items-center
-    mr-3
+    m-1
   `}
 
   div {
@@ -113,7 +122,7 @@ const UploadingMediaContainer = styled.div`
 
 const UploadingFileContainer = styled.div`
   ${tw`
-    mr-3
+    m-1
   `}
 
   a {
@@ -125,7 +134,7 @@ const UploadingFileContainer = styled.div`
       p {
         ${tw`
           ml-1
-          max-w-max
+          max-w-xs
         `}
       }
     }
@@ -137,17 +146,13 @@ const UploadingListOptions = styled.div`
     flex
     items-center
   `}
-
-  div {
-    &:not(:last-child) {
-      ${tw`
-        mr-3
-      `}
-    }
-  }
 `;
 
-const Icon = styled.div<{ type: "upload" | "clear"; uploadLoading?: boolean }>`
+const Icon = styled.div<{
+  type: "upload" | "clear";
+  uploadLoading?: boolean;
+  checkUploadProcess?: boolean;
+}>`
   ${tw`
     text-xl
   `}
@@ -162,4 +167,10 @@ const Icon = styled.div<{ type: "upload" | "clear"; uploadLoading?: boolean }>`
       : tw`
     cursor-pointer
   `}
+
+  ${({ checkUploadProcess }) =>
+    !checkUploadProcess &&
+    tw`
+      m-2
+    `}
 `;

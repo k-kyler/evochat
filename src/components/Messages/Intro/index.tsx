@@ -27,7 +27,7 @@ const Intro: FC<IntroProps> = ({ roomName, roomBackground, timestamp }) => {
         )}
         <Content>Welcome to {roomName}</Content>
       </IntroContainer>
-      <LineAlert content={convertedTimestamp} />
+      {timestamp ? <LineAlert content={convertedTimestamp} /> : null}
     </>
   );
 };
