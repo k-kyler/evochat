@@ -42,6 +42,10 @@ const UploadingList: FC<IUploadingListProps> = ({
               <FileItem {...uploadingFile} />
             </UploadingFileContainer>
           ) : null}
+
+          {checkUploadProcess ? (
+            <ErrorUploadMessage>Over 20 MB limit</ErrorUploadMessage>
+          ) : null}
         </UploadingObjectsContainer>
 
         <UploadingListOptions>
@@ -173,4 +177,13 @@ const Icon = styled.div<{
     tw`
       m-2
     `}
+`;
+
+const ErrorUploadMessage = styled.p`
+  ${tw`
+    text-gray-400
+    text-base
+    mx-1
+    w-max
+  `}
 `;

@@ -160,7 +160,7 @@ const SendingArea: FC<ISendingArea> = ({
     const uploadMediaSize = inputMedia ? inputMedia.size : 0;
     const uploadFileSize = inputFile ? inputFile.size : 0;
 
-    if (uploadMediaSize + uploadFileSize > 2 * 1024 * 1024)
+    if (uploadMediaSize + uploadFileSize > 20 * 1024 * 1024)
       setCheckUploadProcess(true);
   };
 
