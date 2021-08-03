@@ -18,9 +18,7 @@ interface IModalProps {
     | "search-room"
     | "user-setting"
     | "room-panel"
-    | "image-video"
-    | "attachment"
-    | "emoji";
+    | "member-info";
   open: boolean;
   closeHandler: () => void;
 }
@@ -138,21 +136,17 @@ const Modal: FC<IModalProps> = ({
       <ModalOverlay onClick={closeHandler} />
 
       <ModalContent>
-        <ModalInnerContent isEmoji={type}>
-          {type !== "emoji" && (
-            <ModalHeader>
-              <CloseModalButton onClick={closeHandler}>
-                &times;
-              </CloseModalButton>
-            </ModalHeader>
-          )}
+        <ModalInnerContent>
+          <ModalHeader>
+            <CloseModalButton onClick={closeHandler}>&times;</CloseModalButton>
+          </ModalHeader>
 
           <ModalBody>
             <ModalTitle>{title}</ModalTitle>
 
             <ModalDescription>{description}</ModalDescription>
 
-            <ModalFeature isEmoji={type}>
+            <ModalFeature>
               {type === "create-room" ? (
                 <CreateRoomFeature checkInputRoomName={checkInputRoomName}>
                   <RoomInput
@@ -168,34 +162,30 @@ const Modal: FC<IModalProps> = ({
                     refValue={inputRoomNameRef}
                   />
                 </CreateRoomFeature>
-              ) : type === "emoji" ? (
-                emojiPicker
               ) : null}
             </ModalFeature>
           </ModalBody>
         </ModalInnerContent>
 
-        {type !== "emoji" && (
-          <ModalActions>
-            {type === "create-room" ? (
-              <CreateRoomButtons>
-                <Button
-                  content="Search room"
-                  theme="text-icon"
-                  color="dark"
-                  icon={<FaSearch />}
-                />
-                <Button
-                  content="Create"
-                  theme="filled-no-outlined"
-                  color="blue"
-                  clickHandler={createNewRoomHandler}
-                  disabled={disabledCreateRoomButton}
-                />
-              </CreateRoomButtons>
-            ) : null}
-          </ModalActions>
-        )}
+        <ModalActions>
+          {type === "create-room" ? (
+            <CreateRoomButtons>
+              <Button
+                content="Search room"
+                theme="text-icon"
+                color="dark"
+                icon={<FaSearch />}
+              />
+              <Button
+                content="Create"
+                theme="filled-no-outlined"
+                color="blue"
+                clickHandler={createNewRoomHandler}
+                disabled={disabledCreateRoomButton}
+              />
+            </CreateRoomButtons>
+          ) : null}
+        </ModalActions>
       </ModalContent>
     </>,
     document.getElementById("modal") as HTMLElement
@@ -240,8 +230,8 @@ const ModalContent = styled.div`
   }
 `;
 
-const ModalInnerContent = styled.div<{ isEmoji?: string }>`
-  ${({ isEmoji }) => isEmoji !== "emoji" && tw`p-4`}
+const ModalInnerContent = styled.div`
+  ${tw`p-4`}
 `;
 
 const ModalHeader = styled.div`
@@ -298,13 +288,12 @@ const ModalDescription = styled.p`
   width: 26em;
 `;
 
-const ModalFeature = styled.div<{ isEmoji?: string }>`
+const ModalFeature = styled.div`
   ${tw`
     select-none
     w-full
+    mt-3
   `}
-
-  ${({ isEmoji }) => isEmoji !== "emoji" && tw`mt-3`}
 `;
 
 const ModalActions = styled.div`

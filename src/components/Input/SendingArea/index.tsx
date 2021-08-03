@@ -19,7 +19,7 @@ import {
 } from "react-icons/bi";
 import Picker, { IEmojiData } from "emoji-picker-react";
 import Tooltip from "../../Tooltip";
-import Modal from "../../Modal";
+import EmojiList from "./EmojiList";
 import UploadingList from "./UploadingList";
 import { MessageType } from "../../../typings/MessageType";
 import { SharedMediaType, SharedFileType } from "../../../typings/SharedType";
@@ -432,7 +432,26 @@ const SendingArea: FC<ISendingArea> = ({
                 onChange={inputFileOnChangeHandler}
               />
 
-              <Icon isOpen={isOpen} onClick={() => setOpenEmojiModal(true)}>
+              <EmojiList
+                emojiPicker={
+                  <Picker
+                    onEmojiClick={chosenEmojiHandler}
+                    disableAutoFocus={true}
+                    native
+                    pickerStyle={{
+                      width: "100%",
+                      boxShadow: "none",
+                      border: "none",
+                    }}
+                  />
+                }
+                open={openEmojiModal}
+              />
+
+              <Icon
+                isOpen={isOpen}
+                onClick={() => setOpenEmojiModal(!openEmojiModal)}
+              >
                 <BiGhost />
                 <Tooltip content="Emoji" arrow="bottom" />
               </Icon>
@@ -462,24 +481,6 @@ const SendingArea: FC<ISendingArea> = ({
           {isOpen ? <BiChevronRight /> : <BiMessageDetail />}
         </Icon>
       </SendingAreaContainer>
-
-      <Modal
-        type="emoji"
-        emojiPicker={
-          <Picker
-            onEmojiClick={chosenEmojiHandler}
-            disableAutoFocus={true}
-            native
-            pickerStyle={{
-              width: "100%",
-              boxShadow: "none",
-              borderTop: "none",
-            }}
-          />
-        }
-        open={openEmojiModal}
-        closeHandler={() => setOpenEmojiModal(false)}
-      />
     </>
   );
 };
