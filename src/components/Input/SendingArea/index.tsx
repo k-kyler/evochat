@@ -427,7 +427,7 @@ const SendingArea: FC<ISendingArea> = ({
               />
               <input
                 type="file"
-                accept=".pdf, .doc, .docx, .xls, .xlsx, .rar, .zip"
+                accept=".pdf, .doc, .docx, .xls, .xlsx, .txt, .rar, .zip"
                 ref={inputFileRef}
                 onChange={inputFileOnChangeHandler}
               />

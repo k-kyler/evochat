@@ -12,7 +12,6 @@ import { useAuth } from "../../contexts/AuthContext";
 interface IModalProps {
   title?: string;
   description?: string;
-  emojiPicker?: any;
   type:
     | "create-room"
     | "search-room"
@@ -26,7 +25,6 @@ interface IModalProps {
 const Modal: FC<IModalProps> = ({
   title,
   description,
-  emojiPicker,
   type,
   open,
   closeHandler,
@@ -162,6 +160,14 @@ const Modal: FC<IModalProps> = ({
                     refValue={inputRoomNameRef}
                   />
                 </CreateRoomFeature>
+              ) : type === "search-room" ? (
+                <SearchRoomFeature>
+                  <RoomInput
+                    type="search-room-text"
+                    refValue={inputRoomNameRef}
+                    placeholder="Room name..."
+                  />
+                </SearchRoomFeature>
               ) : null}
             </ModalFeature>
           </ModalBody>
@@ -323,6 +329,12 @@ const CreateRoomFeature = styled.div<{ checkInputRoomName?: boolean }>`
   input:nth-child(2) {
     ${({ checkInputRoomName }) => checkInputRoomName && tw`border-red-500`}
   }
+`;
+
+const SearchRoomFeature = styled.div`
+  ${tw`
+  
+  `}
 `;
 
 const CreateRoomButtons = styled.div`

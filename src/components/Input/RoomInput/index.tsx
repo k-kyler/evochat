@@ -8,7 +8,10 @@ import { useAuth } from "../../../contexts/AuthContext";
 interface IRoomInputProps {
   label?: string;
   placeholder?: string;
-  type: "create-room-text" | "create-room-upload-background";
+  type:
+    | "create-room-text"
+    | "create-room-upload-background"
+    | "search-room-text";
   refValue: RefObject<HTMLInputElement>;
   setInputRoomBackground?: any;
   checkUploadBackground?: boolean;
@@ -59,10 +62,19 @@ const RoomInput: FC<IRoomInputProps> = ({
             defaultValue={`${user?.displayName}'s room`}
           />
         </InputTextContainer>
+      ) : type === "search-room-text" ? (
+        <InputTextContainer>
+          <InputText
+            ref={refValue}
+            placeholder={placeholder}
+            spellCheck="false"
+            autoFocus
+          />
+        </InputTextContainer>
       ) : type === "create-room-upload-background" ? (
         <>
           {roomBackgroundPreview ? (
-            <ReviewRoomBackground
+            <PreviewRoomBackground
               background={roomBackgroundPreview}
               onClick={showHiddenInputHandler}
             >
@@ -82,7 +94,7 @@ const RoomInput: FC<IRoomInputProps> = ({
                 ref={refValue}
                 onChange={inputRoomBackgroundHandler}
               />
-            </ReviewRoomBackground>
+            </PreviewRoomBackground>
           ) : (
             <UploadImageContainer>
               <UploadImageIcon onClick={showHiddenInputHandler}>
@@ -182,7 +194,7 @@ const UploadImageIcon = styled.span`
   }
 `;
 
-const ReviewRoomBackground = styled.div<{ background: any }>`
+const PreviewRoomBackground = styled.div<{ background: any }>`
   ${tw`
     w-20
     h-20

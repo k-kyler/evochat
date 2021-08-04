@@ -6,6 +6,7 @@ import DocumentImage from "../../../../assets/document.svg";
 import SheetImage from "../../../../assets/sheet.svg";
 import PDFImage from "../../../../assets/pdf.svg";
 import ArchiveImage from "../../../../assets/archive.svg";
+import TxtImage from "../../../../assets/txt.svg";
 
 interface IFileItemProps extends SharedFileType {}
 
@@ -31,6 +32,10 @@ const FileItem: FC<IFileItemProps> = ({ fileName, file }) => {
                 fileName.split(".")[fileName.split(".").length - 1]
               ) ? (
               <img loading="lazy" src={PDFImage} />
+            ) : ["txt"].includes(
+                fileName.split(".")[fileName.split(".").length - 1]
+              ) ? (
+              <img loading="lazy" src={TxtImage} />
             ) : null}
           </ImageTypeContainer>
 

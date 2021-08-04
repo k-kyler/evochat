@@ -17,6 +17,7 @@ interface IFeaturesListProps {
 const FeaturesList: FC<IFeaturesListProps> = ({ joinedRoomIds }) => {
   const [selectedRoomId, setSelectedRoomId] = useState("");
   const [openCreateNewRoomModal, setOpenCreateNewRoomModal] = useState(false);
+  const [openSearchRoomModal, setOpenSearchRoomModal] = useState(false);
 
   const history = useHistory();
 
@@ -31,14 +32,12 @@ const FeaturesList: FC<IFeaturesListProps> = ({ joinedRoomIds }) => {
     history.push(`/chat?id=${id}`);
   };
 
-  const searchRoomModalHandler = () => {};
-
   const options: RoundedObjectType[] = [
     {
       id: nanoid(),
       content: "Search room",
       icon: <FaSearch />,
-      clickHandler: searchRoomModalHandler,
+      clickHandler: () => setOpenSearchRoomModal(true),
     },
     {
       id: nanoid(),
@@ -87,6 +86,12 @@ const FeaturesList: FC<IFeaturesListProps> = ({ joinedRoomIds }) => {
         description="Dive into your awesome room by giving it a nice background and name"
         open={openCreateNewRoomModal}
         closeHandler={() => setOpenCreateNewRoomModal(false)}
+      />
+      <Modal
+        type="search-room"
+        title="Search room"
+        open={openSearchRoomModal}
+        closeHandler={() => setOpenSearchRoomModal(false)}
       />
     </>
   );

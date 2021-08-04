@@ -38,7 +38,7 @@ const OptionsListContainer = styled.div`
 
   /* Chrome, Edge, and Safari */
   &::-webkit-scrollbar {
-    width: 0.4rem;
+    width: 0.5rem;
   }
 
   &::-webkit-scrollbar-track {
