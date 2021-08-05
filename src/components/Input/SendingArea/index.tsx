@@ -33,18 +33,22 @@ interface ISendingArea {
   setInputMedia: Dispatch<any>;
   inputFile: any;
   setInputFile: Dispatch<any>;
+  openEmojiModal: boolean;
+  setOpenEmojiModal: Dispatch<boolean>;
 }
 
 const SendingArea: FC<ISendingArea> = ({
   blockMessagesId,
   roomId,
   inputFile,
-  inputMedia,
   setInputFile,
+  inputMedia,
   setInputMedia,
+  openEmojiModal,
+  setOpenEmojiModal,
 }) => {
   const [chosenEmoji, setChosenEmoji] = useState<IEmojiData | any>();
-  const [openEmojiModal, setOpenEmojiModal] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false);
   const [uploadingMediaPreview, setUploadingMediaPreview] =
     useState<SharedMediaType>();
@@ -437,6 +441,8 @@ const SendingArea: FC<ISendingArea> = ({
                   <Picker
                     onEmojiClick={chosenEmojiHandler}
                     disableAutoFocus={true}
+                    disableSkinTonePicker={true}
+                    disableSearchBar={true}
                     native
                     pickerStyle={{
                       width: "100%",
@@ -494,16 +500,17 @@ const SendingAreaContainer = styled.div<{ isOpen?: boolean }>`
     sticky
     bottom-6
     p-3
-    rounded-3xl
-    opacity-90
     ml-auto
   `}
+
+  border-radius: 50%;
 
   ${({ isOpen }) =>
     isOpen
       ? css`
           ${tw`
             bg-gray-600
+            rounded-3xl
           `}
 
           animation: stretchIn 0.2s ease-in-out forwards;
@@ -515,7 +522,7 @@ const SendingAreaContainer = styled.div<{ isOpen?: boolean }>`
             }
             to {
               width: 100%;
-              opacity: 0.9;
+              opacity: 1;
             }
           }
         `
@@ -573,8 +580,6 @@ const Icon = styled.span<{ isOpen?: boolean }>`
     text-2xl
     cursor-pointer
   `}
-
-  color: #9ca3af;
 
   span {
     ${tw`

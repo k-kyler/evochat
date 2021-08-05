@@ -1,10 +1,11 @@
-import { FC, useRef, useState } from "react";
+import { FC, useRef, useState, Dispatch } from "react";
 import { createPortal } from "react-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import tw from "twin.macro";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaSignInAlt } from "react-icons/fa";
 import RoomInput from "../Input/RoomInput";
 import Button from "../Button";
+import SearchRoomResults from "../SearchRoomResults";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
@@ -20,6 +21,8 @@ interface IModalProps {
     | "member-info";
   open: boolean;
   closeHandler: () => void;
+  setOpenSearchRoomModal?: Dispatch<boolean>;
+  setOpenCreateNewRoomModal?: Dispatch<boolean>;
 }
 
 const Modal: FC<IModalProps> = ({
@@ -28,15 +31,22 @@ const Modal: FC<IModalProps> = ({
   type,
   open,
   closeHandler,
+  setOpenSearchRoomModal,
+  setOpenCreateNewRoomModal,
 }) => {
   const [inputRoomBackground, setInputRoomBackground] = useState<any>(null);
   const [disabledCreateRoomButton, setDisabledCreateRoomButton] =
     useState(false);
+  const [disabledSearchRoomButton, setdisabledSearchRoomButton] =
+    useState(false);
   const [checkInputRoomName, setCheckInputRoomName] = useState(false);
   const [checkUploadBackground, setCheckUploadBackground] = useState(false);
+  const [checkInputSearchRoomName, setCheckInputSearchRoomName] =
+    useState(false);
 
   const inputRoomNameRef = useRef<HTMLInputElement>(null);
   const inputRoomBackgroundRef = useRef<HTMLInputElement>(null);
+  const inputSearchRoomNameRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
 
@@ -115,7 +125,10 @@ const Modal: FC<IModalProps> = ({
             closeHandler();
           }
         } else {
+          if (inputRoomNameRef.current) inputRoomNameRef.current.focus();
+
           setCheckInputRoomName(true);
+
           setTimeout(() => {
             setCheckInputRoomName(false);
           }, 3000);
@@ -126,7 +139,30 @@ const Modal: FC<IModalProps> = ({
     }, 1500);
   };
 
-  const switchToSearchRoomModal = () => {};
+  const switchToSearchRoomModal = () => {
+    closeHandler();
+    if (setOpenSearchRoomModal) setOpenSearchRoomModal(true);
+  };
+
+  const switchToCreateRoomModal = () => {
+    closeHandler();
+    if (setOpenCreateNewRoomModal) setOpenCreateNewRoomModal(true);
+  };
+
+  const searchRoomHandler = () => {
+    if (inputSearchRoomNameRef.current) {
+      if (inputSearchRoomNameRef.current.value) {
+        setdisabledSearchRoomButton(true);
+      } else {
+        inputSearchRoomNameRef.current.focus();
+        setCheckInputSearchRoomName(true);
+
+        setTimeout(() => {
+          setCheckInputSearchRoomName(false);
+        }, 3000);
+      }
+    }
+  };
 
   if (!open) return null;
   return createPortal(
@@ -146,7 +182,10 @@ const Modal: FC<IModalProps> = ({
 
             <ModalFeature>
               {type === "create-room" ? (
-                <CreateRoomFeature checkInputRoomName={checkInputRoomName}>
+                <RoomFeature
+                  checkInputRoomName={checkInputRoomName}
+                  type="create"
+                >
                   <RoomInput
                     type="create-room-upload-background"
                     refValue={inputRoomBackgroundRef}
@@ -159,15 +198,19 @@ const Modal: FC<IModalProps> = ({
                     type="create-room-text"
                     refValue={inputRoomNameRef}
                   />
-                </CreateRoomFeature>
+                </RoomFeature>
               ) : type === "search-room" ? (
-                <SearchRoomFeature>
+                <RoomFeature
+                  checkInputSearchRoomName={checkInputSearchRoomName}
+                  type="search"
+                >
                   <RoomInput
                     type="search-room-text"
-                    refValue={inputRoomNameRef}
-                    placeholder="Room name..."
+                    refValue={inputSearchRoomNameRef}
+                    placeholder="Enter room name..."
                   />
-                </SearchRoomFeature>
+                  <SearchRoomResults />
+                </RoomFeature>
               ) : null}
             </ModalFeature>
           </ModalBody>
@@ -175,21 +218,39 @@ const Modal: FC<IModalProps> = ({
 
         <ModalActions>
           {type === "create-room" ? (
-            <CreateRoomButtons>
+            <RoomButtons>
               <Button
                 content="Search room"
                 theme="text-icon"
                 color="dark"
                 icon={<FaSearch />}
+                clickHandler={switchToSearchRoomModal}
               />
               <Button
                 content="Create"
-                theme="filled-no-outlined"
+                theme="loading-filled-no-outlined"
                 color="blue"
                 clickHandler={createNewRoomHandler}
                 disabled={disabledCreateRoomButton}
               />
-            </CreateRoomButtons>
+            </RoomButtons>
+          ) : type === "search-room" ? (
+            <RoomButtons>
+              <Button
+                content="Create room"
+                theme="text-icon"
+                color="dark"
+                icon={<FaSignInAlt />}
+                clickHandler={switchToCreateRoomModal}
+              />
+              <Button
+                content="Search"
+                theme="filled-no-outlined"
+                color="blue"
+                clickHandler={searchRoomHandler}
+                disabled={disabledSearchRoomButton}
+              />
+            </RoomButtons>
           ) : null}
         </ModalActions>
       </ModalContent>
@@ -313,31 +374,40 @@ const ModalActions = styled.div`
   border-bottom-right-radius: 6px;
 `;
 
-const CreateRoomFeature = styled.div<{ checkInputRoomName?: boolean }>`
+const RoomFeature = styled.div<{
+  checkInputRoomName?: boolean;
+  checkInputSearchRoomName?: boolean;
+  type: "create" | "search";
+}>`
   ${tw`
     flex
     flex-col
     items-center
   `}
 
-  div {
-    ${tw`
-      my-2
-    `}
-  }
+  ${({ type, checkInputRoomName, checkInputSearchRoomName }) =>
+    type === "create"
+      ? css`
+          div {
+            ${tw`
+              my-2
+            `}
+          }
 
-  input:nth-child(2) {
-    ${({ checkInputRoomName }) => checkInputRoomName && tw`border-red-500`}
-  }
+          input:nth-child(2) {
+            ${checkInputRoomName && tw`border-red-500`}
+          }
+        `
+      : type === "search"
+      ? css`
+          input:nth-child(1) {
+            ${checkInputSearchRoomName && tw`border-red-500`}
+          }
+        `
+      : null}
 `;
 
-const SearchRoomFeature = styled.div`
-  ${tw`
-  
-  `}
-`;
-
-const CreateRoomButtons = styled.div`
+const RoomButtons = styled.div`
   ${tw`
     flex
     items-center

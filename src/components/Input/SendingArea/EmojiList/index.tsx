@@ -20,8 +20,8 @@ const EmojiListContainer = styled.div`
     bottom-14
     bg-white
     rounded-xl
-    w-96
-    p-1
+    py-2
+    w-80
   `}
 
   &::after {
@@ -46,16 +46,4 @@ const EmojiListContainer = styled.div`
       opacity: 1;
     }
   }
-`;
-
-const Overlay = styled.div`
-  ${tw`
-    fixed
-    top-0
-    left-0
-    right-0
-    bottom-0
-  `}
-
-  z-index: 1;
 `;

@@ -18,6 +18,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [currentBlockMessagesId, setCurrentBlockMessagesId] = useState("");
   const [inputMedia, setInputMedia] = useState<any>(null);
   const [inputFile, setInputFile] = useState<any>(null);
+  const [openEmojiModal, setOpenEmojiModal] = useState(false);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const marginerRef = useRef<HTMLDivElement>(null);
@@ -106,7 +107,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         timestamp={selectedRoom?.timestamp}
       />
 
-      <BlockMessagesWrapper>
+      <BlockMessagesWrapper onClick={() => setOpenEmojiModal(false)}>
         <FlipMove leaveAnimation="fade">
           {roomMessages.map((roomMessage) => (
             <BlockMessages
@@ -126,6 +127,8 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         setInputFile={setInputFile}
         inputMedia={inputMedia}
         setInputMedia={setInputMedia}
+        openEmojiModal={openEmojiModal}
+        setOpenEmojiModal={setOpenEmojiModal}
         roomId={selectedRoom?.id}
         blockMessagesId={currentBlockMessagesId}
       />

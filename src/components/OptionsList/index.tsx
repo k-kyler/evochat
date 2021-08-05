@@ -42,8 +42,7 @@ const OptionsListContainer = styled.div`
   }
 
   &::-webkit-scrollbar-track {
-    background: #2f3136;
-    border-top: 1px solid rgba(4, 4, 5, 0.2);
+    background: #202225;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -55,5 +54,5 @@ const OptionsListContainer = styled.div`
 
   /* Firefox */
   scrollbar-width: auto;
-  scrollbar-color: #4b5563 #2f3136;
+  scrollbar-color: #4b5563 #202225;
 `;

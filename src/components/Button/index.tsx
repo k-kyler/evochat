@@ -9,6 +9,7 @@ interface IButtonProps {
   theme?:
     | "filled"
     | "filled-no-outlined"
+    | "loading-filled-no-outlined"
     | "outlined"
     | "text-icon"
     | "google"
@@ -33,7 +34,7 @@ const Button: FC<IButtonProps> = ({
         {content}
       </FilledButton>
     );
-  if (theme === "filled-no-outlined")
+  if (theme === "loading-filled-no-outlined")
     return (
       <FilledNoOutlinedButton
         color={color}
@@ -50,6 +51,17 @@ const Button: FC<IButtonProps> = ({
             <Dot position="odd" />
           </DotsContainer>
         )}
+      </FilledNoOutlinedButton>
+    );
+  if (theme === "filled-no-outlined")
+    return (
+      <FilledNoOutlinedButton
+        color={color}
+        onClick={clickHandler && clickHandler}
+        disabled={disabled}
+        isDisabled={disabled}
+      >
+        {content}
       </FilledNoOutlinedButton>
     );
   if (theme === "text-icon")
@@ -186,9 +198,9 @@ const FilledNoOutlinedButton = styled(BaseButton)<{
   ${({ isDisabled }) =>
     isDisabled &&
     tw`
-    pointer-events-none
     bg-blue-400
     hover:bg-blue-400
+    cursor-not-allowed
   `}
 `;
 
