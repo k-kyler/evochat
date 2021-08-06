@@ -10,6 +10,7 @@ import {
   FaExpand,
 } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
+import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
@@ -35,6 +36,7 @@ const Message = forwardRef<any, IMessageProps>(
     const [showMessageTimestamp, setShowMessageTimestamp] = useState(true);
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
     const [isVideoMuted, setIsVideoMuted] = useState(false);
+    const [checkInputURL, setCheckInputURL] = useState(false);
 
     const messageTimestampRef = useRef<HTMLSpanElement>(null);
     const messageContentRef = useRef<HTMLParagraphElement>(null);
@@ -114,6 +116,20 @@ const Message = forwardRef<any, IMessageProps>(
       }
     };
 
+    const checkInputURLHandler = (url: string) => {
+      let pattern = new RegExp(
+        "^(https?:\\/\\/)?" + // protocol
+          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+          "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+          "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+          "(\\#[-a-z\\d_]*)?$", // fragment locator
+        "i"
+      );
+
+      return !!pattern.test(url);
+    };
+
     return (
       <MessageContainer
         ref={ref}
@@ -131,12 +147,25 @@ const Message = forwardRef<any, IMessageProps>(
           </SenderName>
 
           {type === "text" ? (
-            <MessageContent
-              ref={messageContentRef}
-              onClick={showMessageTimestampHandler}
-            >
-              <Emoji text={message} />
-            </MessageContent>
+            <>
+              {checkInputURLHandler(message as string) ? (
+                <MessageContent type="link-preview" ref={messageContentRef}>
+                  <LinkPreview
+                    url={message as string}
+                    height="15rem"
+                    showLoader={false}
+                  />
+                </MessageContent>
+              ) : (
+                <MessageContent
+                  type="normal"
+                  ref={messageContentRef}
+                  onClick={showMessageTimestampHandler}
+                >
+                  <Emoji text={message} />
+                </MessageContent>
+              )}
+            </>
           ) : type === "image" ? (
             <ImageContent>
               <img loading="lazy" src={media} />
@@ -174,7 +203,7 @@ const Message = forwardRef<any, IMessageProps>(
               </VideoController>
             </VideoContent>
           ) : type === "file" ? (
-            <MessageContent>
+            <MessageContent type="normal">
               <a href={file} download target="__blank">
                 {fileName}
               </a>
@@ -270,16 +299,17 @@ const SenderName = styled.span<{ isUser?: boolean }>`
     `}
 `;
 
-const MessageContent = styled.p`
+const MessageContent = styled.p<{ type: "link-preview" | "normal" }>`
   ${tw`
     text-black
-    p-2
     rounded-xl
     max-w-md
     bg-white
     cursor-pointer
     break-words
   `}
+
+  ${({ type }) => type === "normal" && tw`p-2`}
 
   width: fit-content;
 
