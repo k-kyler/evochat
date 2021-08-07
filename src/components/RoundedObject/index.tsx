@@ -33,7 +33,6 @@ const RoundedObject: FC<IRoundedObject> = ({
             {background ? (
               <BackgroundContainer background={background} />
             ) : (
-              // <img src={background} />
               <Text>{content[0].toUpperCase()}</Text>
             )}
           </>

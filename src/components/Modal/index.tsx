@@ -9,6 +9,8 @@ import SearchRoomResults from "../SearchRoomResults";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
+import { useRooms } from "../../contexts/RoomsContext";
+import { SearchRoomResultType } from "../../typings/SearchRoomResultType";
 
 interface IModalProps {
   title?: string;
@@ -37,18 +39,21 @@ const Modal: FC<IModalProps> = ({
   const [inputRoomBackground, setInputRoomBackground] = useState<any>(null);
   const [disabledCreateRoomButton, setDisabledCreateRoomButton] =
     useState(false);
-  const [disabledSearchRoomButton, setdisabledSearchRoomButton] =
+  const [disabledSearchRoomButton, setDisabledSearchRoomButton] =
     useState(false);
   const [checkInputRoomName, setCheckInputRoomName] = useState(false);
   const [checkUploadBackground, setCheckUploadBackground] = useState(false);
   const [checkInputSearchRoomName, setCheckInputSearchRoomName] =
     useState(false);
+  const [roomResults, setRoomResults] = useState<SearchRoomResultType[]>([]);
+  const [isRoomSearching, setIsRoomSearching] = useState(false);
 
   const inputRoomNameRef = useRef<HTMLInputElement>(null);
   const inputRoomBackgroundRef = useRef<HTMLInputElement>(null);
   const inputSearchRoomNameRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
+  const { rooms } = useRooms();
 
   const createNewRoomHandler = () => {
     setDisabledCreateRoomButton(true);
@@ -152,7 +157,35 @@ const Modal: FC<IModalProps> = ({
   const searchRoomHandler = () => {
     if (inputSearchRoomNameRef.current) {
       if (inputSearchRoomNameRef.current.value) {
-        setdisabledSearchRoomButton(true);
+        setDisabledSearchRoomButton(true);
+        setIsRoomSearching(true);
+        setRoomResults([]);
+
+        db.collection("rooms")
+          .get()
+          .then((snapshot) => {
+            const results = snapshot.docs
+              .map((doc) => ({
+                id: doc.id,
+                background: doc.data().background,
+                name: doc.data().name,
+              }))
+              .filter((room) =>
+                room.name
+                  .toLowerCase()
+                  .includes(inputSearchRoomNameRef.current?.value.toLowerCase())
+              );
+            const joinedRoomIds = rooms?.map((room) => room.id);
+            const finalResults = results.filter(
+              (result) => !joinedRoomIds?.includes(result.id)
+            );
+
+            setRoomResults(finalResults);
+          })
+          .then(() => {
+            setDisabledSearchRoomButton(false);
+            setIsRoomSearching(false);
+          });
       } else {
         inputSearchRoomNameRef.current.focus();
         setCheckInputSearchRoomName(true);
@@ -209,7 +242,10 @@ const Modal: FC<IModalProps> = ({
                     refValue={inputSearchRoomNameRef}
                     placeholder="Enter room name..."
                   />
-                  <SearchRoomResults />
+                  <SearchRoomResults
+                    roomResults={roomResults}
+                    isRoomSearching={isRoomSearching}
+                  />
                 </RoomFeature>
               ) : null}
             </ModalFeature>
