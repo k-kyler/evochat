@@ -60,15 +60,15 @@ const InfoContainer = styled.div`
 const ImageContainer = styled.div`
   img {
     ${tw`
-      h-10
+      h-11
     `}
   }
 `;
 
 const BackgroundContainer = styled.div<{ background: string }>`
   ${tw`
-    h-10
-    w-10
+    h-11
+    w-11
     bg-cover
     bg-center
     bg-no-repeat

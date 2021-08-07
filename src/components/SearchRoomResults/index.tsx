@@ -27,11 +27,12 @@ const SearchRoomResults: FC<ISearchRoomResultsProps> = ({
             <SearchRoomResult key={result.id} {...result} />
           ))}
         </>
-      ) : !isRoomSearching ? (
-        <Description>No rooms found...</Description>
       ) : (
         <SearchRoomIntroImageContainer>
           <img src={FindImage} />
+          {!roomResults.length ? (
+            <Description>No results found...</Description>
+          ) : null}
         </SearchRoomIntroImageContainer>
       )}
     </SearchRoomResultsContainer>

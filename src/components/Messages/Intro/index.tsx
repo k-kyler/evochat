@@ -2,7 +2,7 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import IntroLogo from "../../../assets/room-intro.svg";
-import LineAlert from "../LineAlert";
+import LineAlert from "../../LineAlert";
 
 interface IntroProps {
   roomName?: string;

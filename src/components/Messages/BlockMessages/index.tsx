@@ -4,7 +4,7 @@ import tw from "twin.macro";
 import { BlockMessagesType } from "../../../typings/BlockMessagesType";
 import { MessageType } from "../../../typings/MessageType";
 import Message from "../Message";
-import LineAlert from "../LineAlert";
+import LineAlert from "../../LineAlert";
 import { db } from "../../../firebase";
 
 interface IBlockMessagesProps extends BlockMessagesType {
