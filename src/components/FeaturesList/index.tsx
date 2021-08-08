@@ -90,7 +90,7 @@ const FeaturesList: FC<IFeaturesListProps> = ({ joinedRoomIds }) => {
       />
       <Modal
         type="search-room"
-        title="Join new room"
+        title="Search room"
         open={openSearchRoomModal}
         closeHandler={() => setOpenSearchRoomModal(false)}
         setOpenCreateNewRoomModal={setOpenCreateNewRoomModal}

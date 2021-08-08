@@ -12,10 +12,7 @@ interface IntroProps {
 
 const Intro: FC<IntroProps> = ({ roomName, roomBackground, timestamp }) => {
   const convertedTimestamp =
-    "Created on " +
-    new Date(timestamp?.toDate()).toDateString() +
-    ", " +
-    new Date(timestamp?.toDate()).toLocaleTimeString();
+    "Created on " + new Date(timestamp?.toDate()).toDateString();
 
   return (
     <>
@@ -54,7 +51,7 @@ const IntroContainer = styled.div`
 const Content = styled.h3`
   ${tw`
     text-3xl
-    mb-4
+    mb-3
     font-semibold
     text-center
   `}

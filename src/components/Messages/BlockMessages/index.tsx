@@ -15,10 +15,7 @@ const BlockMessages = forwardRef<any, IBlockMessagesProps>(
   ({ timestamp, id, selectedRoomTimestamp, scrollToBottom }, ref) => {
     const [dateMessages, setDateMessages] = useState<MessageType[]>([]);
 
-    const convertedTimestamp =
-      new Date(timestamp?.toDate()).toDateString() +
-      ", " +
-      new Date(timestamp?.toDate()).toLocaleTimeString();
+    const convertedTimestamp = new Date(timestamp?.toDate()).toDateString();
 
     const getDateMessages = () => {
       db.collection("roomMessages")
@@ -53,9 +50,7 @@ const BlockMessages = forwardRef<any, IBlockMessagesProps>(
 
     return (
       <BlockMessagesContainer ref={ref}>
-        {new Date(selectedRoomTimestamp?.toDate()).toDateString() +
-          ", " +
-          new Date(timestamp?.toDate()).toLocaleTimeString() !==
+        {new Date(selectedRoomTimestamp?.toDate()).toDateString() !==
         convertedTimestamp ? (
           <LineAlert content={convertedTimestamp} />
         ) : null}

@@ -9,7 +9,6 @@ import SearchRoomResults from "../SearchRoomResults";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
-import { useRooms } from "../../contexts/RoomsContext";
 import { SearchRoomResultType } from "../../typings/SearchRoomResultType";
 
 interface IModalProps {
@@ -53,7 +52,6 @@ const Modal: FC<IModalProps> = ({
   const inputSearchRoomNameRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
-  const { rooms } = useRooms();
 
   const createNewRoomHandler = () => {
     setDisabledCreateRoomButton(true);
@@ -175,12 +173,8 @@ const Modal: FC<IModalProps> = ({
                   .toLowerCase()
                   .includes(inputSearchRoomNameRef.current?.value.toLowerCase())
               );
-            const joinedRoomIds = rooms?.map((room) => room.id);
-            const finalResults = results.filter(
-              (result) => !joinedRoomIds?.includes(result.id)
-            );
 
-            setRoomResults(finalResults);
+            setRoomResults(results);
           })
           .then(() => {
             setDisabledSearchRoomButton(false);

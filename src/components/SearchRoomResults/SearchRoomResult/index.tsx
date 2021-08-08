@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { BiMessageAdd } from "react-icons/bi";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import { SearchRoomResultType } from "../../../typings/SearchRoomResultType";
 import RoomIntroImage from "../../../assets/room-intro.svg";
 
@@ -26,7 +26,7 @@ const SearchRoomResult: FC<ISearchRoomResultProps> = ({
       </InfoContainer>
 
       <Icon>
-        <BiMessageAdd />
+        <AiOutlinePlusCircle />
       </Icon>
     </SearchRoomResultContainer>
   );
@@ -39,8 +39,7 @@ const SearchRoomResultContainer = styled.div`
     flex
     items-center
     justify-between
-    px-2
-    py-1
+    p-2
     w-full
     rounded-lg
     transition-all
@@ -54,21 +53,22 @@ const InfoContainer = styled.div`
   ${tw`
     flex
     items-center
+    flex-1
   `}
 `;
 
 const ImageContainer = styled.div`
   img {
     ${tw`
-      h-11
+      h-9
     `}
   }
 `;
 
 const BackgroundContainer = styled.div<{ background: string }>`
   ${tw`
-    h-11
-    w-11
+    h-9
+    w-9
     bg-cover
     bg-center
     bg-no-repeat
@@ -95,7 +95,7 @@ const RoomName = styled.p`
 const Icon = styled.span`
   ${tw`
     text-xl
-    text-gray-500
+    text-green-400
     cursor-pointer
   `}
 `;

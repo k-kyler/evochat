@@ -30,9 +30,7 @@ const SearchRoomResults: FC<ISearchRoomResultsProps> = ({
       ) : (
         <SearchRoomIntroImageContainer>
           <img src={FindImage} />
-          {!roomResults.length ? (
-            <Description>No results found...</Description>
-          ) : null}
+          <Description>No results found...</Description>
         </SearchRoomIntroImageContainer>
       )}
     </SearchRoomResultsContainer>

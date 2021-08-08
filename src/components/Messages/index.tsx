@@ -19,6 +19,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [inputMedia, setInputMedia] = useState<any>(null);
   const [inputFile, setInputFile] = useState<any>(null);
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
+  const [blockMessagesNumber, setBlockMessagesNumber] = useState(3);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const marginerRef = useRef<HTMLDivElement>(null);
@@ -38,6 +39,9 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
           setRoomMessages(blockMessages);
         });
     }
+
+    // Set default back to 3 when switching between rooms
+    setBlockMessagesNumber(3);
   };
 
   const getCurrentBlockMessagesId = () => {
@@ -83,6 +87,16 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
     }
   };
 
+  const scrollToTop = () => {
+    if (messagesContainerRef.current) {
+      if (messagesContainerRef.current.scrollTop === 0) {
+        setBlockMessagesNumber(
+          (blockMessagesNumber) => blockMessagesNumber + 1
+        );
+      }
+    }
+  };
+
   useEffect(() => {
     getSelectedRoomMessages();
   }, [selectedRoom]);
@@ -100,23 +114,27 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   }, [inputFile]);
 
   return (
-    <MessagesContainer ref={messagesContainerRef}>
-      <Intro
-        roomName={selectedRoom?.name}
-        roomBackground={selectedRoom?.background}
-        timestamp={selectedRoom?.timestamp}
-      />
+    <MessagesContainer ref={messagesContainerRef} onScroll={scrollToTop}>
+      {roomMessages.length <= blockMessagesNumber ? (
+        <Intro
+          roomName={selectedRoom?.name}
+          roomBackground={selectedRoom?.background}
+          timestamp={selectedRoom?.timestamp}
+        />
+      ) : null}
 
       <BlockMessagesWrapper onClick={() => setOpenEmojiModal(false)}>
         <FlipMove leaveAnimation="fade">
-          {roomMessages.map((roomMessage) => (
-            <BlockMessages
-              selectedRoomTimestamp={selectedRoom?.timestamp}
-              scrollToBottom={scrollToBottom}
-              key={roomMessage.id}
-              {...roomMessage}
-            />
-          ))}
+          {roomMessages
+            .slice(Math.max(roomMessages.length - blockMessagesNumber, 0))
+            .map((roomMessage) => (
+              <BlockMessages
+                selectedRoomTimestamp={selectedRoom?.timestamp}
+                scrollToBottom={scrollToBottom}
+                key={roomMessage.id}
+                {...roomMessage}
+              />
+            ))}
         </FlipMove>
       </BlockMessagesWrapper>
 
