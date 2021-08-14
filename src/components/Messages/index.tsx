@@ -19,7 +19,7 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
   const [inputMedia, setInputMedia] = useState<any>(null);
   const [inputFile, setInputFile] = useState<any>(null);
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
-  const [blockMessagesNumber, setBlockMessagesNumber] = useState(3);
+  const [blockMessagesNumber, setBlockMessagesNumber] = useState(5);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const marginerRef = useRef<HTMLDivElement>(null);
@@ -40,8 +40,8 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         });
     }
 
-    // Set default back to 3 when switching between rooms
-    setBlockMessagesNumber(3);
+    // Set default back to 5 when switching between rooms
+    setBlockMessagesNumber(5);
   };
 
   const getCurrentBlockMessagesId = () => {
@@ -127,14 +127,31 @@ const Messages: FC<IMessagesProps> = ({ selectedRoom }) => {
         <FlipMove leaveAnimation="fade">
           {roomMessages
             .slice(Math.max(roomMessages.length - blockMessagesNumber, 0))
-            .map((roomMessage) => (
-              <BlockMessages
-                selectedRoomTimestamp={selectedRoom?.timestamp}
-                scrollToBottom={scrollToBottom}
-                key={roomMessage.id}
-                {...roomMessage}
-              />
-            ))}
+            .map((roomMessage, index) => {
+              if (
+                index ===
+                roomMessages.slice(
+                  Math.max(roomMessages.length - blockMessagesNumber, 0)
+                ).length -
+                  1
+              )
+                return (
+                  <BlockMessages
+                    selectedRoomTimestamp={selectedRoom?.timestamp}
+                    scrollToBottom={scrollToBottom}
+                    key={roomMessage.id}
+                    {...roomMessage}
+                  />
+                );
+              else
+                return (
+                  <BlockMessages
+                    selectedRoomTimestamp={selectedRoom?.timestamp}
+                    key={roomMessage.id}
+                    {...roomMessage}
+                  />
+                );
+            })}
         </FlipMove>
       </BlockMessagesWrapper>
 

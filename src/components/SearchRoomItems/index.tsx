@@ -2,21 +2,21 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { CgSpinnerTwo } from "react-icons/cg";
-import SearchRoomResult from "./SearchRoomResult";
+import SearchRoomItem from "./SearchRoomItem";
 import FindImage from "../../assets/find.svg";
-import { SearchRoomResultType } from "../../typings/SearchRoomResultType";
+import { SearchRoomItemType } from "../../typings/SearchRoomItemType";
 
-interface ISearchRoomResultsProps {
-  roomResults: SearchRoomResultType[];
+interface ISearchRoomItemsProps {
+  roomResults: SearchRoomItemType[];
   isRoomSearching: boolean;
 }
 
-const SearchRoomResults: FC<ISearchRoomResultsProps> = ({
+const SearchRoomItems: FC<ISearchRoomItemsProps> = ({
   roomResults,
   isRoomSearching,
 }) => {
   return (
-    <SearchRoomResultsContainer roomResults={roomResults}>
+    <SearchRoomItemsContainer roomResults={roomResults}>
       {isRoomSearching ? (
         <Icon>
           <CgSpinnerTwo />
@@ -24,7 +24,7 @@ const SearchRoomResults: FC<ISearchRoomResultsProps> = ({
       ) : roomResults.length ? (
         <>
           {roomResults.map((result) => (
-            <SearchRoomResult key={result.id} {...result} />
+            <SearchRoomItem key={result.id} {...result} />
           ))}
         </>
       ) : (
@@ -33,14 +33,14 @@ const SearchRoomResults: FC<ISearchRoomResultsProps> = ({
           <Description>No results found...</Description>
         </SearchRoomIntroImageContainer>
       )}
-    </SearchRoomResultsContainer>
+    </SearchRoomItemsContainer>
   );
 };
 
-export default SearchRoomResults;
+export default SearchRoomItems;
 
-const SearchRoomResultsContainer = styled.div<{
-  roomResults: SearchRoomResultType[];
+const SearchRoomItemsContainer = styled.div<{
+  roomResults: SearchRoomItemType[];
 }>`
   ${tw`
     mt-4

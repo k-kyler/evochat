@@ -14,7 +14,7 @@ const PanelOption: FC<IPanelOptionProps> = ({
 }) => {
   return (
     <>
-      <PanelOptionContainer>
+      <PanelOptionContainer onClick={clickHandler && clickHandler}>
         <PanelOptionName highlight={highlight}>{name}</PanelOptionName>
         <PanelOptionIcon>{icon}</PanelOptionIcon>
       </PanelOptionContainer>

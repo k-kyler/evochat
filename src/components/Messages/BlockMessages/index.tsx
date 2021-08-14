@@ -8,7 +8,7 @@ import LineAlert from "../../LineAlert";
 import { db } from "../../../firebase";
 
 interface IBlockMessagesProps extends BlockMessagesType {
-  scrollToBottom: () => void;
+  scrollToBottom?: () => void;
 }
 
 const BlockMessages = forwardRef<any, IBlockMessagesProps>(
@@ -45,8 +45,8 @@ const BlockMessages = forwardRef<any, IBlockMessagesProps>(
     }, []);
 
     useEffect(() => {
-      scrollToBottom();
-    }, [dateMessages.length]);
+      scrollToBottom && scrollToBottom();
+    }, [dateMessages]);
 
     return (
       <BlockMessagesContainer ref={ref}>

@@ -5,11 +5,11 @@ import tw from "twin.macro";
 import { FaSearch, FaSignInAlt } from "react-icons/fa";
 import RoomInput from "../Input/RoomInput";
 import Button from "../Button";
-import SearchRoomResults from "../SearchRoomResults";
+import SearchRoomItems from "../SearchRoomItems";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
-import { SearchRoomResultType } from "../../typings/SearchRoomResultType";
+import { SearchRoomItemType } from "../../typings/SearchRoomItemType";
 
 interface IModalProps {
   title?: string;
@@ -17,13 +17,16 @@ interface IModalProps {
   type:
     | "create-room"
     | "search-room"
+    | "edit-room-name"
+    | "edit-room-bg"
+    | "room-info"
     | "user-setting"
-    | "room-panel"
     | "member-info";
   open: boolean;
   closeHandler: () => void;
   setOpenSearchRoomModal?: Dispatch<boolean>;
   setOpenCreateNewRoomModal?: Dispatch<boolean>;
+  defaultInput?: string;
 }
 
 const Modal: FC<IModalProps> = ({
@@ -34,22 +37,26 @@ const Modal: FC<IModalProps> = ({
   closeHandler,
   setOpenSearchRoomModal,
   setOpenCreateNewRoomModal,
+  defaultInput,
 }) => {
   const [inputRoomBackground, setInputRoomBackground] = useState<any>(null);
   const [disabledCreateRoomButton, setDisabledCreateRoomButton] =
     useState(false);
   const [disabledSearchRoomButton, setDisabledSearchRoomButton] =
     useState(false);
+  const [disabledChangeRoomNameButton, setDisabledChangeRoomNameButton] =
+    useState(false);
   const [checkInputRoomName, setCheckInputRoomName] = useState(false);
   const [checkUploadBackground, setCheckUploadBackground] = useState(false);
   const [checkInputSearchRoomName, setCheckInputSearchRoomName] =
     useState(false);
-  const [roomResults, setRoomResults] = useState<SearchRoomResultType[]>([]);
+  const [roomResults, setRoomResults] = useState<SearchRoomItemType[]>([]);
   const [isRoomSearching, setIsRoomSearching] = useState(false);
 
   const inputRoomNameRef = useRef<HTMLInputElement>(null);
   const inputRoomBackgroundRef = useRef<HTMLInputElement>(null);
   const inputSearchRoomNameRef = useRef<HTMLInputElement>(null);
+  const inputChangeRoomNameRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
 
@@ -191,6 +198,10 @@ const Modal: FC<IModalProps> = ({
     }
   };
 
+  const changeRoomNameHandler = () => {
+    setDisabledChangeRoomNameButton(true);
+  };
+
   if (!open) return null;
   return createPortal(
     <>
@@ -214,7 +225,7 @@ const Modal: FC<IModalProps> = ({
                   type="create"
                 >
                   <RoomInput
-                    type="create-room-upload-background"
+                    type="room-upload-background"
                     refValue={inputRoomBackgroundRef}
                     setInputRoomBackground={setInputRoomBackground}
                     checkUploadBackground={checkUploadBackground}
@@ -222,7 +233,7 @@ const Modal: FC<IModalProps> = ({
                   />
                   <RoomInput
                     label="Room name"
-                    type="create-room-text"
+                    type="room-text-label"
                     refValue={inputRoomNameRef}
                   />
                 </RoomFeature>
@@ -232,13 +243,21 @@ const Modal: FC<IModalProps> = ({
                   type="search"
                 >
                   <RoomInput
-                    type="search-room-text"
+                    type="room-text"
                     refValue={inputSearchRoomNameRef}
                     placeholder="Enter room name..."
                   />
-                  <SearchRoomResults
+                  <SearchRoomItems
                     roomResults={roomResults}
                     isRoomSearching={isRoomSearching}
+                  />
+                </RoomFeature>
+              ) : type === "edit-room-name" ? (
+                <RoomFeature>
+                  <RoomInput
+                    type="room-text"
+                    refValue={inputChangeRoomNameRef}
+                    defaultValue={defaultInput}
                   />
                 </RoomFeature>
               ) : null}
@@ -279,6 +298,16 @@ const Modal: FC<IModalProps> = ({
                 color="blue"
                 clickHandler={searchRoomHandler}
                 disabled={disabledSearchRoomButton}
+              />
+            </RoomButtons>
+          ) : type === "edit-room-name" ? (
+            <RoomButtons isOne={true}>
+              <Button
+                content="Update"
+                theme="loading-filled-no-outlined"
+                color="blue"
+                clickHandler={changeRoomNameHandler}
+                disabled={disabledChangeRoomNameButton}
               />
             </RoomButtons>
           ) : null}
@@ -407,7 +436,7 @@ const ModalActions = styled.div`
 const RoomFeature = styled.div<{
   checkInputRoomName?: boolean;
   checkInputSearchRoomName?: boolean;
-  type: "create" | "search";
+  type?: "create" | "search";
 }>`
   ${tw`
     flex
@@ -437,11 +466,12 @@ const RoomFeature = styled.div<{
       : null}
 `;
 
-const RoomButtons = styled.div`
+const RoomButtons = styled.div<{ isOne?: boolean }>`
   ${tw`
     flex
     items-center
-    justify-between
     w-full
   `}
+
+  ${({ isOne }) => (isOne ? tw`justify-end` : tw`justify-between`)}
 `;

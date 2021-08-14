@@ -8,14 +8,12 @@ import { useAuth } from "../../../contexts/AuthContext";
 interface IRoomInputProps {
   label?: string;
   placeholder?: string;
-  type:
-    | "create-room-text"
-    | "create-room-upload-background"
-    | "search-room-text";
+  type: "room-text-label" | "room-upload-background" | "room-text";
   refValue: RefObject<HTMLInputElement>;
   setInputRoomBackground?: any;
   checkUploadBackground?: boolean;
   setCheckUploadBackground?: any;
+  defaultValue?: string;
 }
 
 const RoomInput: FC<IRoomInputProps> = ({
@@ -26,6 +24,7 @@ const RoomInput: FC<IRoomInputProps> = ({
   setInputRoomBackground,
   checkUploadBackground,
   setCheckUploadBackground,
+  defaultValue,
 }) => {
   const [roomBackgroundPreview, setRoomBackgroundPreview] = useState<
     string | ArrayBuffer | null
@@ -51,7 +50,7 @@ const RoomInput: FC<IRoomInputProps> = ({
 
   return (
     <>
-      {type === "create-room-text" ? (
+      {type === "room-text-label" ? (
         <InputTextContainer>
           <InputLabel onClick={inputTextFocusHandler}>{label}</InputLabel>
           <InputText
@@ -62,16 +61,17 @@ const RoomInput: FC<IRoomInputProps> = ({
             defaultValue={`${user?.displayName}'s room`}
           />
         </InputTextContainer>
-      ) : type === "search-room-text" ? (
+      ) : type === "room-text" ? (
         <InputTextContainer>
           <InputText
             ref={refValue}
             placeholder={placeholder}
             spellCheck="false"
             autoFocus
+            defaultValue={defaultValue}
           />
         </InputTextContainer>
-      ) : type === "create-room-upload-background" ? (
+      ) : type === "room-upload-background" ? (
         <>
           {roomBackgroundPreview ? (
             <PreviewRoomBackground

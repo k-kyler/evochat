@@ -10,10 +10,11 @@ import {
   FcBarChart,
   FcLeave,
 } from "react-icons/fc";
+import { nanoid } from "nanoid";
 import Panel from "./Panel";
+import Modal from "../Modal";
 import { RoomType } from "../../typings/RoomType";
 import { PanelOptionType } from "../../typings/PanelOptionType";
-import { nanoid } from "nanoid";
 
 interface IRoomHeader {
   selectedRoom?: RoomType;
@@ -23,6 +24,7 @@ interface IRoomHeader {
 const RoomHeader: FC<IRoomHeader> = ({ selectedRoom, isBlank }) => {
   const [openPanel, setOpenPanel] = useState(false);
   const [rotateState, setRotateState] = useState(true);
+  const [openChangeRoomNameModal, setOpenChangeRoomNameModal] = useState(false);
 
   const iconRef = useRef<HTMLSpanElement>(null);
 
@@ -37,6 +39,7 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom, isBlank }) => {
       id: nanoid(),
       name: "Change name",
       icon: <FcDocument />,
+      clickHandler: () => setOpenChangeRoomNameModal(true),
     },
     {
       id: nanoid(),
@@ -100,22 +103,34 @@ const RoomHeader: FC<IRoomHeader> = ({ selectedRoom, isBlank }) => {
   };
 
   return (
-    <RoomHeaderContainer onClick={openPanelHandler}>
-      {isBlank ? (
-        <RoomName isBlank={isBlank}>⚡ Activity overview</RoomName>
-      ) : (
-        <>
-          <RoomName title={selectedRoom?.name}>{selectedRoom?.name}</RoomName>
-          <Icon ref={iconRef}>{openPanel ? <FaTimes /> : <FaAngleDown />}</Icon>
-          <Panel
-            oid={selectedRoom?.oid}
-            generalData={generalPanelData}
-            adminData={adminPanelData}
-            open={openPanel}
-          />
-        </>
-      )}
-    </RoomHeaderContainer>
+    <>
+      <RoomHeaderContainer onClick={openPanelHandler}>
+        {isBlank ? (
+          <RoomName isBlank={isBlank}>⚡ Activity overview</RoomName>
+        ) : (
+          <>
+            <RoomName title={selectedRoom?.name}>{selectedRoom?.name}</RoomName>
+            <Icon ref={iconRef}>
+              {openPanel ? <FaTimes /> : <FaAngleDown />}
+            </Icon>
+            <Panel
+              oid={selectedRoom?.oid}
+              generalData={generalPanelData}
+              adminData={adminPanelData}
+              open={openPanel}
+            />
+          </>
+        )}
+      </RoomHeaderContainer>
+
+      <Modal
+        type="edit-room-name"
+        title="Change room name"
+        open={openChangeRoomNameModal}
+        closeHandler={() => setOpenChangeRoomNameModal(false)}
+        defaultInput={selectedRoom?.name}
+      />
+    </>
   );
 };
 

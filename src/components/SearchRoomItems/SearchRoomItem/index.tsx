@@ -2,18 +2,14 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { SearchRoomResultType } from "../../../typings/SearchRoomResultType";
+import { SearchRoomItemType } from "../../../typings/SearchRoomItemType";
 import RoomIntroImage from "../../../assets/room-intro.svg";
 
-interface ISearchRoomResultProps extends SearchRoomResultType {}
+interface ISearchRoomItemProps extends SearchRoomItemType {}
 
-const SearchRoomResult: FC<ISearchRoomResultProps> = ({
-  name,
-  background,
-  id,
-}) => {
+const SearchRoomItem: FC<ISearchRoomItemProps> = ({ name, background, id }) => {
   return (
-    <SearchRoomResultContainer>
+    <SearchRoomItemContainer>
       <InfoContainer>
         {background ? (
           <BackgroundContainer background={background} />
@@ -28,13 +24,13 @@ const SearchRoomResult: FC<ISearchRoomResultProps> = ({
       <Icon>
         <AiOutlinePlusCircle />
       </Icon>
-    </SearchRoomResultContainer>
+    </SearchRoomItemContainer>
   );
 };
 
-export default SearchRoomResult;
+export default SearchRoomItem;
 
-const SearchRoomResultContainer = styled.div`
+const SearchRoomItemContainer = styled.div`
   ${tw`
     flex
     items-center
