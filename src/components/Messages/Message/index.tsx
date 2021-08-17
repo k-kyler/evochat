@@ -13,6 +13,7 @@ import { CgSpinner } from "react-icons/cg";
 import { useAuth } from "../../../contexts/AuthContext";
 import { MessageType } from "../../../typings/MessageType";
 import OnlineStatus from "../../OnlineStatus";
+import Modal from "../../Modal";
 
 interface IMessageProps extends MessageType {}
 
@@ -36,6 +37,7 @@ const Message = forwardRef<any, IMessageProps>(
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
     const [isVideoMuted, setIsVideoMuted] = useState(false);
     const [checkInputURL, setCheckInputURL] = useState(false);
+    const [openZoomImageModal, setOpenZoomImageModal] = useState(false);
 
     const messageTimestampRef = useRef<HTMLSpanElement>(null);
     const messageContentRef = useRef<HTMLParagraphElement>(null);
@@ -139,9 +141,18 @@ const Message = forwardRef<any, IMessageProps>(
               <Emoji text={message} />
             </MessageContent>
           ) : type === "image" ? (
-            <ImageContent>
-              <img loading="lazy" src={media} />
-            </ImageContent>
+            <>
+              <ImageContent onClick={() => setOpenZoomImageModal(true)}>
+                <img loading="lazy" src={media} />
+              </ImageContent>
+
+              <Modal
+                type="zoom-image"
+                imageSrc={media}
+                open={openZoomImageModal}
+                closeHandler={() => setOpenZoomImageModal(false)}
+              />
+            </>
           ) : type === "video" ? (
             <VideoContent>
               <video src={media} ref={videoRef}></video>

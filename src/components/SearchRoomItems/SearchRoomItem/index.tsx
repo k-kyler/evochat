@@ -8,6 +8,8 @@ import RoomIntroImage from "../../../assets/room-intro.svg";
 interface ISearchRoomItemProps extends SearchRoomItemType {}
 
 const SearchRoomItem: FC<ISearchRoomItemProps> = ({ name, background, id }) => {
+  // Send join room request handler here...
+
   return (
     <SearchRoomItemContainer>
       <InfoContainer>

@@ -1,4 +1,4 @@
-import { FC, useRef, useState, Dispatch } from "react";
+import { FC, useRef, useState, Dispatch, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
@@ -9,6 +9,7 @@ import SearchRoomItems from "../SearchRoomItems";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
+import { useRooms } from "../../contexts/RoomsContext";
 import { SearchRoomItemType } from "../../typings/SearchRoomItemType";
 
 interface IModalProps {
@@ -21,12 +22,14 @@ interface IModalProps {
     | "edit-room-bg"
     | "room-info"
     | "user-setting"
+    | "zoom-image"
     | "member-info";
   open: boolean;
   closeHandler: () => void;
   setOpenSearchRoomModal?: Dispatch<boolean>;
   setOpenCreateNewRoomModal?: Dispatch<boolean>;
   defaultInput?: string;
+  imageSrc?: string;
 }
 
 const Modal: FC<IModalProps> = ({
@@ -38,6 +41,7 @@ const Modal: FC<IModalProps> = ({
   setOpenSearchRoomModal,
   setOpenCreateNewRoomModal,
   defaultInput,
+  imageSrc,
 }) => {
   const [inputRoomBackground, setInputRoomBackground] = useState<any>(null);
   const [disabledCreateRoomButton, setDisabledCreateRoomButton] =
@@ -59,6 +63,7 @@ const Modal: FC<IModalProps> = ({
   const inputChangeRoomNameRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
+  const { rooms } = useRooms();
 
   const createNewRoomHandler = () => {
     setDisabledCreateRoomButton(true);
@@ -175,10 +180,13 @@ const Modal: FC<IModalProps> = ({
                 background: doc.data().background,
                 name: doc.data().name,
               }))
-              .filter((room) =>
-                room.name
-                  .toLowerCase()
-                  .includes(inputSearchRoomNameRef.current?.value.toLowerCase())
+              .filter(
+                (room) =>
+                  room.name
+                    .toLowerCase()
+                    .includes(
+                      inputSearchRoomNameRef.current?.value.toLowerCase()
+                    ) && !rooms?.map((r) => r.id).includes(room.id)
               );
 
             setRoomResults(results);
@@ -202,23 +210,34 @@ const Modal: FC<IModalProps> = ({
     setDisabledChangeRoomNameButton(true);
   };
 
+  useEffect(() => {
+    setRoomResults([]);
+  }, [open]);
+
   if (!open) return null;
   return createPortal(
     <>
       <ModalOverlay onClick={closeHandler} />
 
-      <ModalContent>
-        <ModalInnerContent>
-          <ModalHeader>
-            <CloseModalButton onClick={closeHandler}>&times;</CloseModalButton>
-          </ModalHeader>
+      <ModalContent isImage={type}>
+        <ModalInnerContent isImage={type}>
+          {type === "zoom-image" ? null : (
+            <ModalHeader>
+              <CloseModalButton onClick={closeHandler}>
+                &times;
+              </CloseModalButton>
+            </ModalHeader>
+          )}
 
           <ModalBody>
-            <ModalTitle>{title}</ModalTitle>
+            {type === "zoom-image" ? null : (
+              <>
+                <ModalTitle>{title}</ModalTitle>
+                <ModalDescription>{description}</ModalDescription>
+              </>
+            )}
 
-            <ModalDescription>{description}</ModalDescription>
-
-            <ModalFeature>
+            <ModalFeature isImage={type}>
               {type === "create-room" ? (
                 <RoomFeature
                   checkInputRoomName={checkInputRoomName}
@@ -260,12 +279,16 @@ const Modal: FC<IModalProps> = ({
                     defaultValue={defaultInput}
                   />
                 </RoomFeature>
+              ) : type === "zoom-image" ? (
+                <RoomFeature>
+                  <img src={imageSrc} />
+                </RoomFeature>
               ) : null}
             </ModalFeature>
           </ModalBody>
         </ModalInnerContent>
 
-        <ModalActions>
+        <ModalActions isImage={type}>
           {type === "create-room" ? (
             <RoomButtons>
               <Button
@@ -312,6 +335,12 @@ const Modal: FC<IModalProps> = ({
             </RoomButtons>
           ) : null}
         </ModalActions>
+
+        {type === "zoom-image" ? (
+          <OriginalImageLink target="__blank" href={imageSrc}>
+            Open in original
+          </OriginalImageLink>
+        ) : null}
       </ModalContent>
     </>,
     document.getElementById("modal") as HTMLElement
@@ -330,19 +359,25 @@ const ModalOverlay = styled.div`
   `}
 
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ isImage?: string }>`
   ${tw`
     bg-white
     shadow-lg
     rounded-md
-    w-2/5
     fixed
     top-1/2
     left-1/2
   `}
+
+  ${({ isImage }) =>
+    isImage === "zoom-image"
+      ? tw`
+        max-w-md
+      `
+      : tw`w-2/5`}
 
   z-index: 1;
   transform: translate(-50%, -50%);
@@ -356,8 +391,8 @@ const ModalContent = styled.div`
   }
 `;
 
-const ModalInnerContent = styled.div`
-  ${tw`p-4`}
+const ModalInnerContent = styled.div<{ isImage?: string }>`
+  ${({ isImage }) => (isImage === "zoom-image" ? tw`p-0` : tw`p-4`)}
 `;
 
 const ModalHeader = styled.div`
@@ -414,15 +449,16 @@ const ModalDescription = styled.p`
   width: 26em;
 `;
 
-const ModalFeature = styled.div`
+const ModalFeature = styled.div<{ isImage?: string }>`
   ${tw`
     select-none
     w-full
-    mt-3
   `}
+
+  ${({ isImage }) => (isImage === "zoom-image" ? tw`mt-0` : tw`mt-3`)}
 `;
 
-const ModalActions = styled.div`
+const ModalActions = styled.div<{ isImage?: string }>`
   ${tw`
     bg-gray-100
     px-4
@@ -431,12 +467,18 @@ const ModalActions = styled.div`
 
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+
+  ${({ isImage }) =>
+    isImage === "zoom-image" &&
+    css`
+      display: none;
+    `}
 `;
 
 const RoomFeature = styled.div<{
   checkInputRoomName?: boolean;
   checkInputSearchRoomName?: boolean;
-  type?: "create" | "search";
+  type?: "create" | "search" | "image";
 }>`
   ${tw`
     flex
@@ -474,4 +516,17 @@ const RoomButtons = styled.div<{ isOne?: boolean }>`
   `}
 
   ${({ isOne }) => (isOne ? tw`justify-end` : tw`justify-between`)}
+`;
+
+const OriginalImageLink = styled.a`
+  ${tw`
+    absolute
+    mt-1
+    transition-all
+    duration-300
+    ease-in-out
+    text-gray-400
+    hover:text-white
+    hover:underline
+  `}
 `;

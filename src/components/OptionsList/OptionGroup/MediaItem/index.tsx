@@ -1,12 +1,15 @@
-import { FC, useRef } from "react";
+import { FC, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { FaRegPlayCircle } from "react-icons/fa";
 import { SharedMediaType } from "../../../../typings/SharedType";
+import Modal from "../../../Modal";
 
 interface IMediaItemProps extends SharedMediaType {}
 
 const MediaItem: FC<IMediaItemProps> = ({ media, type }) => {
+  const [openZoomImageModal, setOpenZoomImageModal] = useState(false);
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const videoFullscreenHandler = () => {
@@ -19,7 +22,20 @@ const MediaItem: FC<IMediaItemProps> = ({ media, type }) => {
     return (
       <>
         {type === "image" ? (
-          <MediaItemContainer src={media} type={type} />
+          <>
+            <MediaItemContainer
+              src={media}
+              type={type}
+              onClick={() => setOpenZoomImageModal(true)}
+            />
+
+            <Modal
+              type="zoom-image"
+              imageSrc={media}
+              open={openZoomImageModal}
+              closeHandler={() => setOpenZoomImageModal(false)}
+            />
+          </>
         ) : type === "video" ? (
           <MediaItemContainer type={type}>
             <video src={media} ref={videoRef}></video>
