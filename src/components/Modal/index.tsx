@@ -338,7 +338,7 @@ const Modal: FC<IModalProps> = ({
 
         {type === "zoom-image" ? (
           <OriginalImageLink target="__blank" href={imageSrc}>
-            Open in original
+            Open original
           </OriginalImageLink>
         ) : null}
       </ModalContent>
@@ -525,6 +525,7 @@ const OriginalImageLink = styled.a`
     transition-all
     duration-300
     ease-in-out
+    text-sm
     text-gray-400
     hover:text-white
     hover:underline

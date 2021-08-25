@@ -11,6 +11,7 @@ import RoomHeader from "../../components/RoomHeader";
 import Messages from "../../components/Messages";
 import BlankOptionsList from "../../components/BlankSection/BlankOptionsList";
 import BlankChatArea from "../../components/BlankSection/BlankChatArea";
+import PageLoading from "../../components/PageLoading";
 import { RoomType } from "../../typings/RoomType";
 import { MemberItemType } from "../../typings/MemberItemType";
 import { SharedMediaType, SharedFileType } from "../../typings/SharedType";
@@ -32,6 +33,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
   );
   const [roomMedia, setRoomMedia] = useState<SharedMediaType[]>([]);
   const [roomFiles, setRoomFiles] = useState<SharedFileType[]>([]);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   const { user } = useAuth();
   const { rooms, setRooms } = useRooms();
@@ -178,6 +180,14 @@ const Chat: FC<IChatProps> = ({ location }) => {
       });
   };
 
+  const pageLoadingHandler = () => {
+    if (joinedRoomIds.length) setIsPageLoading(false);
+    else
+      setTimeout(() => {
+        setIsPageLoading(false);
+      }, 2000);
+  };
+
   useEffect(() => {
     checkUserHandler();
     getJoinedRoomIds();
@@ -185,6 +195,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   useEffect(() => {
     getJoinedRooms();
+    pageLoadingHandler();
   }, [joinedRoomIds]);
 
   useEffect(() => {
@@ -207,36 +218,42 @@ const Chat: FC<IChatProps> = ({ location }) => {
 
   return (
     <ChatContainer>
-      <FeaturesListContainer>
-        <FeaturesList joinedRoomIds={joinedRoomIds} />
-      </FeaturesListContainer>
+      {isPageLoading ? (
+        <PageLoading />
+      ) : (
+        <>
+          <FeaturesListContainer>
+            <FeaturesList joinedRoomIds={joinedRoomIds} />
+          </FeaturesListContainer>
 
-      <RoomOptionContainer>
-        <RoomHeader
-          selectedRoom={selectedRoom}
-          isBlank={!joinedRoomIds.length ? true : false}
-        />
+          <RoomOptionContainer>
+            <RoomHeader
+              selectedRoom={selectedRoom}
+              isBlank={!joinedRoomIds.length ? true : false}
+            />
 
-        {joinedRoomIds.length ? (
-          <OptionsList
-            roomMembers={roomMembers}
-            roomMedia={roomMedia}
-            roomFiles={roomFiles}
-          />
-        ) : (
-          <BlankOptionsList />
-        )}
+            {joinedRoomIds.length ? (
+              <OptionsList
+                roomMembers={roomMembers}
+                roomMedia={roomMedia}
+                roomFiles={roomFiles}
+              />
+            ) : (
+              <BlankOptionsList />
+            )}
 
-        <UserSection />
-      </RoomOptionContainer>
+            <UserSection />
+          </RoomOptionContainer>
 
-      <ChatAreaContainer>
-        {joinedRoomIds.length ? (
-          <Messages selectedRoom={selectedRoom} />
-        ) : (
-          <BlankChatArea />
-        )}
-      </ChatAreaContainer>
+          <ChatAreaContainer>
+            {joinedRoomIds.length ? (
+              <Messages selectedRoom={selectedRoom} />
+            ) : (
+              <BlankChatArea />
+            )}
+          </ChatAreaContainer>
+        </>
+      )}
     </ChatContainer>
   );
 };

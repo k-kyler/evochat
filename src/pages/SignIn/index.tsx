@@ -4,7 +4,7 @@ import tw from "twin.macro";
 import { Link, Redirect } from "react-router-dom";
 import { IoReturnUpBackSharp } from "react-icons/io5";
 import Button from "../../components/Button";
-import WebLogoImage from "../../assets/web-logo-light.svg";
+import WebLogoCustomImage from "../../assets/web-logo-custom.svg";
 import { SCREENS } from "../../screens";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -18,7 +18,7 @@ const SignIn: FC = () => {
       ) : (
         <SignInContainer>
           <InnerContainer>
-            <img src={WebLogoImage} />
+            <img src={WebLogoCustomImage} />
             <SignInTitle>Welcome to Evochat</SignInTitle>
             <Buttons>
               <Button
@@ -67,7 +67,7 @@ const InnerContainer = styled.div`
     justify-center
   `}
 
-  background-color: #f1f2f5;
+  background-color: #36393f;
 
   img {
     height: 6rem;
@@ -94,7 +94,7 @@ const SignInTitle = styled.h1`
   ${tw`
     mb-4
     text-center
-    text-black
+    text-white
     font-black
     text-2xl
     md:text-3xl
