@@ -14,8 +14,9 @@ import {
   BiMessageDetail,
   BiGhost,
   BiImages,
-  BiChevronRight,
   BiFile,
+  BiPaperPlane,
+  BiX,
 } from "react-icons/bi";
 import Picker, { IEmojiData } from "emoji-picker-react";
 import Tooltip from "../../Tooltip";
@@ -56,6 +57,7 @@ const SendingArea: FC<ISendingArea> = ({
     useState<SharedFileType>();
   const [uploadLoading, setUploadLoading] = useState(false);
   const [checkUploadProcess, setCheckUploadProcess] = useState(false);
+  const [checkIsTyping, setCheckIsTyping] = useState(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
@@ -74,6 +76,9 @@ const SendingArea: FC<ISendingArea> = ({
       textAreaRef.current.style.cssText = "height: auto";
       textAreaRef.current.style.cssText =
         "height: " + textAreaRef.current.scrollHeight + "px";
+
+      if (textAreaRef.current.value) setCheckIsTyping(true);
+      if (!textAreaRef.current.value) setCheckIsTyping(false);
     }
   };
 
@@ -84,50 +89,61 @@ const SendingArea: FC<ISendingArea> = ({
     setChosenEmoji(emojiObject);
   };
 
-  const sendMessageHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
+  const sendMessageHandler = () => {
+    if (user && textAreaRef.current && textAreaRef.current.value) {
+      const messageObject: MessageType = {
+        uid: user.uid,
+        username: user.displayName as string,
+        avatar: user.photoURL as string,
+        message: textAreaRef.current.value,
+        type: "text",
+        timestamp: new Date(),
+      };
 
-      if (user && textAreaRef.current && textAreaRef.current.value) {
-        const messageObject: MessageType = {
-          uid: user.uid,
-          username: user.displayName as string,
-          avatar: user.photoURL as string,
-          message: textAreaRef.current.value,
-          type: "text",
-          timestamp: new Date(),
-        };
+      if (blockMessagesId) {
+        db.collection("roomMessages")
+          .doc(blockMessagesId)
+          .collection("dateMessages")
+          .add(messageObject);
 
-        if (blockMessagesId) {
-          db.collection("roomMessages")
-            .doc(blockMessagesId)
-            .collection("dateMessages")
-            .add(messageObject);
+        textAreaRef.current.value = "";
+        textAreaRef.current.style.cssText = "height: auto";
+        setCheckIsTyping(false);
+      } else {
+        db.collection("roomMessages")
+          .add({
+            roomId,
+            timestamp: new Date(),
+          })
+          .then((docRef) => {
+            if (docRef.id) {
+              db.collection("roomMessages")
+                .doc(docRef.id)
+                .collection("dateMessages")
+                .add(messageObject);
 
-          textAreaRef.current.value = "";
-          textAreaRef.current.style.cssText = "height: auto";
-        } else {
-          db.collection("roomMessages")
-            .add({
-              roomId,
-              timestamp: new Date(),
-            })
-            .then((docRef) => {
-              if (docRef.id) {
-                db.collection("roomMessages")
-                  .doc(docRef.id)
-                  .collection("dateMessages")
-                  .add(messageObject);
-
-                if (textAreaRef.current) {
-                  textAreaRef.current.value = "";
-                  textAreaRef.current.style.cssText = "height: auto";
-                }
+              if (textAreaRef.current) {
+                textAreaRef.current.value = "";
+                textAreaRef.current.style.cssText = "height: auto";
+                setCheckIsTyping(false);
               }
-            });
-        }
+            }
+          });
       }
     }
+  };
+
+  const enterToSendMessageHandler = (
+    event: KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessageHandler();
+    }
+  };
+
+  const clickToSendMessageHandler = () => {
+    sendMessageHandler();
   };
 
   const showHiddenInputMediaHandler = () => {
@@ -473,7 +489,7 @@ const SendingArea: FC<ISendingArea> = ({
 
             <TextArea
               onChange={textAreaOnChangeHandler}
-              onKeyDown={(event) => sendMessageHandler(event)}
+              onKeyDown={(event) => enterToSendMessageHandler(event)}
               ref={textAreaRef}
               spellCheck="false"
               placeholder="Type a message..."
@@ -483,9 +499,15 @@ const SendingArea: FC<ISendingArea> = ({
           </>
         ) : null}
 
-        <Icon onClick={stretchOutTextAreaHandler} isOpen={isOpen}>
-          {isOpen ? <BiChevronRight /> : <BiMessageDetail />}
-        </Icon>
+        {checkIsTyping ? (
+          <Icon isSendButton={true} onClick={clickToSendMessageHandler}>
+            <BiPaperPlane />
+          </Icon>
+        ) : (
+          <Icon onClick={stretchOutTextAreaHandler} isOpen={isOpen}>
+            {isOpen ? <BiX /> : <BiMessageDetail />}
+          </Icon>
+        )}
       </SendingAreaContainer>
     </>
   );
@@ -574,7 +596,7 @@ const Options = styled.div`
   }
 `;
 
-const Icon = styled.span<{ isOpen?: boolean }>`
+const Icon = styled.span<{ isOpen?: boolean; isSendButton?: boolean }>`
   ${tw`
     relative
     text-2xl
@@ -611,4 +633,6 @@ const Icon = styled.span<{ isOpen?: boolean }>`
       : css`
           color: #2c9984;
         `}
+
+  ${({ isSendButton }) => isSendButton && tw`text-blue-500`}
 `;
