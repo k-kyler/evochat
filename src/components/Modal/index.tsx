@@ -180,13 +180,10 @@ const Modal: FC<IModalProps> = ({
                 background: doc.data().background,
                 name: doc.data().name,
               }))
-              .filter(
-                (room) =>
-                  room.name
-                    .toLowerCase()
-                    .includes(
-                      inputSearchRoomNameRef.current?.value.toLowerCase()
-                    ) && !rooms?.map((r) => r.id).includes(room.id)
+              .filter((room) =>
+                room.name
+                  .toLowerCase()
+                  .includes(inputSearchRoomNameRef.current?.value.toLowerCase())
               );
 
             setRoomResults(results);

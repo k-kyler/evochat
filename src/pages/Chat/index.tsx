@@ -279,7 +279,6 @@ const FeaturesListContainer = styled.div`
   `}
 
   background-color: #202225;
-  scroll-behavior: smooth;
 
   /* Chrome, Edge, and Safari */
   &::-webkit-scrollbar {

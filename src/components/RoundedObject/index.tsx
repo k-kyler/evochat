@@ -2,6 +2,7 @@ import { FC } from "react";
 import styled, { css } from "styled-components";
 import tw from "twin.macro";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
+import CustomReactTooltip from "../Tooltip/CustomReactTooltip";
 
 interface IRoundedObject extends RoundedObjectType {
   selectedRoomId?: string;
@@ -24,7 +25,10 @@ const RoundedObject: FC<IRoundedObject> = ({
         background={background}
         type={type}
         onClick={clickHandler && clickHandler}
+        data-tip={content}
       >
+        <CustomReactTooltip />
+
         {type === "room" ? (
           <>
             <AdditionalActive />
@@ -37,7 +41,7 @@ const RoundedObject: FC<IRoundedObject> = ({
             )}
           </>
         ) : (
-          <Icon>{icon}</Icon>
+          <></>
         )}
       </RoundedObjectContainer>
     );
@@ -46,7 +50,10 @@ const RoundedObject: FC<IRoundedObject> = ({
       background={background}
       type={type}
       onClick={clickHandler && clickHandler}
+      data-tip={content}
     >
+      <CustomReactTooltip />
+
       {type === "room" ? (
         <>
           <AdditionalActive />
@@ -85,7 +92,7 @@ const RoundedObjectContainer = styled.div<{
   border-radius: 50%;
   background-color: #36393f;
 
-  span:nth-child(1) {
+  span {
     color: #3ba55d;
   }
 
@@ -98,25 +105,15 @@ const RoundedObjectContainer = styled.div<{
         background-color: #3ba55d;
       `}
 
-    span:nth-child(1) {
+    span {
       color: white;
     }
 
-    span:nth-child(2),
-    span:nth-child(3) {
-      ${tw`
-        visible
-        text-white
-      `}
-
-      left: 105%;
-    }
-
-    div:nth-child(1) {
+    div:nth-child(2) {
       ${tw`visible`}
     }
 
-    div:nth-child(2) {
+    div:nth-child(3) {
       ${tw`rounded-xl`}
     }
   }
@@ -141,7 +138,7 @@ const RoundedObjectContainer = styled.div<{
         rounded-xl
       `}
 
-      div:nth-child(1) {
+      div:nth-child(2) {
         ${tw`
           visible
           transition-all
@@ -152,7 +149,7 @@ const RoundedObjectContainer = styled.div<{
         height: 2.4rem;
       }
 
-      div:nth-child(2) {
+      div:nth-child(3) {
         ${tw`
           transition-all
           duration-300

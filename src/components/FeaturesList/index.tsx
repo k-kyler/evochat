@@ -1,14 +1,15 @@
 import { FC, useState, useEffect } from "react";
+import styled from "styled-components";
+import tw from "twin.macro";
+import { nanoid } from "nanoid";
+import { useHistory } from "react-router-dom";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import Logo from "../../assets/web-logo.svg";
 import RoundedObject from "../RoundedObject";
 import Modal from "../Modal";
-import { useHistory } from "react-router-dom";
-import styled from "styled-components";
-import tw from "twin.macro";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import CustomReactTooltip from "../Tooltip/CustomReactTooltip";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
 import { useRooms } from "../../contexts/RoomsContext";
-import { nanoid } from "nanoid";
 
 interface IFeaturesListProps {
   joinedRoomIds: string[];
@@ -58,7 +59,8 @@ const FeaturesList: FC<IFeaturesListProps> = ({ joinedRoomIds }) => {
     <>
       <FeaturesListInnerContainer>
         <ImageContainer>
-          <img src={Logo} onClick={getBackToHome} />
+          <img src={Logo} data-tip="Home" onClick={getBackToHome} />
+          <CustomReactTooltip />
         </ImageContainer>
 
         {options.map((option) => (
@@ -88,6 +90,7 @@ const FeaturesList: FC<IFeaturesListProps> = ({ joinedRoomIds }) => {
         closeHandler={() => setOpenCreateNewRoomModal(false)}
         setOpenSearchRoomModal={setOpenSearchRoomModal}
       />
+
       <Modal
         type="search-room"
         title="Search new room"
@@ -110,11 +113,14 @@ const FeaturesListInnerContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
+  ${tw`
+    mb-3
+  `}
+
   img {
     ${tw`
       h-12
       cursor-pointer
-      mb-3
     `}
   }
 `;
