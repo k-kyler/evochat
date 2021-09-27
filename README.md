@@ -4,9 +4,9 @@ Evochat is my pet project in creating a realtime messaging network by ReactJS an
 
 > Currently, Evochat is still under development.
 
-<p align="center">
-  <img src="public/showcase.png />
-</p>
+## Showcase
+
+<p align="center"><img src="public/showcase.png" /></p>
 
 ## Available Scripts
 
