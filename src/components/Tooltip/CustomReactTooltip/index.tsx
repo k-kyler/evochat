@@ -20,5 +20,5 @@ export default CustomReactTooltip;
 
 const CustomReactTooltipContainer = styled(ReactTooltip)`
   border-radius: 6px !important;
-  box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.15);
 `;
