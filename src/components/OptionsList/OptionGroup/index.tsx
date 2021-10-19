@@ -142,7 +142,7 @@ const MediaItemsContainer = styled.div<{ isMedia?: SharedMediaType[] }>`
   ${tw`
     grid
     grid-cols-3
-    gap-3
+    gap-2
     place-items-center
   `}
 

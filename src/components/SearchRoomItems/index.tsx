@@ -9,11 +9,13 @@ import { SearchRoomItemType } from "../../typings/SearchRoomItemType";
 interface ISearchRoomItemsProps {
   roomResults: SearchRoomItemType[];
   isRoomSearching: boolean;
+  closeHandler: () => void;
 }
 
 const SearchRoomItems: FC<ISearchRoomItemsProps> = ({
   roomResults,
   isRoomSearching,
+  closeHandler,
 }) => {
   return (
     <SearchRoomItemsContainer roomResults={roomResults}>
@@ -24,7 +26,11 @@ const SearchRoomItems: FC<ISearchRoomItemsProps> = ({
       ) : roomResults.length ? (
         <>
           {roomResults.map((result) => (
-            <SearchRoomItem key={result.id} {...result} />
+            <SearchRoomItem
+              key={result.id}
+              {...result}
+              closeHandler={closeHandler}
+            />
           ))}
         </>
       ) : (

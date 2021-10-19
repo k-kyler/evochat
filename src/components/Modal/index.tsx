@@ -9,8 +9,8 @@ import SearchRoomItems from "../SearchRoomItems";
 import { db, storage } from "../../firebase";
 import firebase from "firebase";
 import { useAuth } from "../../contexts/AuthContext";
-import { useRooms } from "../../contexts/RoomsContext";
 import { SearchRoomItemType } from "../../typings/SearchRoomItemType";
+import { useRooms } from "../../contexts/RoomsContext";
 
 interface IModalProps {
   title?: string;
@@ -174,7 +174,7 @@ const Modal: FC<IModalProps> = ({
         db.collection("rooms")
           .get()
           .then((snapshot) => {
-            const results = snapshot.docs
+            const searchResults = snapshot.docs
               .map((doc) => ({
                 id: doc.id,
                 background: doc.data().background,
@@ -185,6 +185,13 @@ const Modal: FC<IModalProps> = ({
                   .toLowerCase()
                   .includes(inputSearchRoomNameRef.current?.value.toLowerCase())
               );
+            const joinedRoomIds = rooms?.map((room) => room.id);
+            const results = searchResults.map((room) => ({
+              id: room.id,
+              background: room.background,
+              name: room.name,
+              isJoined: joinedRoomIds?.includes(room.id) ? true : false,
+            }));
 
             setRoomResults(results);
           })
@@ -227,13 +234,16 @@ const Modal: FC<IModalProps> = ({
           )}
 
           <ModalBody>
+            {/* Modal title */}
             {type === "zoom-image" ? null : (
               <>
                 <ModalTitle>{title}</ModalTitle>
                 <ModalDescription>{description}</ModalDescription>
               </>
             )}
+            {/* End of modal title */}
 
+            {/* Modal feature */}
             <ModalFeature isImage={type}>
               {type === "create-room" ? (
                 <RoomFeature
@@ -266,6 +276,7 @@ const Modal: FC<IModalProps> = ({
                   <SearchRoomItems
                     roomResults={roomResults}
                     isRoomSearching={isRoomSearching}
+                    closeHandler={closeHandler}
                   />
                 </RoomFeature>
               ) : type === "edit-room-name" ? (
@@ -282,9 +293,11 @@ const Modal: FC<IModalProps> = ({
                 </RoomFeature>
               ) : null}
             </ModalFeature>
+            {/* End of modal title */}
           </ModalBody>
         </ModalInnerContent>
 
+        {/* Modal actions */}
         <ModalActions isImage={type}>
           {type === "create-room" ? (
             <RoomButtons>
@@ -332,12 +345,15 @@ const Modal: FC<IModalProps> = ({
             </RoomButtons>
           ) : null}
         </ModalActions>
+        {/* End of modal actions */}
 
+        {/* zoom image modal */}
         {type === "zoom-image" ? (
           <OriginalImageLink target="__blank" href={imageSrc}>
-            Open original
+            Open in original
           </OriginalImageLink>
         ) : null}
+        {/* End of zoom image modal */}
       </ModalContent>
     </>,
     document.getElementById("modal") as HTMLElement
@@ -356,7 +372,7 @@ const ModalOverlay = styled.div`
   `}
 
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.6);
 `;
 
 const ModalContent = styled.div<{ isImage?: string }>`

@@ -10,19 +10,20 @@ import Modal from "../Modal";
 import CustomReactTooltip from "../Tooltip/CustomReactTooltip";
 import { RoundedObjectType } from "../../typings/RoundedObjectType";
 import { useRooms } from "../../contexts/RoomsContext";
+import { useSelectedRoomId } from "../../contexts/SelectedRoomIdContext";
 
 interface IFeaturesListProps {
   joinedRoomIds: string[];
 }
 
 const FeaturesList: FC<IFeaturesListProps> = ({ joinedRoomIds }) => {
-  const [selectedRoomId, setSelectedRoomId] = useState("");
   const [openCreateNewRoomModal, setOpenCreateNewRoomModal] = useState(false);
   const [openSearchRoomModal, setOpenSearchRoomModal] = useState(false);
 
   const history = useHistory();
 
   const { rooms } = useRooms();
+  const { selectedRoomId, setSelectedRoomId } = useSelectedRoomId();
 
   const getBackToHome = () => {
     history.push("/");

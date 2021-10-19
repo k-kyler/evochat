@@ -126,5 +126,5 @@ const Content = styled.p`
     overflow-x-hidden
   `}
 
-  max-width: 13em;
+  max-width: 14em;
 `;

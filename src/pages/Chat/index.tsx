@@ -298,7 +298,7 @@ const RoomOptionContainer = styled.div`
   `}
 
   background-color: #2f3136;
-  flex: 0.2;
+  flex: 0.22;
 `;
 
 const ChatAreaContainer = styled.div`
@@ -309,5 +309,5 @@ const ChatAreaContainer = styled.div`
   `}
 
   background-color: #36393f;
-  flex: 0.8;
+  flex: 0.78;
 `;

@@ -62,12 +62,12 @@ const MediaItemContainer = styled.div<{
     transition-all
     duration-300
     ease-in-out
-    h-16
-    w-16
     cursor-pointer
     rounded-md
   `}
 
+  height: 4.8rem;
+  width: 4.8rem;
   opacity: 0;
   animation: fadeIn 0.2s ease-in-out forwards;
 

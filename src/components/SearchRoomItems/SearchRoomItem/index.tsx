@@ -1,14 +1,50 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlineExport, AiOutlinePlusCircle } from "react-icons/ai";
 import { SearchRoomItemType } from "../../../typings/SearchRoomItemType";
 import RoomIntroImage from "../../../assets/room-intro.svg";
+import { useHistory } from "react-router";
+import { useSelectedRoomId } from "../../../contexts/SelectedRoomIdContext";
+import { useAuth } from "../../../contexts/AuthContext";
+import { db } from "../../../firebase";
 
-interface ISearchRoomItemProps extends SearchRoomItemType {}
+interface ISearchRoomItemProps extends SearchRoomItemType {
+  closeHandler: () => void;
+}
 
-const SearchRoomItem: FC<ISearchRoomItemProps> = ({ name, background, id }) => {
-  // Send join room request handler here...
+const SearchRoomItem: FC<ISearchRoomItemProps> = ({
+  name,
+  background,
+  id,
+  isJoined,
+  closeHandler,
+}) => {
+  const history = useHistory();
+
+  const { setSelectedRoomId } = useSelectedRoomId();
+  const { user } = useAuth();
+
+  const openJoinedRoom = () => {
+    closeHandler();
+    setSelectedRoomId(id);
+    history.push(`/chat?id=${id}`);
+  };
+
+  const sendJoinRoomRequest = () => {
+    db.collection("rooms")
+      .doc(id)
+      .collection("members")
+      .add({
+        uid: user?.uid,
+        timestamp: new Date(),
+      })
+      .then((docRef) => {
+        if (docRef.id) {
+          closeHandler();
+        }
+      });
+  };
 
   return (
     <SearchRoomItemContainer>
@@ -23,8 +59,15 @@ const SearchRoomItem: FC<ISearchRoomItemProps> = ({ name, background, id }) => {
         <RoomName title={name}>{name}</RoomName>
       </InfoContainer>
 
-      <Icon>
-        <AiOutlinePlusCircle />
+      <Icon
+        isJoined={isJoined}
+        onClick={isJoined ? openJoinedRoom : sendJoinRoomRequest}
+      >
+        {isJoined ? (
+          <AiOutlineExport title="Open room" />
+        ) : (
+          <AiOutlinePlusCircle title="Join room" />
+        )}
       </Icon>
     </SearchRoomItemContainer>
   );
@@ -90,10 +133,18 @@ const RoomName = styled.p`
   max-width: 9.5em;
 `;
 
-const Icon = styled.span`
+const Icon = styled.span<{ isJoined?: boolean }>`
   ${tw`
     text-xl
-    text-green-400
     cursor-pointer
+  `}
+
+  ${({ isJoined }) =>
+    isJoined
+      ? tw`
+    text-gray-400
+  `
+      : tw`
+    text-green-400
   `}
 `;

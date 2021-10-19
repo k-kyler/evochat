@@ -93,5 +93,5 @@ const FileName = styled.p`
     underline
   `}
 
-  max-width: 13em;
+  max-width: 15em;
 `;
