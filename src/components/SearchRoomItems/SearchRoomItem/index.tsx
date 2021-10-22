@@ -34,16 +34,15 @@ const SearchRoomItem: FC<ISearchRoomItemProps> = ({
   const sendJoinRoomRequest = () => {
     db.collection("rooms")
       .doc(id)
-      .collection("members")
+      .collection("requests")
       .add({
         uid: user?.uid,
+        username: user?.displayName,
+        avatar: user?.photoURL,
+        request: "Join room",
         timestamp: new Date(),
       })
-      .then((docRef) => {
-        if (docRef.id) {
-          closeHandler();
-        }
-      });
+      .then((docRef) => docRef.id && closeHandler());
   };
 
   return (

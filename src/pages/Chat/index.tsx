@@ -16,6 +16,7 @@ import { RoomType } from "../../typings/RoomType";
 import { MemberItemType } from "../../typings/MemberItemType";
 import { SharedMediaType, SharedFileType } from "../../typings/SharedType";
 import { db } from "../../firebase";
+import { RequestItemType } from "../../typings/RequestItemType";
 
 interface IChatProps {
   location: {
@@ -26,13 +27,17 @@ interface IChatProps {
 const Chat: FC<IChatProps> = ({ location }) => {
   const [joinedRoomIds, setJoinedRoomIds] = useState<string[]>([]);
   const [joinedMemberIds, setJoinedMemberIds] = useState<string[]>([]);
+
   const [selectedRoom, setSelectedRoom] = useState<RoomType>();
+
   const [roomMembers, setRoomMembers] = useState<MemberItemType[]>([]);
   const [roomBlockMessagesIds, setRoomBlockMessagesIds] = useState<string[]>(
     []
   );
   const [roomMedia, setRoomMedia] = useState<SharedMediaType[]>([]);
   const [roomFiles, setRoomFiles] = useState<SharedFileType[]>([]);
+  const [roomRequests, setRoomRequests] = useState<RequestItemType[]>([]);
+
   const [isPageLoading, setIsPageLoading] = useState(true);
 
   const { user } = useAuth();
@@ -180,6 +185,19 @@ const Chat: FC<IChatProps> = ({ location }) => {
       });
   };
 
+  const getRequestsOfSelectedRoom = () => {
+    if (selectedRoom) {
+      db.collection("rooms")
+        .doc(selectedRoom.id)
+        .collection("requests")
+        .onSnapshot((snapshot) => {
+          const requests = snapshot.docs.map((doc) => doc.data());
+
+          if (selectedRoom.oid === user?.uid) setRoomRequests(requests as any);
+        });
+    }
+  };
+
   const pageLoadingHandler = () => {
     if (joinedRoomIds.length) setIsPageLoading(false);
     else
@@ -205,6 +223,7 @@ const Chat: FC<IChatProps> = ({ location }) => {
   useEffect(() => {
     getMemberIdsOfSelectedRoom();
     getRoomBlockMessagesIds();
+    getRequestsOfSelectedRoom();
   }, [selectedRoom]);
 
   useEffect(() => {
@@ -237,6 +256,8 @@ const Chat: FC<IChatProps> = ({ location }) => {
                 roomMembers={roomMembers}
                 roomMedia={roomMedia}
                 roomFiles={roomFiles}
+                roomRequests={roomRequests}
+                isOwner={selectedRoom?.oid === user?.uid}
               />
             ) : (
               <BlankOptionsList />

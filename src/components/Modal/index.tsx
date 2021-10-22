@@ -44,16 +44,19 @@ const Modal: FC<IModalProps> = ({
   imageSrc,
 }) => {
   const [inputRoomBackground, setInputRoomBackground] = useState<any>(null);
+
   const [disabledCreateRoomButton, setDisabledCreateRoomButton] =
     useState(false);
   const [disabledSearchRoomButton, setDisabledSearchRoomButton] =
     useState(false);
   const [disabledChangeRoomNameButton, setDisabledChangeRoomNameButton] =
     useState(false);
+
   const [checkInputRoomName, setCheckInputRoomName] = useState(false);
   const [checkUploadBackground, setCheckUploadBackground] = useState(false);
   const [checkInputSearchRoomName, setCheckInputSearchRoomName] =
     useState(false);
+
   const [roomResults, setRoomResults] = useState<SearchRoomItemType[]>([]);
   const [isRoomSearching, setIsRoomSearching] = useState(false);
 

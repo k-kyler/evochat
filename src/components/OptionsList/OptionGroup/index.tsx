@@ -7,13 +7,15 @@ import FileItem from "./FileItem";
 import MediaItem from "./MediaItem";
 import { MemberItemType } from "../../../typings/MemberItemType";
 import { SharedMediaType, SharedFileType } from "../../../typings/SharedType";
+import { RequestItemType } from "../../../typings/RequestItemType";
 
 interface IOptionGroupProps {
   name: string;
-  type: "members" | "media" | "files";
+  type: "members" | "media" | "files" | "requests";
   members?: MemberItemType[];
   media?: SharedMediaType[];
   files?: SharedFileType[];
+  requests?: RequestItemType[];
 }
 
 const OptionGroup: FC<IOptionGroupProps> = ({
