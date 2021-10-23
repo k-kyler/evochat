@@ -8,6 +8,7 @@ import MediaItem from "./MediaItem";
 import { MemberItemType } from "../../../typings/MemberItemType";
 import { SharedMediaType, SharedFileType } from "../../../typings/SharedType";
 import { RequestItemType } from "../../../typings/RequestItemType";
+import RequestItem from "./RequestItem";
 
 interface IOptionGroupProps {
   name: string;
@@ -24,6 +25,7 @@ const OptionGroup: FC<IOptionGroupProps> = ({
   members,
   media,
   files,
+  requests,
 }) => {
   const [checkDropDownGroup, setCheckDropDownGroup] = useState(false);
   const [rotateState, setRotateState] = useState(true);
@@ -76,6 +78,12 @@ const OptionGroup: FC<IOptionGroupProps> = ({
             <FileItem key={file.id} {...file} />
           ))}
         </FileItemsContainer>
+      ) : type === "requests" && checkDropDownGroup ? (
+        <RequestItemsContainer>
+          {requests?.map((request) => (
+            <RequestItem key={request.timestamp} {...request} />
+          ))}
+        </RequestItemsContainer>
       ) : null}
     </OptionGroupContainer>
   );
@@ -152,6 +160,13 @@ const MediaItemsContainer = styled.div<{ isMedia?: SharedMediaType[] }>`
 `;
 
 const FileItemsContainer = styled.div`
+  ${tw`
+    flex
+    flex-col
+  `}
+`;
+
+const RequestItemsContainer = styled.div`
   ${tw`
     flex
     flex-col

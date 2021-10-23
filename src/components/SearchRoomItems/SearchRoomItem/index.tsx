@@ -1,7 +1,7 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { AiOutlineExport, AiOutlinePlusCircle } from "react-icons/ai";
+import { BsBoxArrowRight, BsPlusCircle, BsCheckCircle } from "react-icons/bs";
 import { SearchRoomItemType } from "../../../typings/SearchRoomItemType";
 import RoomIntroImage from "../../../assets/room-intro.svg";
 import { useHistory } from "react-router";
@@ -20,6 +20,8 @@ const SearchRoomItem: FC<ISearchRoomItemProps> = ({
   isJoined,
   closeHandler,
 }) => {
+  const [checkRequest, setCheckRequest] = useState(false);
+
   const history = useHistory();
 
   const { setSelectedRoomId } = useSelectedRoomId();
@@ -45,6 +47,23 @@ const SearchRoomItem: FC<ISearchRoomItemProps> = ({
       .then((docRef) => docRef.id && closeHandler());
   };
 
+  const checkIfRequestHasBeenSent = () => {
+    db.collection("rooms")
+      .doc(id)
+      .collection("requests")
+      .onSnapshot((snapshot) => {
+        const requests = snapshot.docs
+          .map((doc) => doc.data())
+          .filter((request) => request.uid === user?.uid);
+
+        if (requests.length) setCheckRequest(true);
+      });
+  };
+
+  useEffect(() => {
+    checkIfRequestHasBeenSent();
+  }, [id]);
+
   return (
     <SearchRoomItemContainer>
       <InfoContainer>
@@ -60,12 +79,21 @@ const SearchRoomItem: FC<ISearchRoomItemProps> = ({
 
       <Icon
         isJoined={isJoined}
-        onClick={isJoined ? openJoinedRoom : sendJoinRoomRequest}
+        checkRequest={checkRequest}
+        onClick={
+          isJoined
+            ? openJoinedRoom
+            : !isJoined && checkRequest
+            ? () => {}
+            : sendJoinRoomRequest
+        }
       >
         {isJoined ? (
-          <AiOutlineExport title="Open room" />
+          <BsBoxArrowRight title="Open room" />
+        ) : !isJoined && checkRequest ? (
+          <BsCheckCircle title="Sent" />
         ) : (
-          <AiOutlinePlusCircle title="Join room" />
+          <BsPlusCircle title="Join room" />
         )}
       </Icon>
     </SearchRoomItemContainer>
@@ -132,18 +160,23 @@ const RoomName = styled.p`
   max-width: 9.5em;
 `;
 
-const Icon = styled.span<{ isJoined?: boolean }>`
+const Icon = styled.span<{ isJoined?: boolean; checkRequest?: boolean }>`
   ${tw`
     text-xl
-    cursor-pointer
   `}
 
-  ${({ isJoined }) =>
+  ${({ isJoined, checkRequest }) =>
     isJoined
+      ? tw`
+    text-gray-400
+    cursor-pointer
+  `
+      : !isJoined && checkRequest
       ? tw`
     text-gray-400
   `
       : tw`
     text-green-400
+    cursor-pointer
   `}
 `;

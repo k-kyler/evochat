@@ -1,7 +1,6 @@
 import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { FaUser } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
 import { MemberItemType } from "../../../../typings/MemberItemType";
 import OnlineStatus from "../../../OnlineStatus";
@@ -19,16 +18,10 @@ const MemberItem: FC<IMemberItemProps> = ({
   return (
     <MemberItemContainer onClick={clickHandler && clickHandler}>
       <InfoContainer>
-        {avatar ? (
-          <AvatarContainer>
-            <img loading="lazy" src={avatar} />
-            <OnlineStatus effect="none" />
-          </AvatarContainer>
-        ) : (
-          <Icon>
-            <FaUser />
-          </Icon>
-        )}
+        <AvatarContainer title={username}>
+          <img loading="lazy" src={avatar} />
+          <OnlineStatus effect="none" />
+        </AvatarContainer>
 
         <Content title={username}>{username}</Content>
 
@@ -98,16 +91,6 @@ const AvatarContainer = styled.div`
 
     border-radius: 50%;
   }
-`;
-
-const Icon = styled.span`
-  ${tw`
-    text-sm
-    text-gray-400
-    rounded-full
-    bg-gray-600
-    p-2
-  `}
 `;
 
 const SmallIcon = styled.span`
