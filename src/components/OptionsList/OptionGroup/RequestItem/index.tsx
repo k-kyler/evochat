@@ -2,7 +2,6 @@ import { FC } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { RequestItemType } from "../../../../typings/RequestItemType";
-import { AiFillEye } from "react-icons/ai";
 
 interface IRequestItemProps extends RequestItemType {}
 
@@ -15,22 +14,15 @@ const RequestItem: FC<IRequestItemProps> = ({
 }) => {
   return (
     <RequestItemContainer>
-      <InnerRequestItemContainer title={username}>
-        <AvatarContainer>
-          <img loading="lazy" src={avatar} />
-        </AvatarContainer>
+      <AvatarContainer title={username}>
+        <img loading="lazy" src={avatar} />
+      </AvatarContainer>
 
-        <RequestInfo>
-          <RequestUser>From {username}</RequestUser>
-          <RequestItemText>
-            Request to {request.toLowerCase()} 👋
-          </RequestItemText>
-        </RequestInfo>
-      </InnerRequestItemContainer>
-
-      <Icon>
-        <AiFillEye />
-      </Icon>
+      {request === "Join room" ? (
+        <RequestItemText>
+          {username} requests to {request.toLowerCase()}
+        </RequestItemText>
+      ) : null}
     </RequestItemContainer>
   );
 };
@@ -42,24 +34,16 @@ const RequestItemContainer = styled.div`
     rounded
     flex
     items-center
-    justify-between
     transition-all
     duration-300
     ease-in-out
     p-2
+    cursor-pointer
+    relative
   `}
 
   &:hover {
     background-color: rgb(51, 54, 60);
-
-    span {
-      ${tw`
-        visible
-        transition-all
-        duration-300
-        ease-in-out
-      `}
-    }
   }
 
   opacity: 0;
@@ -83,47 +67,15 @@ const AvatarContainer = styled.div`
   }
 `;
 
-const InnerRequestItemContainer = styled.div`
-  ${tw`
-    flex
-    items-center
-    justify-between
-  `}
-`;
-
-const RequestInfo = styled.div`
-  ${tw`
-    flex
-    flex-col
-    ml-2
-    pointer-events-none
-  `}
-`;
-
 const RequestItemText = styled.p`
   ${tw`
-    text-xs
-    text-gray-300
-  `}
-`;
-
-const RequestUser = styled.p`
-  ${tw`
     text-sm
-    overflow-ellipsis
+    ml-2
+    pointer-events-none
     overflow-x-hidden
+    overflow-ellipsis
     whitespace-nowrap
-    mb-1
   `}
 
-  max-width: 12em;
-`;
-
-const Icon = styled.span`
-  ${tw`
-    text-gray-300
-    text-lg
-    cursor-pointer
-    invisible
-  `}
+  max-width: 14.5em;
 `;

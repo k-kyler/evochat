@@ -537,6 +537,7 @@ const RoomButtons = styled.div<{ isOne?: boolean }>`
 const OriginalImageLink = styled.a`
   ${tw`
     absolute
+    right-0
     mt-1
     transition-all
     duration-300
