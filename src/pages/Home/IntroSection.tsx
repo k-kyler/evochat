@@ -33,7 +33,9 @@ const IntroSection: FC = () => {
           <img src={BlobImage} />
         </BlobContainer>
         <IntroIllustration>
-          <img src={IntroImage} />
+        	<a href="https://storyset.com/web">
+        	 <img src={IntroImage} />
+        	</a>
         </IntroIllustration>
       </RightSide>
     </IntroSectionContainer>
