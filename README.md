@@ -27,5 +27,3 @@ Evochat is my project in creating a realtime messaging network by ReactJS and Fi
 <p align="center"><img src="screenshots/chat-emoji.png" /></p>
 
 <p align="center"><img src="screenshots/chat-media-document.png" /></p>
-
-<p align="center"><img src="screenshots/chat-media-document-uploaded.png" /></p>
