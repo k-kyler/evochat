@@ -6,34 +6,26 @@ Evochat is my project in creating a realtime messaging network by ReactJS and Fi
 
 ## Screenshots
 
-**Home**
+### Home
 
-<p align="center"><img src="demo/showcase.png" /></p>
+<p align="center"><img src="screenshots/showcase.png" /></p>
 
-<br />
+### Sign in
 
-**Sign in**
+<p align="center"><img src="screenshots/signin.png" /></p>
 
-<p align="center"><img src="demo/signin.png" /></p>
+### Create room
 
-<br />
+<p align="center"><img src="screenshots/create-room.png" /></p>
 
-**Create room**
+### Search room
 
-<p align="center"><img src="demo/create-room.png" /></p>
+<p align="center"><img src="screenshots/search-room.png" /></p>
 
-<br />
+### Experience features
 
-**Search room**
+<p align="center"><img src="screenshots/chat-emoji.png" /></p>
 
-<p align="center"><img src="demo/search-room.png" /></p>
+<p align="center"><img src="screenshots/chat-media-document.png" /></p>
 
-<br />
-
-**Experience awesome features**
-
-<p align="center"><img src="demo/chat-emoji.png" /></p>
-
-<p align="center"><img src="demo/chat-media-document.png" /></p>
-
-<p align="center"><img src="demo/chat-media-document-uploaded.png" /></p>
+<p align="center"><img src="screenshots/chat-media-document-uploaded.png" /></p>
